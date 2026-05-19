@@ -557,15 +557,16 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   useEffect(() => {
     const exportFreshHTML = () => {
       const gridData = getCurrentGrid();
-      flushSheet(sheetId, gridData);
+      const links = extensionLinksRef.current;
+      flushSheet(sheetId, gridData, links);
       exportRoundHTML({
         ...round,
-        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData } : sh),
-      });
+        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData, extensionLinks: links } : sh),
+      }, { affColor, negColor });
     };
     window.addEventListener('new-sheet-export-round-html', exportFreshHTML);
     return () => window.removeEventListener('new-sheet-export-round-html', exportFreshHTML);
-  }, [getCurrentGrid, flushSheet, sheetId, round]);
+  }, [getCurrentGrid, flushSheet, sheetId, round, affColor, negColor]);
 
   // ── Ensure cell is visible ──
   const ensureVisible = useCallback((col, row) => {
