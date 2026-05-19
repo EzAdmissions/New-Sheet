@@ -124,7 +124,7 @@ export default function App() {
   if (!round || !activeSheet) { setView('dashboard'); return null; }
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: theme.bg, color: theme.text, fontFamily: ui.fontFamily, overflow: 'hidden' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: ui.appBg ?? theme.bg, color: theme.text, fontFamily: ui.fontFamily, overflow: 'hidden' }}>
 
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', height: ui.toolbarHeight, background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, gap: 8, flexShrink: 0 }}>
@@ -171,6 +171,7 @@ export default function App() {
                 borderLeft: isDragOver ? `3px solid ${affColor}` : '3px solid transparent',
                 borderBottom: `2px solid ${isActive ? color : 'transparent'}`,
                 background: isDragOver ? `${affColor}15` : isActive ? ui.tabActiveBg : ui.tabInactiveBg,
+                boxShadow: isActive ? ui.tabActiveShadow : 'none',
                 whiteSpace: 'nowrap', userSelect: 'none',
                 boxSizing: 'border-box',
               }}

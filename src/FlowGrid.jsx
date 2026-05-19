@@ -160,6 +160,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const [extensionLinks, setExtensionLinks] = useState(() => sheet.extensionLinks ?? []);
   const extensionLinksRef = useRef(extensionLinks);
   extensionLinksRef.current = extensionLinks;
+  const pendingExtendFocusRef = useRef(null);
   const [, forceRender] = useState(0);
 
   const sortedSheets = useMemo(() => (
@@ -218,6 +219,15 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     return gridEl ? gridEl.clientWidth / speeches.length : cwRef.current;
   }, [speeches.length]);
 
+  const updateTextareaVerticalPadding = useCallback((ta, row) => {
+    if (!ta) return;
+    const height = (rowSpansRef.current[row] ?? 1) * rhRef.current;
+    const textRows = estimateTextRows(ta.value, getColWidth(), fs, pad, textWrap, settings.fontFamily);
+    const contentHeight = Math.min(height, Math.max(lineHeightPx, textRows * lineHeightPx));
+    const verticalPad = Math.max(0, Math.floor((height - contentHeight) / 2));
+    ta.style.padding = `${verticalPad}px ${pad}px`;
+  }, [getColWidth, fs, pad, textWrap, settings.fontFamily, lineHeightPx]);
+
   const repaintCells = useCallback(() => {
     for (let c = 0; c < speeches.length; c++) {
       const sp = speeches[c];
@@ -255,8 +265,9 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     const rows = rowSpansRef.current[row] ?? 1;
     activeSpanRows.current = rows;
     ta.style.height = rows * rh + 'px';
+    updateTextareaVerticalPadding(ta, row);
     return rows;
-  }, []);
+  }, [updateTextareaVerticalPadding]);
 
   const recomputeRowTops = useCallback(() => {
     let total = 0;
@@ -520,6 +531,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     pushUndo(before);
     recomputeAllRowSpans();
     repaintCells();
+    pendingExtendFocusRef.current = { col: toCol, row };
     setExtensionLinks(links => [
       ...links,
       { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, fromCol: col, fromRow: row, toCol, toRow: row, side },
@@ -562,7 +574,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     };
     window.addEventListener('new-sheet-export-round', exportFreshRound);
     return () => window.removeEventListener('new-sheet-export-round', exportFreshRound);
-  }, [getCurrentGrid, flushSheet, sheetId, round]);
+  }, [getCurrentGrid, flushSheet, sheetId, round, settings]);
 
   useEffect(() => {
     const exportFreshHTML = () => {
@@ -570,12 +582,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       flushSheet(sheetId, gridData);
       exportRoundHTML({
         ...round,
-        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData } : sh),
-      });
+        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData, extensionLinks: extensionLinksRef.current } : sh),
+      }, { settings });
     };
     window.addEventListener('new-sheet-export-round-html', exportFreshHTML);
     return () => window.removeEventListener('new-sheet-export-round-html', exportFreshHTML);
-  }, [getCurrentGrid, flushSheet, sheetId, round]);
+  }, [getCurrentGrid, flushSheet, sheetId, round, settings]);
 
   // ── Ensure cell is visible ──
   const ensureVisible = useCallback((col, row) => {
@@ -601,7 +613,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     ta.style.height = (rowSpansRef.current[row] ?? activeSpanRows.current) * rh + 'px';
     ta.style.width = cw + 'px';
     ta.style.right = '';
-  }, [getColWidth]);
+    updateTextareaVerticalPadding(ta, row);
+  }, [getColWidth, updateTextareaVerticalPadding]);
 
   // ── Move to cell — zero React re-renders on navigation ──
   const moveTo = useCallback((col, row, keepSel = false) => {
@@ -653,6 +666,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
     ensureVisible(nc, nr);
   }, [speeches, ensureVisible, applyTextareaPos, theme, saveActiveTextarea, resizeActiveTextarea]);
+
+  useLayoutEffect(() => {
+    const focus = pendingExtendFocusRef.current;
+    if (!focus) return;
+    pendingExtendFocusRef.current = null;
+    moveTo(focus.col, focus.row);
+  }, [extensionLinks, moveTo]);
 
   const continueResponseSequence = useCallback(() => {
     const { col, row } = activeCellRef.current;
@@ -1074,7 +1094,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                         height: rowSpans[rowIdx] * rh,
                         display: 'flex',
                         visibility: isActive ? 'hidden' : 'visible',
-                        alignItems: textWrap ? 'flex-start' : 'center',
+                        alignItems: 'center',
                         padding: `0 ${pad}px`,
                         fontSize: fs,
                         fontFamily: settings.fontFamily,
