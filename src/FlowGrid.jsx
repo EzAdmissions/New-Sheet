@@ -9,14 +9,6 @@ const TOTAL_ROWS = 200;
 const AUTO_EXTEND_MAX_ROWS = 8;
 let measureCanvas = null;
 
-function getLineHeightPx(fontSize) {
-  return fontSize * 1.3;
-}
-
-function getTextVerticalPadding(textWrap) {
-  return textWrap ? 2 : 0;
-}
-
 function estimateTextRows(text, colWidth, fontSize, pad, textWrap, fontFamily) {
   if (!textWrap || !text) return 1;
   const usableWidth = Math.max(24, colWidth - pad * 2);
@@ -243,10 +235,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     if (el) el.textContent = value;
   }, []);
 
-  const computeRowSpan = useCallback((row) => {
+  const computeRowSpan = useCallback((row, omitCol = null) => {
     const colWidth = getColWidth();
     let span = 1;
-    for (const sp of speeches) {
+    for (let i = 0; i < speeches.length; i++) {
+      if (i === omitCol) continue;
+      const sp = speeches[i];
       span = Math.max(span, estimateTextRows(getText(sp, row), colWidth, fs, pad, textWrap, settings.fontFamily));
     }
     return span;
@@ -262,19 +256,6 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     ta.style.height = rows * rh + 'px';
     return rows;
   }, []);
-
-  const measureTextareaRows = useCallback((ta) => {
-    if (!ta || !textWrap) return 1;
-    const rh = rhRef.current;
-    const prev = ta.style.height;
-    ta.style.height = rh + 'px';
-    const contentHeight = Math.max(0, ta.scrollHeight - getTextVerticalPadding(textWrap));
-    const rowsByLines = Math.ceil((contentHeight - 1) / Math.max(1, getLineHeightPx(fs)));
-    const rowsByCells = Math.ceil((contentHeight - 1) / rh);
-    const rows = Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(1, rowsByLines, rowsByCells));
-    ta.style.height = prev;
-    return rows;
-  }, [textWrap, fs]);
 
   const recomputeRowTops = useCallback(() => {
     let total = 0;
@@ -324,6 +305,29 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     return next;
   }, [computeRowSpan, recomputeRowTops]);
 
+  const syncActiveRowSpan = useCallback((row, col, ta) => {
+    if (!ta) return rowSpansRef.current[row] ?? 1;
+    const rh = rhRef.current;
+    const current = rowSpansRef.current[row] ?? 1;
+    const otherCellsSpan = computeRowSpan(row, col);
+    let next = Math.max(current, otherCellsSpan, 1);
+    const overflow = ta.scrollHeight > ta.clientHeight + 1;
+
+    if (overflow) {
+      next = Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(next, current + 1));
+    } else {
+      const floor = Math.max(1, otherCellsSpan);
+      while (next > floor && ta.scrollHeight <= (next - 1) * rh + 1) next--;
+    }
+
+    if (rowSpansRef.current[row] !== next) {
+      rowSpansRef.current[row] = next;
+      recomputeRowTops();
+      forceRender(v => v + 1);
+    }
+    return next;
+  }, [computeRowSpan, recomputeRowTops]);
+
   const commitPendingEdit = useCallback(() => {
     const ta = taRef.current;
     if (!ta || !editSnapshot.current) return;
@@ -332,13 +336,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     if (beforeValue !== ta.value) {
       setLocalText(speeches[col], row, ta.value);
       updateCellDom(col, row, ta.value);
-      syncRowSpan(row, Math.max(1, measureTextareaRows(ta)));
+      syncActiveRowSpan(row, col, ta);
       undoStack.current.push(editSnapshot.current);
       if (undoStack.current.length > 100) undoStack.current.shift();
       redoStack.current = [];
     }
     editSnapshot.current = null;
-  }, [speeches, updateCellDom, syncRowSpan, measureTextareaRows]);
+  }, [speeches, updateCellDom, syncActiveRowSpan]);
 
   const insertRowsAfter = useCallback((row, count = 1, rerender = false) => {
     const n = Math.max(1, Math.min(20, count));
@@ -376,6 +380,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const rowHasPriorSpeechContent = useCallback((col, row) => {
     for (let c = 0; c < col; c++) {
       if (getText(speeches[c], row).trim()) return true;
+    }
+    return false;
+  }, [speeches]);
+
+  const rowHasAnyContent = useCallback((row) => {
+    for (const sp of speeches) {
+      if (getText(sp, row).trim()) return true;
     }
     return false;
   }, [speeches]);
@@ -637,7 +648,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     const { col, row } = activeCellRef.current;
     saveActiveTextarea();
     const nextRow = Math.min(TOTAL_ROWS - 1, row + 1);
-    const needsSpace = rowHasPriorSpeechContent(col, nextRow);
+    const needsSpace = rowHasAnyContent(nextRow) || rowHasPriorSpeechContent(col, nextRow);
     if (needsSpace) {
       pushUndo(cloneGrid());
       insertRowsAfter(row, 1, false);
@@ -645,7 +656,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       forceRender(v => v + 1);
     }
     moveTo(col, row + 1);
-  }, [insertRowsAfter, moveTo, recomputeAllRowSpans, saveActiveTextarea, pushUndo, cloneGrid, rowHasPriorSpeechContent]);
+  }, [insertRowsAfter, moveTo, recomputeAllRowSpans, saveActiveTextarea, pushUndo, cloneGrid, rowHasAnyContent, rowHasPriorSpeechContent]);
 
   // ── Sheet init ──
   useLayoutEffect(() => {
@@ -1116,8 +1127,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
               const { col, row } = activeCellRef.current;
               setLocalText(speeches[col], row, e.currentTarget.value);
               updateCellDom(col, row, e.currentTarget.value);
-              const measured = measureTextareaRows(e.currentTarget);
-              syncRowSpan(row, measured);
+              syncActiveRowSpan(row, col, e.currentTarget);
               resizeActiveTextarea();
               if (selectionRef.current) { selectionRef.current = null; setSelection(null); }
             }}
