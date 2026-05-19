@@ -367,6 +367,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     recomputeRowTops();
   }, [computeRowSpan, recomputeRowTops]);
 
+  const recomputeRows = useCallback((rows) => {
+    for (const row of rows) rowSpansRef.current[row] = computeRowSpan(row);
+    recomputeRowTops();
+    forceRender(v => v + 1);
+  }, [computeRowSpan, recomputeRowTops]);
+
   const findSequenceAwareDownRow = useCallback((col, row) => {
     if (col <= 0) return Math.min(TOTAL_ROWS - 1, row + 1);
 
@@ -522,8 +528,10 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   }, [speeches, getExtendOptions, saveActiveTextarea, cloneGrid, shiftColumnRangeDown, pushUndo, recomputeAllRowSpans, repaintCells]);
 
   const deleteLink = useCallback((linkId) => {
+    const link = extensionLinksRef.current.find(l => l.id === linkId);
     setExtensionLinks(links => links.filter(l => l.id !== linkId));
-  }, []);
+    if (link) recomputeRows([link.fromRow, link.toRow]);
+  }, [recomputeRows]);
 
   const buildGrid = useCallback(() => {
     const gd = {};
@@ -814,17 +822,18 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     // Delete/Backspace: clear multi-cell selection
     if ((e.key === 'Delete' || e.key === 'Backspace') && isMultiCellSelection(selectionRef.current)) {
       const bounds = selBounds(selectionRef.current);
-      e.preventDefault();
-      pushUndo(cloneGrid());
-      for (let r = bounds.minRow; r <= bounds.maxRow; r++) {
-        for (let c = bounds.minCol; c <= bounds.maxCol; c++) setLocalText(speeches[c], r, '');
-        syncRowSpan(r);
-      }
-      repaintCells();
-      if (ta) ta.value = getText(speeches[col], row);
-      selectionRef.current = null;
-      setSelection(null);
-      return;
+        e.preventDefault();
+        pushUndo(cloneGrid());
+        for (let r = bounds.minRow; r <= bounds.maxRow; r++) {
+          for (let c = bounds.minCol; c <= bounds.maxCol; c++) setLocalText(speeches[c], r, '');
+        }
+        repaintCells();
+        if (ta) ta.value = getText(speeches[col], row);
+        recomputeRows(Array.from({ length: bounds.maxRow - bounds.minRow + 1 }, (_, i) => bounds.minRow + i));
+        resizeActiveTextarea();
+        selectionRef.current = null;
+        setSelection(null);
+        return;
     }
 
     // Navigation
@@ -895,7 +904,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       onStartRename?.(sheet.id);
       return;
     }
-  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, syncRowSpan, repaintCells, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink]);
+  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink]);
 
 
   // ── Paste: multi-cell ──

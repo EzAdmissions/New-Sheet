@@ -282,7 +282,7 @@ export default function App() {
         <div style={{ flex: 1 }} />
         {round.affCode && <span style={{ color: affColor }}>Aff: {round.affCode}</span>}
         {round.negCode && <span style={{ color: negColor }}>Neg: {round.negCode}</span>}
-        {round.judges  && <span>Judge: {round.judges}</span>}
+        {round.judges  && <span>Judge(s): {round.judges}</span>}
       </div>
 
       <SettingsPanel  open={settingsOpen} onClose={() => setSettingsOpen(false)} initialTab={settingsTab} />

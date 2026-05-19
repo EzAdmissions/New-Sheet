@@ -37,7 +37,7 @@ export default function RoundMeta({ round, onClose }) {
 
         {field('tournament', 'Tournament', 'Berkeley')}
         {field('roundNum', 'Round', 'Quarterfinals')}
-        {field('judges', 'Judge', 'Kevin Hirn, Brett Bricker, Dana Randall')}
+        {field('judges', 'Judge(s)', 'Kevin Hirn, Brett Bricker, Dana Randall')}
         <div style={{ display: 'flex', gap: 10 }}>
           <div style={{ flex: 1 }}>{field('affSchool', 'Aff School', 'Head-Royce')}</div>
           <div style={{ flex: 1 }}>{field('affCode', 'Aff Code', 'AJ')}</div>

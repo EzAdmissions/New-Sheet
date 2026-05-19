@@ -126,7 +126,7 @@ function RoundCard({ round, theme, ui, affColor, negColor, onOpen, onDelete, fmt
         {name}
       </div>
       {round.judges && (
-        <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 6 }}>Judge: {round.judges}</div>
+        <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 6 }}>Judge(s): {round.judges}</div>
       )}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
         {round.sheets.filter(sh => sh.type !== 'cx').map(sh => (
@@ -180,7 +180,6 @@ function NewCard({ theme, ui, affColor, onClick }) {
 function Empty({ theme, ui, affColor, onNew }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: 20, color: theme.textMuted }}>
-      <div style={{ fontSize: 64, lineHeight: 1, opacity: 0.3 }}>⚡</div>
       <div style={{ fontSize: 20, fontWeight: 600, color: theme.text }}>No rounds yet</div>
       <div style={{ fontSize: 14, color: theme.textMuted }}>Create your first policy debate flow</div>
       <button onClick={onNew} style={{ padding: '10px 28px', background: affColor, border: 'none', borderRadius: ui.radius, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 8, fontFamily: 'inherit' }}>
