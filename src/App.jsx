@@ -3,7 +3,6 @@ import useStore from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import Dashboard from './Dashboard';
 import FlowGrid from './FlowGrid';
-import CommandPalette from './CommandPalette';
 import SettingsPanel from './SettingsPanel';
 import RoundMeta from './RoundMeta';
 import { getUiChrome, chromeButton } from './uiChrome';
@@ -26,8 +25,8 @@ export default function App() {
   const affColor = getAffColor(settings, theme);
   const negColor = getNegColor(settings, theme);
 
-  const [cmdOpen,         setCmdOpen]         = useState(false);
   const [settingsOpen,    setSettingsOpen]     = useState(false);
+  const [settingsTab,     setSettingsTab]      = useState('display');
   const [metaOpen,        setMetaOpen]         = useState(false);
   const [offCount,        setOffCount]         = useState('');
   const [renamingSheetId, setRenamingSheetId] = useState(null);
@@ -37,6 +36,10 @@ export default function App() {
 
   const activeSheet = round?.sheets.find(s => s.id === round.activeSheetId) ?? null;
   const handleBack  = useCallback(() => setView('dashboard'), [setView]);
+  const openSettings = useCallback((tab = 'display') => {
+    setSettingsTab(tab);
+    setSettingsOpen(true);
+  }, [setSettingsOpen, setSettingsTab]);
 
   const showNamingBar = activeSheet && (
     renamingSheetId === activeSheet.id ||
@@ -112,8 +115,8 @@ export default function App() {
   if (view === 'dashboard') {
     return (
       <>
-        <Dashboard onOpenSettings={() => setSettingsOpen(true)} />
-        <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        <Dashboard onOpenSettings={() => openSettings('display')} />
+        <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} initialTab={settingsTab} />
       </>
     );
   }
@@ -131,8 +134,7 @@ export default function App() {
         </button>
         <div style={{ flex: 1 }} />
         <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
-        <button onClick={() => setCmdOpen(true)}      style={tbBtn(theme, ui)}>Commands</button>
-        <button onClick={() => setSettingsOpen(true)} style={tbBtn(theme, ui)}>Settings</button>
+        <button onClick={() => openSettings('display')} style={tbBtn(theme, ui)}>Settings</button>
       </div>
 
       {/* Sheet tabs - sorted: aff first, then off */}
@@ -260,8 +262,7 @@ export default function App() {
         <FlowGrid
           sheet={activeSheet}
           round={round}
-          onOpenSettings={() => setSettingsOpen(true)}
-          onOpenCommands={() => setCmdOpen(true)}
+          onOpenSettings={openSettings}
           onOpenMeta={() => setMetaOpen(true)}
           onBack={handleBack}
           onRename={renameSheet}
@@ -273,7 +274,7 @@ export default function App() {
 
       {/* Status bar */}
       <div style={{ height: ui.statusHeight, background: ui.toolbarBg, borderTop: `1px solid ${ui.borderSubtle}`, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 14, fontSize: 10, color: theme.textDim, flexShrink: 0 }}>
-        <span>Ctrl+K · commands</span>
+        <span>Ctrl+K · keybindings</span>
         <span>Tab · next speech</span>
         <span>Enter · next row</span>
         <span>Ctrl+← → · switch sheet</span>
@@ -284,8 +285,7 @@ export default function App() {
         {round.judges  && <span>Judge: {round.judges}</span>}
       </div>
 
-      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onRename={renameSheet} onAddSheet={handleAddSheet} onOpenMeta={() => setMetaOpen(true)} onBack={handleBack} onStartRename={handleStartRename} />
-      <SettingsPanel  open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsPanel  open={settingsOpen} onClose={() => setSettingsOpen(false)} initialTab={settingsTab} />
       {metaOpen && <RoundMeta round={round} onClose={() => setMetaOpen(false)} />}
     </div>
   );

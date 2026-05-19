@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStore from './store';
 import { useTheme } from './theme';
 import KeybindingsPanel from './KeybindingsPanel';
@@ -30,12 +30,16 @@ const DEFAULT_COLORS = {
   negColor: '#b91c1c',
 };
 
-export default function SettingsPanel({ open, onClose }) {
+export default function SettingsPanel({ open, onClose, initialTab = 'display' }) {
   const settings = useStore(s => s.settings);
   const update   = useStore(s => s.updateSettings);
   const theme = useTheme(settings.theme);
   const ui = getUiChrome(settings, theme);
   const [tab, setTab] = useState('display');
+
+  useEffect(() => {
+    if (open) setTab(initialTab);
+  }, [open, initialTab]);
 
   if (!open) return null;
 

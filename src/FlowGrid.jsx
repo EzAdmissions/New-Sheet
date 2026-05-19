@@ -7,15 +7,41 @@ import { exportSheetCSV, exportRoundCSV, exportRoundHTML } from './export';
 
 const TOTAL_ROWS = 200;
 const AUTO_EXTEND_MAX_ROWS = 8;
+let measureCanvas = null;
 
-function estimateTextRows(text, colWidth, fontSize, pad, textWrap) {
+function estimateTextRows(text, colWidth, fontSize, pad, textWrap, fontFamily) {
   if (!textWrap || !text) return 1;
   const usableWidth = Math.max(24, colWidth - pad * 2);
-  const charsPerLine = Math.max(4, Math.floor(usableWidth / Math.max(4, fontSize * 0.55)));
-  return Math.min(
-    AUTO_EXTEND_MAX_ROWS,
-    text.split('\n').reduce((sum, line) => sum + Math.max(1, Math.ceil(line.length / charsPerLine)), 0)
-  );
+  if (typeof document === 'undefined') return 1;
+  if (!measureCanvas) measureCanvas = document.createElement('canvas');
+  const ctx = measureCanvas.getContext('2d');
+  ctx.font = `${fontSize}px ${fontFamily}`;
+
+  let rows = 0;
+  for (const para of text.split('\n')) {
+    if (!para) {
+      rows++;
+      continue;
+    }
+    let lineWidth = 0;
+    let lineRows = 1;
+    const tokens = para.match(/\S+\s*/g) ?? [para];
+    for (const token of tokens) {
+      const width = ctx.measureText(token).width;
+      if (lineWidth > 0 && lineWidth + width > usableWidth) {
+        lineRows++;
+        lineWidth = width;
+      } else {
+        lineWidth += width;
+      }
+      if (lineWidth > usableWidth) {
+        lineRows += Math.floor(lineWidth / usableWidth);
+        lineWidth = lineWidth % usableWidth;
+      }
+    }
+    rows += lineRows;
+  }
+  return Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(1, rows));
 }
 
 function selBounds(sel) {
@@ -63,7 +89,7 @@ function getActiveCellChrome(settings, theme) {
   };
 }
 
-export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands, onOpenMeta, onBack, onRename, onAddSheet, onStartRename, onDeleteSheet }) {
+export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onBack, onRename, onAddSheet, onStartRename, onDeleteSheet }) {
   const settings      = useStore(s => s.settings);
   const keybindings   = useStore(s => s.keybindings);
   const flushSheet    = useStore(s => s.flushSheet);
@@ -188,7 +214,10 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands,
       const sp = speeches[c];
       for (let r = 0; r < TOTAL_ROWS; r++) {
         const el = cellRefs.current[c]?.[r];
-        if (el) el.textContent = localData.current[sp]?.[r] ?? '';
+        if (el) {
+          el.textContent = localData.current[sp]?.[r] ?? '';
+          el.style.height = (rowSpansRef.current[r] ?? 1) * rhRef.current + 'px';
+        }
       }
     }
   }, [speeches]);
@@ -202,10 +231,10 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands,
     const colWidth = getColWidth();
     let span = 1;
     for (const sp of speeches) {
-      span = Math.max(span, estimateTextRows(getText(sp, row), colWidth, fs, pad, textWrap));
+      span = Math.max(span, estimateTextRows(getText(sp, row), colWidth, fs, pad, textWrap, settings.fontFamily));
     }
     return span;
-  }, [speeches, getColWidth, fs, pad, textWrap]);
+  }, [speeches, getColWidth, fs, pad, textWrap, settings.fontFamily]);
 
   const resizeActiveTextarea = useCallback(() => {
     const ta = taRef.current;
@@ -267,7 +296,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands,
   }, [cloneGrid, restoreGrid, repaintCells, computeRowSpan, recomputeRowTops, speeches]);
 
   const syncRowSpan = useCallback((row, measuredSpan = null) => {
-    const next = measuredSpan ?? computeRowSpan(row);
+    const next = Math.max(measuredSpan ?? 1, computeRowSpan(row));
     if (rowSpansRef.current[row] !== next) {
       rowSpansRef.current[row] = next;
       recomputeRowTops();
@@ -794,8 +823,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands,
     if (is('zoom.reset')) { e.preventDefault(); setZoom(1); return; }
 
     // Global UI
-    if (is('ui.commands'))  { e.preventDefault(); onOpenCommands?.(); return; }
-    if (is('ui.settings'))  { e.preventDefault(); onOpenSettings?.(); return; }
+    if (is('ui.commands'))  { e.preventDefault(); onOpenSettings?.('keybindings'); return; }
+    if (is('ui.settings'))  { e.preventDefault(); onOpenSettings?.('display'); return; }
     if (is('ui.dashboard')) { e.preventDefault(); flush(); onBack?.(); return; }
     if (is('round.info'))   { e.preventDefault(); onOpenMeta?.(); return; }
 
@@ -834,7 +863,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands,
       onStartRename?.(sheet.id);
       return;
     }
-  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenCommands, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, syncRowSpan, repaintCells, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink]);
+  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, syncRowSpan, repaintCells, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink]);
 
 
   // ── Paste: multi-cell ──
@@ -1068,11 +1097,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenCommands,
               const { col, row } = activeCellRef.current;
               setLocalText(speeches[col], row, e.currentTarget.value);
               updateCellDom(col, row, e.currentTarget.value);
-              // Grow by exactly 1 line when content needs more space; shrink freely to fit
               const measured = measureTextareaRows(e.currentTarget);
-              const current = rowSpansRef.current[row] ?? 1;
-              syncRowSpan(row, measured > current ? current + 1 : Math.max(1, measured));
-              protectResponseBlock(col, row);
+              syncRowSpan(row, measured);
               resizeActiveTextarea();
               if (selectionRef.current) { selectionRef.current = null; setSelection(null); }
             }}

@@ -21,7 +21,7 @@ export const ACTIONS = {
   'export.sheet':  { label: 'Export Sheet CSV',      group: 'Export',     default: 'Alt+E' },
   'export.round':  { label: 'Export Round CSV',      group: 'Export',     default: 'Alt+Shift+E' },
 
-  'ui.commands':   { label: 'Command Palette',       group: 'UI',         default: 'Ctrl+K' },
+  'ui.commands':   { label: 'Keybindings',           group: 'UI',         default: 'Ctrl+K' },
   'ui.settings':   { label: 'Settings',              group: 'UI',         default: 'Ctrl+,' },
   'ui.dashboard':  { label: 'Back to Dashboard',     group: 'UI',         default: 'Alt+H' },
 
