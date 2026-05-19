@@ -207,6 +207,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const rh  = Math.round(settings.rowHeight * zoom);
   const fs  = settings.fontSize * zoom;
   const pad = Math.round(5 * zoom);
+  const lineHeightPx = textWrap ? Math.round(fs * 1.3) : Math.max(1, rh - 3);
   const cwRef = useRef(cw);
   const rhRef = useRef(rh);
   cwRef.current = cw;
@@ -317,7 +318,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       next = Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(next, current + 1));
     } else {
       const floor = Math.max(1, otherCellsSpan);
-      while (next > floor && ta.scrollHeight <= (next - 1) * rh + 1) next--;
+      const contentHeight = Math.max(1, ta.scrollHeight - 1);
+      while (next > floor && contentHeight <= (next - 1) * rh) next--;
     }
 
     if (rowSpansRef.current[row] !== next) {
@@ -557,16 +559,15 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   useEffect(() => {
     const exportFreshHTML = () => {
       const gridData = getCurrentGrid();
-      const links = extensionLinksRef.current;
-      flushSheet(sheetId, gridData, links);
+      flushSheet(sheetId, gridData);
       exportRoundHTML({
         ...round,
-        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData, extensionLinks: links } : sh),
-      }, { affColor, negColor });
+        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData } : sh),
+      });
     };
     window.addEventListener('new-sheet-export-round-html', exportFreshHTML);
     return () => window.removeEventListener('new-sheet-export-round-html', exportFreshHTML);
-  }, [getCurrentGrid, flushSheet, sheetId, round, affColor, negColor]);
+  }, [getCurrentGrid, flushSheet, sheetId, round]);
 
   // ── Ensure cell is visible ──
   const ensureVisible = useCallback((col, row) => {
@@ -1065,7 +1066,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                         display: 'flex',
                         visibility: isActive ? 'hidden' : 'visible',
                         alignItems: textWrap ? 'flex-start' : 'center',
-                        padding: textWrap ? `2px ${pad}px 0` : `0 ${pad}px`,
+                        padding: `0 ${pad}px`,
                         fontSize: fs,
                         fontFamily: settings.fontFamily,
                         color,
@@ -1077,7 +1078,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                         overflow: 'hidden',
                         boxSizing: 'border-box',
                         userSelect: 'none',
-                        lineHeight: textWrap ? 1.3 : undefined,
+                        lineHeight: `${lineHeightPx}px`,
                       }}
                     >
                       {localData.current[sp]?.[rowIdx] ?? ''}
@@ -1139,7 +1140,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
               top: rowTops[ac.row] * rh,
               width: actualCw,
               height: rowSpans[ac.row] * rh,
-              padding: textWrap ? `2px ${pad}px 0` : `0 ${pad}px`,
+              padding: `0 ${pad}px`,
               margin: 0,
               border: 'none',
               boxShadow: activeCellChrome.boxShadow,
@@ -1148,7 +1149,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
               color: getSpeechColor(speeches[ac.col] ?? speeches[0], theme, settings),
               fontSize: fs,
               fontFamily: settings.fontFamily,
-              lineHeight: textWrap ? '1.3' : `${rh - 3}px`,
+              lineHeight: `${lineHeightPx}px`,
               resize: 'none',
               overflow: 'hidden',
               outline: 'none',
