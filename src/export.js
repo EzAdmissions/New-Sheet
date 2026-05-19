@@ -10,6 +10,7 @@ function dl(content, filename, type = 'text/csv;charset=utf-8;') {
 
 export function exportRoundHTML(round) {
   const name = roundDisplayName(round);
+  const judges = round.judges?.trim();
   const sheetHtml = round.sheets.map(sh => {
     const { speeches, grid } = sh;
     const rows = grid[speeches[0]]?.length ?? 0;
@@ -32,13 +33,13 @@ export function exportRoundHTML(round) {
 <head><meta charset="UTF-8"><title>${name}</title>
 <style>
 body{font-family:Arial,sans-serif;font-size:12px;background:#fff;color:#000;margin:20px}
-h1{font-size:18px;margin-bottom:20px}h2{font-size:13px;margin:24px 0 6px;color:#444}
+h1{font-size:18px;margin-bottom:6px}.meta{font-size:12px;margin:0 0 20px;color:#333}h2{font-size:13px;margin:24px 0 6px;color:#444}
 table{border-collapse:collapse;width:100%;table-layout:fixed;margin-bottom:16px}
 th{background:#f0f0f0;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:5px 8px;border:1px solid #ccc;text-align:left}
 td{padding:3px 8px;border:1px solid #ddd;vertical-align:top;white-space:pre-wrap;word-break:break-word}
 tr:nth-child(even) td{background:#fafafa}
 </style></head>
-<body><h1>${name}</h1>${sheetHtml}</body></html>`;
+<body><h1>${name}</h1>${judges ? `<div class="meta"><strong>Judge(s):</strong> ${judges.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>` : ''}${sheetHtml}</body></html>`;
   dl(html, `${name}.html`, 'text/html;charset=utf-8;');
 }
 
@@ -55,6 +56,7 @@ export function exportSheetCSV(sheet) {
 }
 
 export function exportRoundCSV(round) {
+  const judges = round.judges?.trim();
   const parts = round.sheets.map(sh => {
     const { speeches, grid, name } = sh;
     const rows = grid[speeches[0]]?.length ?? 0;
@@ -65,7 +67,8 @@ export function exportRoundCSV(round) {
     }
     return lines.join('\n');
   });
-  dl(parts.join('\n\n'), `${roundDisplayName(round)}.csv`);
+  const meta = judges ? [`"${roundDisplayName(round).replace(/"/g, '""')}"`, `"Judge(s): ${judges.replace(/"/g, '""')}"`] : [];
+  dl([...meta, parts.join('\n\n')].filter(Boolean).join('\n\n'), `${roundDisplayName(round)}.csv`);
 }
 
 export function exportJflow(round) {

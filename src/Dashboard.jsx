@@ -91,15 +91,15 @@ function NsLogo() {
         width: 28,
         height: 28,
         borderRadius: 7,
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 54%, #111827 100%)',
-        color: '#fff',
+        background: '#1f2933',
+        color: '#f8fafc',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         fontSize: 11,
         fontWeight: 900,
         letterSpacing: 0,
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 2px rgba(0,0,0,0.16)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.18)',
         flexShrink: 0,
       }}
     >
