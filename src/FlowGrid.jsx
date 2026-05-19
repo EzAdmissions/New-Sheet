@@ -9,6 +9,14 @@ const TOTAL_ROWS = 200;
 const AUTO_EXTEND_MAX_ROWS = 8;
 let measureCanvas = null;
 
+function getLineHeightPx(fontSize) {
+  return fontSize * 1.3;
+}
+
+function getTextVerticalPadding(textWrap) {
+  return textWrap ? 2 : 0;
+}
+
 function estimateTextRows(text, colWidth, fontSize, pad, textWrap, fontFamily) {
   if (!textWrap || !text) return 1;
   const usableWidth = Math.max(24, colWidth - pad * 2);
@@ -26,17 +34,25 @@ function estimateTextRows(text, colWidth, fontSize, pad, textWrap, fontFamily) {
     let lineWidth = 0;
     let lineRows = 1;
     const tokens = para.match(/\S+\s*/g) ?? [para];
-    for (const token of tokens) {
+    for (let token of tokens) {
       const width = ctx.measureText(token).width;
+      if (width > usableWidth) {
+        for (const char of token) {
+          const charWidth = ctx.measureText(char).width;
+          if (lineWidth > 0 && lineWidth + charWidth > usableWidth) {
+            lineRows++;
+            lineWidth = charWidth;
+          } else {
+            lineWidth += charWidth;
+          }
+        }
+        continue;
+      }
       if (lineWidth > 0 && lineWidth + width > usableWidth) {
         lineRows++;
         lineWidth = width;
       } else {
         lineWidth += width;
-      }
-      if (lineWidth > usableWidth) {
-        lineRows += Math.floor(lineWidth / usableWidth);
-        lineWidth = lineWidth % usableWidth;
       }
     }
     rows += lineRows;
@@ -252,10 +268,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     const rh = rhRef.current;
     const prev = ta.style.height;
     ta.style.height = rh + 'px';
-    const rows = Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(1, Math.ceil(ta.scrollHeight / rh)));
+    const contentHeight = Math.max(0, ta.scrollHeight - getTextVerticalPadding(textWrap));
+    const rowsByLines = Math.ceil((contentHeight - 1) / Math.max(1, getLineHeightPx(fs)));
+    const rowsByCells = Math.ceil((contentHeight - 1) / rh);
+    const rows = Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(1, rowsByLines, rowsByCells));
     ta.style.height = prev;
     return rows;
-  }, [textWrap]);
+  }, [textWrap, fs]);
 
   const recomputeRowTops = useCallback(() => {
     let total = 0;
