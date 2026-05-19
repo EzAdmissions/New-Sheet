@@ -1,0 +1,715 @@
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/store.js (resolved id: C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/store.js) in C:/Users/walla/OneDrive/Desktop/Jayflow/jayflow-app/src/App.jsx. Does the file exist?
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/App.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/FlowGrid.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/SettingsPanel.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/KeybindingsPanel.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/RoundMeta.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/CommandPalette.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:48:26 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/Dashboard.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m9:59:19 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [1, (col, row) => {
+		const ta = taRef.current;
+		if (!ta) return;
+		const cw = getColWidth(), rh = rhRef.current;
+		ta.style.left = col * cw + "px";
+		ta.style.top = row * rh + "px";
+		ta.style.height = rh + "px";
+		ta.style.width = cw + "px";
+		ta.style.right = "";
+	}]
+Incoming: [1, (col, row) => {
+		const ta = taRef.current;
+		if (!ta) return;
+		const cw = getColWidth(), rh = rhRef.current;
+		ta.style.left = col * cw + "px";
+		ta.style.top = row * rh + "px";
+		ta.style.height = activeSpanRows.current * rh + "px";
+		ta.style.width = cw + "px";
+		ta.style.right = "";
+	}, () => {
+		const ta = taRef.current;
+		if (!ta) return 1;
+		const rh = rhRef.current;
+		ta.style.height = rh + "px";
+		const rows = textWrap ? Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(1, Math.ceil(ta.scrollHeight / rh))) : 1;
+		activeSpanRows.current = rows;
+		ta.style.height = rows * rh + "px";
+		return rows;
+	}]
+[2m9:59:34 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [1, (col, row) => {
+		const ta = taRef.current;
+		if (!ta) return;
+		const cw = getColWidth(), rh = rhRef.current;
+		ta.style.left = col * cw + "px";
+		ta.style.top = row * rh + "px";
+		ta.style.height = rh + "px";
+		ta.style.width = cw + "px";
+		ta.style.right = "";
+	}]
+Incoming: [1, (col, row) => {
+		const ta = taRef.current;
+		if (!ta) return;
+		const cw = getColWidth(), rh = rhRef.current;
+		ta.style.left = col * cw + "px";
+		ta.style.top = row * rh + "px";
+		ta.style.height = activeSpanRows.current * rh + "px";
+		ta.style.width = cw + "px";
+		ta.style.right = "";
+	}, () => {
+		const ta = taRef.current;
+		if (!ta) return 1;
+		const rh = rhRef.current;
+		ta.style.height = rh + "px";
+		const rows = textWrap ? Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(1, Math.ceil(ta.scrollHeight / rh))) : 1;
+		activeSpanRows.current = rows;
+		ta.style.height = rows * rh + "px";
+		return rows;
+	}]
+[2m10:42:20 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'moveTo' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:203:23
+    201 |      forceRender(v => v + 1);
+    202 |      moveTo(col, row + 1);
+    203 |    }, [insertRowsAfter, moveTo, recomputeAllRowSpans, saveActiveTextarea]);
+        |                         ^
+    204 |  
+    205 |    const findNextArgumentRow = useCallback((col, row) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:42:20 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:42:20 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'moveTo' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:203:23
+    201 |      forceRender(v => v + 1);
+    202 |      moveTo(col, row + 1);
+    203 |    }, [insertRowsAfter, moveTo, recomputeAllRowSpans, saveActiveTextarea]);
+        |                         ^
+    204 |  
+    205 |    const findNextArgumentRow = useCallback((col, row) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:42:21 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:42:38 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'moveTo' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:203:23
+    201 |      forceRender(v => v + 1);
+    202 |      moveTo(col, row + 1);
+    203 |    }, [insertRowsAfter, moveTo, recomputeAllRowSpans, saveActiveTextarea]);
+        |                         ^
+    204 |  
+    205 |    const findNextArgumentRow = useCallback((col, row) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:42:38 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:59:41 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:59:41 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:59:41 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:59:41 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:59:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:59:51 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:59:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:59:51 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m10:59:55 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m10:59:55 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:00:04 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:00:04 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:00:14 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:00:14 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:00:22 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:00:22 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:00:23 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:00:23 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:00:27 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:00:27 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:00:27 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'syncRowSpan' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:215:31
+    213 |      }
+    214 |      editSnapshot.current = null;
+    215 |    }, [speeches, updateCellDom, syncRowSpan, computeRowSpan, measureTextareaRows]);
+        |                                 ^
+    216 |  
+    217 |    const syncRowSpan = useCallback((row, measuredSpan = null) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:00:27 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:24:32 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'saveActiveTextarea' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:346:34
+    344 |      setExtendSelected(0);
+    345 |      setExtendPicker({ fromCol: col, fromRow: row, text, options });
+    346 |    }, [speeches, getExtendOptions, saveActiveTextarea]);
+        |                                    ^
+    347 |  
+    348 |    const createExtension = useCallback((option) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:24:32 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m11:24:32 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: Cannot access 'saveActiveTextarea' before initialization
+[39m > FlowGrid src/FlowGrid.jsx:346:34
+    344 |      setExtendSelected(0);
+    345 |      setExtendPicker({ fromCol: col, fromRow: row, text, options });
+    346 |    }, [speeches, getExtendOptions, saveActiveTextarea]);
+        |                                    ^
+    347 |  
+    348 |    const createExtension = useCallback((option) => {
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m11:24:32 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:10:53 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: extendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:373:6
+    371 |      setExtendPicker(null);
+    372 |      forceRender(v => v + 1);
+    373 |    }, [extendPicker, cloneGrid, speeches, shiftColumnRangeDown, updateCellDom, pushUndo, recomputeAllRowSpans, repaint...
+        |        ^
+    374 |  
+    375 |    // ── Global mouseup ──
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:10:53 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:10:56 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: extendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:372:6
+    370 |      setExtendPicker(null);
+    371 |      forceRender(v => v + 1);
+    372 |    }, [extendPicker, cloneGrid, speeches, shiftColumnRangeDown, updateCellDom, pushUndo, recomputeAllRowSpans, repaint...
+        |        ^
+    373 |  
+    374 |    // ── Global mouseup ──
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:10:56 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:11:05 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: extendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:717:6
+    715 |    useEffect(() => {
+    716 |      if (extendPicker) setTimeout(() => pickerRef.current?.focus(), 0);
+    717 |    }, [extendPicker]);
+        |        ^
+    718 |  
+    719 |    // ── Cell mouse handlers ──
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:11:05 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:11:12 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: openExtendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:688:403
+    686 |        if (n?.trim()) onRename?.(sheet.id, n.trim()); return;
+    687 |      }
+    688 |  ...plyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, openExtendPicker]);
+        |                                                                 ^
+    689 |  
+    690 |  
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:11:12 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:11:16 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: openExtendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:688:403
+    686 |        if (n?.trim()) onRename?.(sheet.id, n.trim()); return;
+    687 |      }
+    688 |  ...plyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, openExtendPicker]);
+        |                                                                 ^
+    689 |  
+    690 |  
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:11:16 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:11:23 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: extendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:734:6
+    732 |    useEffect(() => {
+    733 |      if (extendPicker) setTimeout(() => pickerRef.current?.focus(), 0);
+    734 |    }, [extendPicker]);
+        |        ^
+    735 |  
+    736 |    // ── Cell mouse handlers ──
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:11:23 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:11:26 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: extendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:968:7
+    966 |        </div>
+    967 |  
+    968 |        {extendPicker && (
+        |         ^
+    969 |          <div
+    970 |            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1200, display: 'flex', alignI...
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:11:26 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m12:11:31 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: extendPicker is not defined
+[39m > FlowGrid src/FlowGrid.jsx:968:7
+    966 |        </div>
+    967 |  
+    968 |        {extendPicker && (
+        |         ^
+    969 |          <div
+    970 |            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1200, display: 'flex', alignI...
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m12:11:31 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <FlowGrid> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m2:15:11 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`CommandPalette`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m2:31:45 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [true, kU3nB861dYcSFOn99rNhu]
+Incoming: [true, , kU3nB861dYcSFOn99rNhu]
+[2m2:33:51 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [true, , fXFO1AWA4_8BzsstqIX6j]
+Incoming: [true, fXFO1AWA4_8BzsstqIX6j]
+[2m2:45:42 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`App`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m2:59:38 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`App`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m3:02:03 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`App`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m3:02:27 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [1, (col, row) => {
+		const ta = taRef.current;
+		if (!ta) return;
+		const cw = getColWidth(), rh = rhRef.current;
+		ta.style.left = col * cw + "px";
+		ta.style.top = (rowTopsRef.current[row] ?? row) * rh + "px";
+		ta.style.height = (rowSpansRef.current[row] ?? activeSpanRows.current) * rh + "px";
+		ta.style.width = cw + "px";
+		ta.style.right = "";
+	}, () => {
+		const ta = taRef.current;
+		if (!ta) return 1;
+		const rh = rhRef.current;
+		const { row } = activeCellRef.current;
+		const rows = rowSpansRef.current[row] ?? 1;
+		activeSpanRows.current = rows;
+		ta.style.height = rows * rh + "px";
+		return rows;
+	}]
+Incoming: [1, (col, row) => {
+		const ta = taRef.current;
+		if (!ta) return;
+		const cw = getColWidth(), rh = rhRef.current;
+		ta.style.left = col * cw + "px";
+		ta.style.top = (rowTopsRef.current[row] ?? row) * rh + "px";
+		ta.style.height = (rowSpansRef.current[row] ?? activeSpanRows.current) * rh + "px";
+		ta.style.width = cw + "px";
+		ta.style.right = "";
+	}, () => {
+		const ta = taRef.current;
+		if (!ta) return 1;
+		const rh = rhRef.current;
+		const { row } = activeCellRef.current;
+		const rows = rowSpansRef.current[row] ?? 1;
+		activeSpanRows.current = rows;
+		ta.style.height = rows * rh + "px";
+		return rows;
+	}, () => {
+		for (let row = 0; row < TOTAL_ROWS; row++) {
+			rowSpansRef.current[row] = computeRowSpan(row);
+		}
+		recomputeRowTops();
+	}]
+[2m3:11:07 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`CommandPalette`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m3:22:13 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`CommandPalette`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m3:35:12 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`CommandPalette`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m3:36:07 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: useEffect is not defined
+[39m > App src/App.jsx:40:2
+    38 |    const namingBarLabel = 'Name:';
+    39 |  
+    40 |    useEffect(() => {
+       |    ^
+    41 |      setHiddenNamingSheetId(null);
+    42 |    }, [activeSheet?.id]);
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+[2m3:36:07 PM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [2m[console.warn] [22mAn error occurred in the <App> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+[2m3:55:44 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`CommandPalette`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m4:17:10 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`CommandPalette`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render
+[2m7:29:38 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mCannot update a component (`App`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render

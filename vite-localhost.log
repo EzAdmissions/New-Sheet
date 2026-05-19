@@ -1,0 +1,295 @@
+
+> jayflow-app@0.0.0 dev
+> vite --host 127.0.0.1
+
+Port 5173 is in use, trying another one...
+
+  [32m[1mVITE[22m v8.0.13[39m  [2mready in [0m[1m471[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5174[22m/[39m
+[2m9:48:26 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m9:48:26 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m9:48:32 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m9:48:43 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/RoundMeta.jsx[22m
+[2m9:48:49 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m9:49:04 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m9:49:14 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m9:49:29 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx, /src/KeybindingsPanel.jsx, /src/App.jsx, /src/Dashboard.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx[22m
+[2m9:49:44 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:50:19 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:50:47 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:50:55 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:51:04 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:51:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:51:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:51:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m9:51:39 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m9:51:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m9:51:53 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:52:04 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:52:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:52:44 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m9:53:21 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m9:58:32 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:58:42 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:58:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:58:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:59:01 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:59:07 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m9:59:10 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m9:59:27 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:03:47 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:03:58 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:08 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:16 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:23 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:32 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:39 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:43 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:04:59 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:05:05 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:16:17 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:16:26 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:16:49 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:27:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:27:56 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:27:59 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:28:07 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:28:15 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:28:27 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:35:14 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:35:33 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:35:43 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:35:47 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:35:53 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:35:59 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:42:19 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:42:38 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:42:50 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:43:05 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:43:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:47:29 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:47:36 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:50:22 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:50:30 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:50:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:53:04 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:03 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:14 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:20 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:31 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:42 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:49 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:56:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:57:00 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:59:41 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m10:59:51 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:00:04 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:00:14 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:00:21 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:00:26 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:01:00 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:01:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:23:56 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx, /src/KeybindingsPanel.jsx, /src/App.jsx, /src/Dashboard.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx[22m
+[2m11:24:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:24:08 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:24:15 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:24:31 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:24:44 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:24:56 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:25:07 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:25:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:26:06 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:26:43 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:28:52 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx, /src/KeybindingsPanel.jsx, /src/App.jsx, /src/Dashboard.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx[22m
+[2m11:28:58 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx, /src/KeybindingsPanel.jsx, /src/App.jsx, /src/Dashboard.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx[22m
+[2m11:31:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx, /src/KeybindingsPanel.jsx, /src/App.jsx, /src/Dashboard.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx[22m
+[2m11:31:05 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:31:11 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:31:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:33:42 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:33:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m11:37:31 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:10:53 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:10:55 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:26 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:11:42 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:14:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:14:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:14:34 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:26:49 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m12:26:54 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m12:27:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:27:18 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:27:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:27:28 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:27:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:27:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:27:59 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:28:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:28:18 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:28:26 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:28:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:28:32 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:28:44 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:29:18 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:29:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:29:36 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:29:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m12:45:34 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:45:38 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:45:44 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:45:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:46:07 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m12:46:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:46:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:46:32 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:46:40 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m12:46:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m1:16:45 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx[22m
+[2m2:01:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx[22m
+[2m2:01:44 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m2:01:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m2:01:53 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m2:01:57 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:02 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:38 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:02:52 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:03:00 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:03:55 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:04:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:04:13 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:09:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:09:20 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:09:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:11:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:12:00 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m2:17:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:17:25 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:17:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:26:06 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:26:15 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:26:22 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:26:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:26:33 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:26:38 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:26:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m2:31:45 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:31:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:31:57 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:33:51 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:34:03 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:34:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:38:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:38:13 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:41:02 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:41:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:49:26 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:49:32 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:49:40 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m2:49:45 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:02:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:02:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:02:21 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:02:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:02:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:18:38 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:25:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:26:37 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:26:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:26:49 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m3:34:16 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:34:20 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:36:07 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:36:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:39:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:39:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:41:15 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:41:41 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:43:04 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:45:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:47:25 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:50:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:51:03 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:51:10 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:53:54 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:54:02 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:56:19 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:56:33 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m3:56:39 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/CommandPalette.jsx[22m
+[2m3:56:44 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx, /src/KeybindingsPanel.jsx, /src/App.jsx, /src/Dashboard.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx[22m
+[2m3:56:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:57:02 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m3:57:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m3:58:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m3:58:59 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m3:59:15 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:00:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m4:00:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:00:56 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:01:04 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:02:44 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m4:02:53 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m4:03:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:03:13 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:03:28 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:03:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m4:04:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m4:04:17 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m4:04:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/RoundMeta.jsx[22m
+[2m4:05:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:14:07 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/Dashboard.jsx, /src/FlowGrid.jsx, /src/CommandPalette.jsx, /src/RoundMeta.jsx, /src/SettingsPanel.jsx, /src/KeybindingsPanel.jsx[22m
+[2m4:14:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:14:59 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:15:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/SettingsPanel.jsx[22m
+[2m4:15:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m4:16:26 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m4:16:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
+[2m4:17:10 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m4:19:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:22:03 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:22:13 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/FlowGrid.jsx[22m
+[2m4:25:49 PM[22m [36m[1m[vite][22m[39m [32mvite.config.js changed, restarting server...[39m
+[2m4:25:49 PM[22m [36m[1m[vite][22m[39m server restarted.
+[2m4:29:45 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:29:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:30:00 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:28 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:32 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:32:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mrelease/win-unpacked/LICENSES.chromium.html[22m
+[2m4:38:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/Dashboard.jsx[22m
