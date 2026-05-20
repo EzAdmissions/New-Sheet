@@ -43,12 +43,30 @@ export function useTheme(themeName) {
   return THEMES[themeName] ?? THEMES.dark;
 }
 
+const DEFAULT_AFF_COLOR = '#1d4ed8';
+const DEFAULT_NEG_COLOR = '#b91c1c';
+
+const STYLE_SIDE_COLORS = {
+  courtroom: { aff: '#244c7a', neg: '#8f1d2c' },
+  crtRiot: { aff: '#00d1b2', neg: '#ff2c55' },
+  hazmatPop: { aff: '#167a2f', neg: '#ff4d00' },
+  holoLedger: { aff: '#0891b2', neg: '#d946ef' },
+  paperKnife: { aff: '#31572c', neg: '#d5003e' },
+};
+
+function styleSideColor(settings, side, fallback) {
+  const custom = settings?.[`${side}Color`];
+  const defaultColor = side === 'aff' ? DEFAULT_AFF_COLOR : DEFAULT_NEG_COLOR;
+  if (custom && custom !== defaultColor) return custom;
+  return STYLE_SIDE_COLORS[settings?.uiStyle]?.[side] ?? custom ?? fallback;
+}
+
 export function getAffColor(settings, theme) {
-  return settings?.affColor || theme.aff;
+  return styleSideColor(settings, 'aff', theme.aff);
 }
 
 export function getNegColor(settings, theme) {
-  return settings?.negColor || theme.neg;
+  return styleSideColor(settings, 'neg', theme.neg);
 }
 
 export function getSpeechColor(speech, theme, settings) {

@@ -18,6 +18,15 @@ function esc(s = '') {
     .replace(/\n/g, '<br>');
 }
 
+function scriptJson(data) {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+function makeId(prefix = 'id') {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 function speechSide(speech) {
   if (['1AC', '2AC', '1AR', '2AR'].includes(speech)) return 'aff';
   if (['1NC', 'Block', '2NR'].includes(speech)) return 'neg';
@@ -109,6 +118,12 @@ export function exportRoundHTML(round, options = {}) {
       </div>
     </section>`;
   }).join('');
+  const embeddedData = scriptJson({
+    version: 1,
+    type: 'new-sheet-html-round',
+    exportedAt: new Date().toISOString(),
+    round,
+  });
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -125,7 +140,7 @@ h1{font-size:18px;margin:0 0 6px}.meta{font-size:12px;margin:0 0 20px;color:${th
 .arrows{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}
 @media print{body{margin:10px}.flow-sheet{break-inside:avoid}}
 </style></head>
-<body><h1>${name}</h1>${judges ? `<div class="meta"><strong>Judge(s):</strong> ${judges.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>` : ''}${sheetHtml}</body></html>`;
+<body><script id="new-sheet-round-data" type="application/json">${embeddedData}</script><h1>${name}</h1>${judges ? `<div class="meta"><strong>Judge(s):</strong> ${judges.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>` : ''}${sheetHtml}</body></html>`;
   dl(html, `${name}.html`, 'text/html;charset=utf-8;');
 }
 
@@ -162,18 +177,97 @@ export function exportJflow(round) {
   dl(JSON.stringify(data, null, 2), `${roundDisplayName(round)}.jflow`, 'application/json');
 }
 
+function htmlCellText(cell) {
+  const clone = cell.cloneNode(true);
+  clone.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+  return clone.textContent ?? '';
+}
+
+function inferSheetType(speeches) {
+  return speeches.includes('1AC') ? 'aff' : 'offcase';
+}
+
+function padGrid(grid, speeches, rows = 200) {
+  for (const speech of speeches) {
+    grid[speech] = [...(grid[speech] ?? [])];
+    while (grid[speech].length < rows) grid[speech].push('');
+  }
+  return grid;
+}
+
+function importRoundFromHTML(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const embedded = doc.querySelector('#new-sheet-round-data')?.textContent;
+  if (embedded) {
+    const data = JSON.parse(embedded);
+    if ((data.type === 'new-sheet-html-round' || data.type === 'jayflow-round') && data.round) return data.round;
+  }
+
+  const title = doc.querySelector('h1')?.textContent?.trim() || doc.querySelector('title')?.textContent?.trim() || 'Imported HTML Round';
+  const metaText = doc.querySelector('.meta')?.textContent ?? '';
+  const judges = metaText.replace(/^Judge\(s\):\s*/i, '').trim();
+  const sections = [...doc.querySelectorAll('section')];
+  if (!sections.length) throw new Error('No New Sheet flow sections found in this HTML file');
+
+  const sheets = sections.map((section, sheetIndex) => {
+    const name = section.querySelector('h2')?.textContent?.trim() || `Sheet ${sheetIndex + 1}`;
+    const speeches = [...section.querySelectorAll('.header-cell')]
+      .map(cell => cell.textContent.trim())
+      .filter(Boolean);
+    if (!speeches.length) throw new Error(`Could not read speech headers for "${name}"`);
+
+    const grid = Object.fromEntries(speeches.map(speech => [speech, []]));
+    [...section.querySelectorAll('.flow-row')].forEach(row => {
+      const cells = [...row.querySelectorAll('.flow-cell')];
+      speeches.forEach((speech, col) => {
+        grid[speech].push(htmlCellText(cells[col] ?? document.createElement('div')));
+      });
+    });
+
+    return {
+      id: makeId('sheet'),
+      name,
+      type: inferSheetType(speeches),
+      speeches,
+      grid: padGrid(grid, speeches),
+      extensionLinks: [],
+      needsName: false,
+    };
+  });
+
+  return {
+    id: makeId('round'),
+    name: title,
+    tournament: '',
+    roundNum: '',
+    judges,
+    affSchool: '',
+    affCode: '',
+    negSchool: '',
+    negCode: '',
+    lastEdited: Date.now(),
+    sheets,
+    activeSheetId: sheets[0]?.id ?? null,
+  };
+}
+
 export function importJflow() {
   return new Promise((resolve, reject) => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.jflow,application/json';
+    input.accept = '.jflow,.html,.htm,application/json,text/html';
     input.onchange = (e) => {
       const file = e.target.files[0];
       if (!file) { reject(new Error('No file')); return; }
       const reader = new FileReader();
       reader.onload = (ev) => {
         try {
-          const data = JSON.parse(ev.target.result);
+          const text = String(ev.target.result ?? '');
+          if (/\.html?$/i.test(file.name) || /^\s*<!doctype html/i.test(text) || /^\s*<html/i.test(text)) {
+            resolve(importRoundFromHTML(text));
+            return;
+          }
+          const data = JSON.parse(text);
           if (data.type !== 'jayflow-round' || !data.round) throw new Error('Not a valid .jflow file');
           resolve(data.round);
         } catch (err) { reject(err); }

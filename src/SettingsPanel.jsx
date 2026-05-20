@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useStore from './store';
-import { useTheme } from './theme';
+import { getAffColor, getNegColor, useTheme } from './theme';
 import KeybindingsPanel from './KeybindingsPanel';
 import { UI_STYLE_OPTIONS, getUiChrome } from './uiChrome';
 
@@ -102,22 +102,27 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
     </div>
   );
 
-  const sideColorInput = (key) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <input
-        type="color"
-        value={settings[key] ?? (key === 'affColor' ? '#1d4ed8' : '#b91c1c')}
-        onChange={e => update({ [key]: e.target.value })}
-        style={{ width: 34, height: 24, padding: 0, background: 'transparent', border: `1px solid ${ui.border}`, borderRadius: ui.radius, cursor: 'pointer' }}
-      />
-      <input
-        type="text"
-        value={settings[key] ?? (key === 'affColor' ? '#1d4ed8' : '#b91c1c')}
-        onChange={e => update({ [key]: e.target.value })}
-        style={{ width: 82, padding: '4px 8px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, fontFamily: 'inherit' }}
-      />
-    </div>
-  );
+  const sideColorInput = (key) => {
+    const defaultColor = key === 'affColor' ? '#1d4ed8' : '#b91c1c';
+    const effectiveColor = key === 'affColor' ? getAffColor(settings, theme) : getNegColor(settings, theme);
+    const value = settings[key] && settings[key] !== defaultColor ? settings[key] : effectiveColor;
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <input
+          type="color"
+          value={value}
+          onChange={e => update({ [key]: e.target.value })}
+          style={{ width: 34, height: 24, padding: 0, background: 'transparent', border: `1px solid ${ui.border}`, borderRadius: ui.radius, cursor: 'pointer' }}
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={e => update({ [key]: e.target.value })}
+          style={{ width: 82, padding: '4px 8px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, fontFamily: 'inherit' }}
+        />
+      </div>
+    );
+  };
 
   return (
     <div

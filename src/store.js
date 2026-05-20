@@ -9,7 +9,7 @@ export function roundDisplayName(round) {
   const aff = [round.affSchool, round.affCode].map(v => v?.trim()).filter(Boolean).join(' ');
   const neg = [round.negSchool, round.negCode].map(v => v?.trim()).filter(Boolean).join(' ');
 
-  if (!tournament && !roundNum && !aff && !neg) return 'New Round';
+  if (!tournament && !roundNum && !aff && !neg) return round.name?.trim() || 'New Round';
 
   const roundLabel = roundNum
     ? (/^round\b/i.test(roundNum) || !/^\d+$/.test(roundNum) ? roundNum : `Round ${roundNum}`)
@@ -191,7 +191,19 @@ const useStore = create(
       })),
 
       importRound: (round) => {
-        const imported = { ...round, id: nanoid(), lastEdited: Date.now() };
+        const idMap = new Map();
+        const sheets = (round.sheets ?? []).map(sheet => {
+          const id = nanoid();
+          idMap.set(sheet.id, id);
+          return { ...sheet, id };
+        });
+        const imported = {
+          ...round,
+          id: nanoid(),
+          sheets,
+          activeSheetId: idMap.get(round.activeSheetId) ?? sheets[0]?.id ?? null,
+          lastEdited: Date.now(),
+        };
         set(s => ({ rounds: [...s.rounds, imported], activeRoundId: imported.id, view: 'flow' }));
       },
 
