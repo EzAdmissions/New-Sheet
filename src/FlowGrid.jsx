@@ -73,14 +73,24 @@ function speechSide(speech) {
   return null;
 }
 
+function rgba(hex, alpha) {
+  const clean = String(hex ?? '').replace('#', '');
+  if (!/^[0-9a-f]{6}$/i.test(clean)) return `rgba(29,78,216,${alpha})`;
+  const n = parseInt(clean, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
+}
+
 function getActiveCellChrome(settings, theme, affColor) {
   const defaultBorder = !settings.activeCellBorderColor || settings.activeCellBorderColor === '#1d4ed8'
     ? affColor
     : settings.activeCellBorderColor;
+  const defaultFill = !settings.activeCellFillColor || settings.activeCellFillColor === '#dbeafe'
+    ? rgba(affColor, 0.16)
+    : settings.activeCellFillColor;
   if (settings.activeCellStyle === 'custom') {
     return {
       boxShadow: `inset 0 0 0 2px ${defaultBorder}`,
-      background: settings.activeCellFillColor ?? theme.bgActive,
+      background: defaultFill,
     };
   }
   if (settings.activeCellStyle === 'outlineBlack') {
@@ -97,7 +107,7 @@ function getActiveCellChrome(settings, theme, affColor) {
   }
   return {
     boxShadow: `inset 0 0 0 2px ${affColor}`,
-    background: theme.bgActive,
+    background: rgba(affColor, 0.16),
   };
 }
 
