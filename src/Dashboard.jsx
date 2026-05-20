@@ -1,4 +1,4 @@
-import useStore, { roundDisplayName } from './store';
+import useStore, { roundDisplayName, sortSheetsForDisplay } from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import { importJflow } from './export';
 import { getUiChrome, chromeButton } from './uiChrome';
@@ -129,7 +129,7 @@ function RoundCard({ round, theme, ui, affColor, negColor, onOpen, onDelete, fmt
         <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 6 }}>Judge(s): {round.judges}</div>
       )}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-        {round.sheets.filter(sh => sh.type !== 'cx').map(sh => (
+        {sortSheetsForDisplay(round.sheets).filter(sh => sh.type !== 'cx').map(sh => (
           <span
             key={sh.id}
             style={{

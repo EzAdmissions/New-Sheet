@@ -1,4 +1,4 @@
-import { roundDisplayName } from './store';
+import { roundDisplayName, sortSheetsForDisplay } from './store';
 import { THEMES, getSpeechColor, getAffColor, getNegColor } from './theme';
 
 function dl(content, filename, type = 'text/csv;charset=utf-8;') {
@@ -45,7 +45,7 @@ export function exportRoundHTML(round, options = {}) {
   const fontSize = Math.max(9, Number(settings.fontSize) || 12);
   const fontFamily = settings.fontFamily || 'Arial, sans-serif';
 
-  const sheetHtml = round.sheets.map(sh => {
+  const sheetHtml = sortSheetsForDisplay(round.sheets).map(sh => {
     const { speeches, grid } = sh;
     const rows = grid[speeches[0]]?.length ?? 0;
     const links = sh.extensionLinks ?? [];
@@ -143,7 +143,7 @@ export function exportSheetCSV(sheet) {
 
 export function exportRoundCSV(round) {
   const judges = round.judges?.trim();
-  const parts = round.sheets.map(sh => {
+  const parts = sortSheetsForDisplay(round.sheets).map(sh => {
     const { speeches, grid, name } = sh;
     const rows = grid[speeches[0]]?.length ?? 0;
     const lines = [`=== ${name} ===`, speeches.map(s => `"${s}"`).join(',')];

@@ -24,6 +24,18 @@ export function roundDisplayName(round) {
   return left || teams;
 }
 
+const SHEET_TYPE_ORDER = { aff: 0, offcase: 1 };
+
+export function sortSheetsForDisplay(sheets = []) {
+  return [...sheets]
+    .map((sheet, index) => ({ sheet, index }))
+    .sort((a, b) => {
+      const typeDelta = (SHEET_TYPE_ORDER[a.sheet.type] ?? 2) - (SHEET_TYPE_ORDER[b.sheet.type] ?? 2);
+      return typeDelta || a.index - b.index;
+    })
+    .map(({ sheet }) => sheet);
+}
+
 export const SHEET_SPEECHES = {
   aff: ['1AC', '1NC', '2AC', 'Block', '1AR', '2NR', '2AR'],
   offcase: ['1NC', '2AC', 'Block', '1AR', '2NR', '2AR'],

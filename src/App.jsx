@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import useStore from './store';
+import useStore, { sortSheetsForDisplay } from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import Dashboard from './Dashboard';
 import FlowGrid from './FlowGrid';
@@ -139,9 +139,8 @@ export default function App() {
 
       {/* Sheet tabs - sorted: aff first, then off */}
       <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, overflowX: 'auto', flexShrink: 0, height: ui.tabHeight }}>
-        {[...round.sheets]
+        {sortSheetsForDisplay(round.sheets)
           .filter(sh => sh.type !== 'cx')
-          .sort((a, b) => ({ aff: 0, offcase: 1 }[a.type] ?? 2) - ({ aff: 0, offcase: 1 }[b.type] ?? 2))
           .map(sh => {
           const isActive = sh.id === round.activeSheetId;
           const color = sh.type === 'aff' ? affColor : sh.type === 'offcase' ? negColor : theme.textMuted;
@@ -235,9 +234,8 @@ export default function App() {
               if (ctrl && !e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
                 e.preventDefault();
                 cancelName();
-                const sorted = [...round.sheets]
-                  .filter(sh => sh.type !== 'cx')
-                  .sort((a, b) => ({ aff: 0, offcase: 1 }[a.type] ?? 2) - ({ aff: 0, offcase: 1 }[b.type] ?? 2));
+                const sorted = sortSheetsForDisplay(round.sheets)
+                  .filter(sh => sh.type !== 'cx');
                 const idx = sorted.findIndex(s => s.id === activeSheet.id);
                 if (e.key === 'ArrowRight' && idx < sorted.length - 1) setActiveSheet(sorted[idx + 1].id);
                 if (e.key === 'ArrowLeft'  && idx > 0)                 setActiveSheet(sorted[idx - 1].id);

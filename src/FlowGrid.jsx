@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/refs, react-hooks/immutability, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
 import { useRef, useCallback, useEffect, useState, useLayoutEffect, useMemo } from 'react';
-import useStore from './store';
+import useStore, { sortSheetsForDisplay } from './store';
 import { useTheme, getSpeechColor, getAffColor, getNegColor } from './theme';
 import { matchesAction } from './keybindings';
 import { exportSheetCSV, exportRoundCSV, exportRoundHTML } from './export';
@@ -164,9 +164,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const [, forceRender] = useState(0);
 
   const sortedSheets = useMemo(() => (
-    [...round.sheets]
+    sortSheetsForDisplay(round.sheets)
       .filter(s => s.type !== 'cx')
-      .sort((a, b) => ({ aff: 0, offcase: 1 }[a.type] ?? 2) - ({ aff: 0, offcase: 1 }[b.type] ?? 2))
   ), [round.sheets]);
 
   const blockedSet = useMemo(() => {
@@ -556,6 +555,20 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     return buildGrid();
   }, [buildGrid, saveActiveTextarea]);
 
+  const getFreshRoundForExport = useCallback((activeGrid = getCurrentGrid()) => ({
+    ...round,
+    sheets: round.sheets.map(sh => {
+      if (sh.id === sheetId) {
+        return { ...sh, grid: activeGrid, extensionLinks: extensionLinksRef.current };
+      }
+      const cachedGrid = sheetCache.current[sh.id];
+      if (!cachedGrid) return sh;
+      const gridCopy = {};
+      for (const sp of sh.speeches ?? []) gridCopy[sp] = [...(cachedGrid[sp] ?? [])];
+      return { ...sh, grid: gridCopy };
+    }),
+  }), [getCurrentGrid, round, sheetId]);
+
   const flush = useCallback(() => flushSheet(sheetId, getCurrentGrid(), extensionLinksRef.current), [sheetId, getCurrentGrid, flushSheet]);
 
   // Reset extension links when switching sheets
@@ -566,11 +579,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   useEffect(() => {
     const exportFreshRound = () => {
       const gridData = getCurrentGrid();
-      flushSheet(sheetId, gridData);
-      exportRoundCSV({
-        ...round,
-        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData } : sh),
-      });
+      flushSheet(sheetId, gridData, extensionLinksRef.current);
+      exportRoundCSV(getFreshRoundForExport(gridData));
     };
     window.addEventListener('new-sheet-export-round', exportFreshRound);
     return () => window.removeEventListener('new-sheet-export-round', exportFreshRound);
@@ -579,11 +589,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   useEffect(() => {
     const exportFreshHTML = () => {
       const gridData = getCurrentGrid();
-      flushSheet(sheetId, gridData);
-      exportRoundHTML({
-        ...round,
-        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData, extensionLinks: extensionLinksRef.current } : sh),
-      }, { settings });
+      flushSheet(sheetId, gridData, extensionLinksRef.current);
+      exportRoundHTML(getFreshRoundForExport(gridData), { settings });
     };
     window.addEventListener('new-sheet-export-round-html', exportFreshHTML);
     return () => window.removeEventListener('new-sheet-export-round-html', exportFreshHTML);
@@ -900,11 +907,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     if (is('export.round')) {
       e.preventDefault();
       const gridData = getCurrentGrid();
-      flushSheet(sheetId, gridData);
-      exportRoundCSV({
-        ...round,
-        sheets: round.sheets.map(sh => sh.id === sheetId ? { ...sh, grid: gridData } : sh),
-      });
+      flushSheet(sheetId, gridData, extensionLinksRef.current);
+      exportRoundCSV(getFreshRoundForExport(gridData));
       return;
     }
 
