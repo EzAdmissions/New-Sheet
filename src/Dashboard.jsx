@@ -61,6 +61,7 @@ export default function Dashboard({ onOpenSettings }) {
       background: ui.appBg ?? theme.bg,
       backgroundImage: ui.appBackgroundImage,
       backgroundSize: ui.appBackgroundSize,
+      backgroundPosition: ui.appBackgroundPosition,
       color: theme.text,
       display: 'flex',
       flexDirection: 'column',
@@ -175,7 +176,7 @@ function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFo
   };
 
   return (
-    <aside style={{ position: 'absolute', top: 12, left: 16, width: 260, maxHeight: 'calc(100% - 24px)', zIndex: 5, padding: 14, border: `1px solid ${ui.border}`, borderRadius: ui.cardRadius, background: ui.panelBg, backgroundImage: ui.appBackgroundImage, backgroundSize: ui.appBackgroundSize, overflowY: 'auto', boxShadow: ui.modalShadow }}>
+    <aside style={{ position: 'absolute', top: 12, left: 16, width: 260, maxHeight: 'calc(100% - 24px)', zIndex: 5, padding: 14, border: `1px solid ${ui.border}`, borderRadius: ui.cardRadius, background: ui.panelBg, backgroundImage: ui.panelBackgroundImage ?? ui.appBackgroundImage, backgroundSize: ui.appBackgroundSize, overflowY: 'auto', boxShadow: ui.modalShadow }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ color: theme.textMuted, fontSize: 10, letterSpacing: 1, textTransform: 'uppercase' }}>Folders</div>
         <div style={{ display: 'flex', gap: 6 }}>

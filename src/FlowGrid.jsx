@@ -242,6 +242,10 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     ta.style.padding = `${verticalPad}px ${pad}px`;
   }, [getColWidth, fs, pad, textWrap, settings.fontFamily, lineHeightPx]);
 
+  const getActiveTextColor = useCallback((col) => (
+    getSpeechColor(speeches[col] ?? speeches[0], theme, settings)
+  ), [speeches, theme, settings]);
+
   const repaintCells = useCallback(() => {
     for (let c = 0; c < speeches.length; c++) {
       const sp = speeches[c];
@@ -670,7 +674,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     // Direct DOM: move & update textarea
     applyTextareaPos(nc, nr);
     if (taRef.current) {
-      taRef.current.style.color = getSpeechColor(speeches[nc], theme, settings);
+      taRef.current.style.color = getActiveTextColor(nc);
       const txt = getText(speeches[nc], nr);
       taRef.current.value = txt;
       editSnapshot.current = null;
@@ -680,7 +684,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     }
 
     ensureVisible(nc, nr);
-  }, [speeches, ensureVisible, applyTextareaPos, theme, saveActiveTextarea, resizeActiveTextarea]);
+  }, [speeches, ensureVisible, applyTextareaPos, getActiveTextColor, saveActiveTextarea, resizeActiveTextarea]);
 
   useLayoutEffect(() => {
     const focus = pendingExtendFocusRef.current;
@@ -713,7 +717,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     activeSpanRows.current = 1;
     if (taRef.current) {
       taRef.current.value = getText(speeches[0], 0);
-      taRef.current.style.color = getSpeechColor(speeches[0], theme, settings);
+      taRef.current.style.color = getActiveTextColor(0);
       resizeActiveTextarea();
       taRef.current.focus();
     }
@@ -820,7 +824,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       activeCellRef.current = { col: nc, row: nr };
       applyTextareaPos(nc, nr);
       if (ta) {
-        ta.style.color = getSpeechColor(speeches[nc], theme, settings);
+        ta.style.color = getActiveTextColor(nc);
         ta.value = getText(speeches[nc], nr);
         editSnapshot.current = null;
         resizeActiveTextarea();
@@ -936,7 +940,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       onStartRename?.(sheet.id);
       return;
     }
-  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink]);
+  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor]);
 
 
   // ── Paste: multi-cell ──
@@ -1023,13 +1027,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const actualCw = getColWidth();
   const rowSpans = rowSpansRef.current;
   const rowTops = rowTopsRef.current;
-  const activeSpeechColor = getSpeechColor(speeches[ac.col] ?? speeches[0], theme, settings);
+  const activeSpeechColor = getActiveTextColor(ac.col);
   const activeCellChrome = getActiveCellChrome(settings, theme, activeSpeechColor);
 
   useEffect(() => {
     const { col } = activeCellRef.current;
-    if (taRef.current) taRef.current.style.color = getSpeechColor(speeches[col] ?? speeches[0], theme, settings);
-  }, [speeches, theme, settings, affColor, negColor]);
+    if (taRef.current) taRef.current.style.color = getActiveTextColor(col);
+  }, [getActiveTextColor, affColor, negColor]);
 
   return (
     <div
@@ -1208,7 +1212,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
               boxShadow: activeCellChrome.boxShadow,
               boxSizing: 'border-box',
               background: activeCellChrome.background,
-              color: getSpeechColor(speeches[ac.col] ?? speeches[0], theme, settings),
+              color: getActiveTextColor(ac.col),
               fontSize: fs,
               fontFamily: settings.fontFamily,
               lineHeight: `${lineHeightPx}px`,

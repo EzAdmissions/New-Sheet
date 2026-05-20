@@ -55,7 +55,7 @@ const STYLE_SIDE_COLORS = {
   fortnite: { aff: '#0a8fea', neg: '#d69b00' },
   minecraft: { aff: '#2f7d32', neg: '#9a5a2d' },
   overwatch: { aff: '#2f80ed', neg: '#d98200' },
-  csgo: { aff: '#526980', neg: '#b9781d' },
+  csgo: { aff: '#d8d2c5', neg: '#d49a2a' },
 };
 
 function styleSideColor(settings, side, fallback) {

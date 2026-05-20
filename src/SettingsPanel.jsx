@@ -132,8 +132,9 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
       <div
         style={{
           background: ui.panelBg,
-          backgroundImage: ui.appBackgroundImage,
+          backgroundImage: ui.panelBackgroundImage ?? ui.appBackgroundImage,
           backgroundSize: ui.appBackgroundSize,
+          backgroundPosition: ui.appBackgroundPosition,
           border: `1px solid ${ui.border}`,
           borderRadius: ui.cardRadius,
           width: 480,

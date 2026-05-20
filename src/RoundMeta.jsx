@@ -27,7 +27,7 @@ export default function RoundMeta({ round, onClose }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ background: ui.panelBg, backgroundImage: ui.appBackgroundImage, backgroundSize: ui.appBackgroundSize, border: `1px solid ${ui.border}`, borderRadius: ui.cardRadius, width: 420, padding: 24, boxShadow: ui.modalShadow, fontFamily: ui.fontFamily }}>
+      <div style={{ background: ui.panelBg, backgroundImage: ui.panelBackgroundImage ?? ui.appBackgroundImage, backgroundSize: ui.appBackgroundSize, backgroundPosition: ui.appBackgroundPosition, border: `1px solid ${ui.border}`, borderRadius: ui.cardRadius, width: 420, padding: 24, boxShadow: ui.modalShadow, fontFamily: ui.fontFamily }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
           <span style={{ color: theme.text, fontWeight: 700, fontSize: 15 }}>Round Info</span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: theme.textMuted, fontSize: 18, cursor: 'pointer' }}>✕</button>

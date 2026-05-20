@@ -131,6 +131,7 @@ export default function App() {
       background: ui.appBg ?? theme.bg,
       backgroundImage: ui.appBackgroundImage,
       backgroundSize: ui.appBackgroundSize,
+      backgroundPosition: ui.appBackgroundPosition,
       color: theme.text,
       fontFamily: ui.fontFamily,
       overflow: 'hidden',
