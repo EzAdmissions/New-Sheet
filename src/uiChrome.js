@@ -24,7 +24,7 @@ export function getUiChrome(settings, theme) {
       cardBg: dark ? '#202020' : '#d4d0c8',
       inputBg: dark ? '#111' : '#fff',
       border: dark ? '#777' : '#808080',
-      borderSubtle: dark ? '#555' : '#ffffff',
+      borderSubtle: dark ? '#555' : '#a6a6a6',
       radius: 0,
       cardRadius: 0,
       toolbarHeight: 34,
