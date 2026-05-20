@@ -61,6 +61,10 @@ function makeSheet(type, name, needsName = true) {
   return { id: nanoid(), name, type, speeches, grid: makeGrid(speeches), extensionLinks: [], needsName };
 }
 
+function makeFolder(name) {
+  return { id: nanoid(), name: name.trim(), createdAt: Date.now() };
+}
+
 function makeRound() {
   const sheets = [
     makeSheet('aff', 'Case', false),
@@ -76,6 +80,7 @@ function makeRound() {
     affCode: '',
     negSchool: '',
     negCode: '',
+    folderId: null,
     lastEdited: Date.now(),
     sheets,
     activeSheetId: sheets[0].id,
@@ -84,9 +89,11 @@ function makeRound() {
 
 const useStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       view: 'dashboard',
       rounds: [],
+      folders: [],
+      activeFolderId: 'all',
       activeRoundId: null,
       pendingNameSheetIds: [],
       keybindings: DEFAULT_KEYBINDINGS,
@@ -107,9 +114,31 @@ const useStore = create(
       },
 
       setView: (view) => set({ view }),
+      setActiveFolder: (folderId) => set({ activeFolderId: folderId }),
+
+      addFolder: (name) => {
+        const trimmed = name.trim();
+        if (!trimmed) return null;
+        const folder = makeFolder(trimmed);
+        set(s => ({ folders: [...s.folders, folder], activeFolderId: folder.id }));
+        return folder.id;
+      },
+      renameFolder: (id, name) => {
+        const trimmed = name.trim();
+        if (!trimmed) return;
+        set(s => ({ folders: s.folders.map(f => f.id === id ? { ...f, name: trimmed } : f) }));
+      },
+      deleteFolder: (id) => set(s => ({
+        folders: s.folders.filter(f => f.id !== id),
+        rounds: s.rounds.map(r => r.folderId === id ? { ...r, folderId: null } : r),
+        activeFolderId: s.activeFolderId === id ? 'all' : s.activeFolderId,
+      })),
+      moveRoundToFolder: (roundId, folderId) => set(s => ({
+        rounds: s.rounds.map(r => r.id === roundId ? { ...r, folderId: folderId === 'unfiled' ? null : folderId, lastEdited: Date.now() } : r),
+      })),
 
       newRound: () => {
-        const round = makeRound();
+        const round = { ...makeRound(), folderId: get().activeFolderId === 'all' || get().activeFolderId === 'unfiled' ? null : get().activeFolderId };
         set(s => ({ rounds: [...s.rounds, round], activeRoundId: round.id, view: 'flow' }));
       },
       openRound: (id) => set({ activeRoundId: id, view: 'flow' }),
@@ -202,6 +231,7 @@ const useStore = create(
           id: nanoid(),
           sheets,
           activeSheetId: idMap.get(round.activeSheetId) ?? sheets[0]?.id ?? null,
+          folderId: get().activeFolderId === 'all' || get().activeFolderId === 'unfiled' ? (round.folderId ?? null) : get().activeFolderId,
           lastEdited: Date.now(),
         };
         set(s => ({ rounds: [...s.rounds, imported], activeRoundId: imported.id, view: 'flow' }));
@@ -215,18 +245,25 @@ const useStore = create(
     }),
     {
       name: 'jayflow-v3',
-      version: 5,
+      version: 7,
       migrate: (persistedState) => {
         const pending = [];
         const rounds = (persistedState?.rounds ?? []).map(round => ({
           ...round,
+          folderId: round.folderId ?? null,
           sheets: (round.sheets ?? []).map(sheet => {
             const needsName = inferNeedsName(sheet);
             if (needsName && sheet.type !== 'cx') pending.push(sheet.id);
             return { ...sheet, needsName };
           }),
         }));
-        return { ...persistedState, rounds, pendingNameSheetIds: pending };
+        return {
+          ...persistedState,
+          rounds,
+          folders: persistedState?.folders ?? [],
+          activeFolderId: persistedState?.activeFolderId ?? 'all',
+          pendingNameSheetIds: pending,
+        };
       },
     }
   )
