@@ -168,6 +168,26 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
         <div style={{ padding: 20, overflowY: 'auto', flex: 1 }}>
           {tab === 'display' && (
             <>
+              <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: theme.textMuted, marginBottom: 10 }}>Debate Format</div>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
+                {[['policy', 'Policy'], ['ld', 'Lincoln-Douglas']].map(([fmt, label]) => {
+                  const active = (settings.debateFormat ?? 'policy') === fmt;
+                  return (
+                    <button key={fmt} onClick={() => update({ debateFormat: fmt })} style={{
+                      flex: 1, padding: '8px', borderRadius: ui.radius, cursor: 'pointer', fontFamily: 'inherit',
+                      fontSize: 13, fontWeight: active ? 600 : 400,
+                      background: active ? theme.aff : theme.bgTertiary,
+                      border: `1px solid ${active ? theme.aff : theme.border}`,
+                      color: active ? '#fff' : theme.textMuted,
+                      textTransform: 'capitalize',
+                    }}>
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 20 }}>Applies to new rounds only.</div>
+
               <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: theme.textMuted, marginBottom: 10 }}>Theme</div>
               {row('UI Style', select('uiStyle', UI_STYLE_OPTIONS))}
               <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

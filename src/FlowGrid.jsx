@@ -68,8 +68,8 @@ function isMultiCellSelection(sel) {
 }
 
 function speechSide(speech) {
-  if (['1AC', '2AC', '1AR', '2AR'].includes(speech)) return 'aff';
-  if (['1NC', 'Block', '2NR'].includes(speech)) return 'neg';
+  if (['1AC', '2AC', '1AR', '2AR', 'AC'].includes(speech)) return 'aff';
+  if (['1NC', 'Block', '2NR', 'NC', 'NR'].includes(speech)) return 'neg';
   return null;
 }
 

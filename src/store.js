@@ -41,6 +41,16 @@ export const SHEET_SPEECHES = {
   offcase: ['1NC', '2AC', 'Block', '1AR', '2NR', '2AR'],
 };
 
+export const LD_SHEET_SPEECHES = {
+  aff: ['AC', 'NC', '1AR', 'NR', '2AR'],
+  offcase: ['NC', '1AR', 'NR', '2AR'],
+};
+
+function getSheetSpeeches(type, format) {
+  const map = format === 'ld' ? LD_SHEET_SPEECHES : SHEET_SPEECHES;
+  return map[type] ?? map.aff;
+}
+
 const GRID_ROWS = 200;
 
 function inferNeedsName(sheet) {
@@ -56,8 +66,8 @@ function makeGrid(speeches) {
   return grid;
 }
 
-function makeSheet(type, name, needsName = true) {
-  const speeches = SHEET_SPEECHES[type] ?? SHEET_SPEECHES.aff;
+function makeSheet(type, name, needsName = true, format = 'policy') {
+  const speeches = getSheetSpeeches(type, format);
   return { id: nanoid(), name, type, speeches, grid: makeGrid(speeches), extensionLinks: [], needsName };
 }
 
@@ -65,10 +75,10 @@ function makeFolder(name) {
   return { id: nanoid(), name: name.trim(), createdAt: Date.now() };
 }
 
-function makeRound() {
+function makeRound(format = 'policy') {
   const sheets = [
-    makeSheet('aff', 'Case', false),
-    makeSheet('offcase', 'Off 1', false),
+    makeSheet('aff', 'Case', false, format),
+    makeSheet('offcase', 'Off 1', false, format),
   ];
   return {
     id: nanoid(),
@@ -84,6 +94,7 @@ function makeRound() {
     lastEdited: Date.now(),
     sheets,
     activeSheetId: sheets[0].id,
+    debateFormat: format,
   };
 }
 
@@ -112,6 +123,7 @@ const useStore = create(
         activeCellFillColor: '#dbeafe',
         affColor: '#1d4ed8',
         negColor: '#b91c1c',
+        debateFormat: 'policy',
       },
 
       setView: (view) => set({ view }),
@@ -139,7 +151,8 @@ const useStore = create(
       })),
 
       newRound: () => {
-        const round = { ...makeRound(), folderId: get().activeFolderId === 'all' || get().activeFolderId === 'unfiled' ? null : get().activeFolderId };
+        const format = get().settings.debateFormat ?? 'policy';
+        const round = { ...makeRound(format), folderId: get().activeFolderId === 'all' || get().activeFolderId === 'unfiled' ? null : get().activeFolderId };
         set(s => ({ rounds: [...s.rounds, round], activeRoundId: round.id, view: 'flow' }));
       },
       openRound: (id) => set({ activeRoundId: id, view: 'flow' }),
@@ -156,7 +169,10 @@ const useStore = create(
         rounds: s.rounds.map(r => r.id === s.activeRoundId ? { ...r, activeSheetId: sheetId } : r),
       })),
       addSheet: (type, name) => {
-        const sheet = makeSheet(type, name);
+        const { rounds, activeRoundId } = get();
+        const currentRound = rounds.find(r => r.id === activeRoundId);
+        const format = currentRound?.debateFormat ?? 'policy';
+        const sheet = makeSheet(type, name, true, format);
         set(s => ({
           pendingNameSheetIds: type === 'cx'
             ? s.pendingNameSheetIds
