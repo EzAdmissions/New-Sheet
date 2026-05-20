@@ -6,13 +6,14 @@ const fs = require('fs');
 app.disableHardwareAcceleration();
 
 app.whenReady().then(async () => {
-  const WIDTH = 1456;
-  const HEIGHT = 816;
+  const WIDTH = 1100;
+  const HEIGHT = 220;
 
   const win = new BrowserWindow({
     width: WIDTH,
     height: HEIGHT,
     show: false,
+    frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -26,8 +27,8 @@ app.whenReady().then(async () => {
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    width: ${WIDTH}px;
-    height: ${HEIGHT}px;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
     background: #f8fafc;
     display: flex;
@@ -38,28 +39,28 @@ app.whenReady().then(async () => {
   .logo-wrap {
     display: flex;
     align-items: center;
-    gap: 36px;
+    gap: 20px;
   }
   .ns-logo {
-    width: 128px;
-    height: 128px;
-    border-radius: 30px;
+    width: 72px;
+    height: 72px;
+    border-radius: 17px;
     background: #1f2933;
     color: #f8fafc;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 48px;
+    font-size: 27px;
     font-weight: 900;
     letter-spacing: 0;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.22);
     flex-shrink: 0;
   }
   .name {
-    font-size: 82px;
+    font-size: 46px;
     font-weight: 800;
     color: #111111;
-    letter-spacing: -2px;
+    letter-spacing: -1px;
   }
 </style>
 </head>

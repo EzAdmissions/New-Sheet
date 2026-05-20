@@ -3,6 +3,7 @@ import useStore, { roundDisplayName, sortSheetsForDisplay } from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import { importJflow } from './export';
 import { getUiChrome, chromeButton } from './uiChrome';
+import { useDialog } from './Dialog';
 
 export default function Dashboard({ onOpenSettings }) {
   const rounds      = useStore(s => s.rounds);
@@ -22,6 +23,7 @@ export default function Dashboard({ onOpenSettings }) {
   const ui = getUiChrome(settings, theme);
   const affColor = getAffColor(settings, theme);
   const negColor = getNegColor(settings, theme);
+  const { showConfirm, showAlert } = useDialog();
   const [foldersOpen, setFoldersOpen] = useState(false);
 
   const fmt = (ts) => {
@@ -34,7 +36,7 @@ export default function Dashboard({ onOpenSettings }) {
       const round = await importJflow();
       importRound(round);
     } catch (err) {
-      if (err.message !== 'No file') alert(`Import failed: ${err.message}`);
+      if (err.message !== 'No file') await showAlert(`Import failed: ${err.message}`);
     }
   };
 
@@ -129,7 +131,7 @@ export default function Dashboard({ onOpenSettings }) {
                   folders={folders}
                   onMove={folderId => moveRoundToFolder(r.id, folderId)}
                   onOpen={() => openRound(r.id)}
-                  onDelete={() => { if (confirm(`Delete "${roundDisplayName(r)}"?`)) deleteRound(r.id); }}
+                  onDelete={async () => { if (await showConfirm(`Delete this round?\n\n"${roundDisplayName(r)}"`, { danger: true, confirmLabel: 'Delete' })) deleteRound(r.id); }}
                   fmt={fmt}
                 />
               ))}
@@ -144,6 +146,7 @@ export default function Dashboard({ onOpenSettings }) {
 }
 
 function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFolder, renameFolder, deleteFolder, theme, ui, affColor, negColor, onClose }) {
+  const { showConfirm } = useDialog();
   const folderCount = (folderId) => rounds.filter(r => folderId === 'unfiled' ? !r.folderId : r.folderId === folderId).length;
   const folderButton = (id, label, count) => {
     const active = activeFolderId === id;
@@ -202,7 +205,7 @@ function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFo
             </button>
             <button
               title="Delete folder"
-              onClick={() => { if (confirm(`Delete folder "${folder.name}"? Rounds will move to Unfiled.`)) deleteFolder(folder.id); }}
+              onClick={async () => { if (await showConfirm(`Delete folder "${folder.name}"?\n\nRounds will move to Unfiled.`, { danger: true, confirmLabel: 'Delete' })) deleteFolder(folder.id); }}
               style={{ ...btnStyle(theme, ui), padding: '2px 5px', fontSize: 10, color: negColor }}
             >
               Del

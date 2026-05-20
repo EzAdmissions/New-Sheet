@@ -2,6 +2,7 @@ import { useState } from 'react';
 import useStore from './store';
 import { ACTIONS, ACTION_GROUPS, DEFAULT_KEYBINDINGS, formatShortcut, keyEventToString } from './keybindings';
 import { useTheme } from './theme';
+import { useDialog } from './Dialog';
 
 export default function KeybindingsPanel() {
   const settings         = useStore(s => s.settings);
@@ -10,6 +11,7 @@ export default function KeybindingsPanel() {
   const resetKeybindings = useStore(s => s.resetKeybindings);
   const theme = useTheme(settings.theme);
 
+  const { showConfirm } = useDialog();
   const [recording, setRecording] = useState(null); // actionId being recorded
 
   // Build reverse map: binding → [actionId]
@@ -19,7 +21,7 @@ export default function KeybindingsPanel() {
     usedBindings[binding].push(id);
   }
 
-  const handleRecordKey = (e) => {
+  const handleRecordKey = async (e) => {
     if (!recording) return;
     e.preventDefault();
     e.stopPropagation();
@@ -32,10 +34,8 @@ export default function KeybindingsPanel() {
     const conflicts = (usedBindings[combo] ?? []).filter(id => id !== recording);
     if (conflicts.length > 0) {
       const names = conflicts.map(id => ACTIONS[id]?.label ?? id).join(', ');
-      if (!confirm(`"${combo}" is already used by: ${names}\n\nOverwrite?`)) {
-        setRecording(null); return;
-      }
-      // Clear conflicting bindings
+      const ok = await showConfirm(`"${combo}" is already used by: ${names}\n\nOverwrite it?`, { confirmLabel: 'Overwrite' });
+      if (!ok) { setRecording(null); return; }
       for (const id of conflicts) updateKeybinding(id, '');
     }
 
@@ -52,7 +52,7 @@ export default function KeybindingsPanel() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <span style={{ color: theme.text, fontWeight: 600, fontSize: 14 }}>Keyboard Shortcuts</span>
         <button
-          onClick={() => { if (confirm('Reset all keybindings to defaults?')) resetKeybindings(); }}
+          onClick={async () => { if (await showConfirm('Reset all keybindings to defaults?', { confirmLabel: 'Reset' })) resetKeybindings(); }}
           style={{ padding: '4px 10px', background: theme.bgTertiary, border: `1px solid ${theme.border}`, borderRadius: 4, color: theme.textMuted, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}
         >
           Reset Defaults
