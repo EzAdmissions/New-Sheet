@@ -320,19 +320,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
   const syncActiveRowSpan = useCallback((row, col, ta) => {
     if (!ta) return rowSpansRef.current[row] ?? 1;
-    const rh = rhRef.current;
-    const current = rowSpansRef.current[row] ?? 1;
     const otherCellsSpan = computeRowSpan(row, col);
-    let next = Math.max(current, otherCellsSpan, 1);
-    const overflow = ta.scrollHeight > ta.clientHeight + 1;
-
-    if (overflow) {
-      next = Math.min(AUTO_EXTEND_MAX_ROWS, Math.max(next, current + 1));
-    } else {
-      const floor = Math.max(1, otherCellsSpan);
-      const contentHeight = Math.max(1, ta.scrollHeight - 1);
-      while (next > floor && contentHeight <= (next - 1) * rh) next--;
-    }
+    const activeText = ta.value ?? '';
+    const activeSpan = activeText
+      ? estimateTextRows(activeText, getColWidth(), fs, pad, textWrap, settings.fontFamily)
+      : 1;
+    const next = Math.max(1, otherCellsSpan, activeSpan);
 
     if (rowSpansRef.current[row] !== next) {
       rowSpansRef.current[row] = next;
@@ -340,7 +333,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       forceRender(v => v + 1);
     }
     return next;
-  }, [computeRowSpan, recomputeRowTops]);
+  }, [computeRowSpan, getColWidth, fs, pad, textWrap, settings.fontFamily, recomputeRowTops]);
 
   const commitPendingEdit = useCallback(() => {
     const ta = taRef.current;
