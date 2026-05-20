@@ -106,7 +106,7 @@ const useStore = create(
         fontFamily: 'Arial, sans-serif',
         rowHeight: 22,
         textWrap: true,
-        activeCellStyle: 'filledBlue',
+        activeCellStyle: 'outlineBlack',
         activeCellBorderColor: '#1d4ed8',
         activeCellFillColor: '#dbeafe',
         affColor: '#1d4ed8',
@@ -245,7 +245,7 @@ const useStore = create(
     }),
     {
       name: 'jayflow-v3',
-      version: 7,
+      version: 8,
       migrate: (persistedState) => {
         const pending = [];
         const rounds = (persistedState?.rounds ?? []).map(round => ({
@@ -257,12 +257,19 @@ const useStore = create(
             return { ...sheet, needsName };
           }),
         }));
+        const settings = {
+          ...(persistedState?.settings ?? {}),
+          activeCellStyle: !persistedState?.settings?.activeCellStyle || persistedState.settings.activeCellStyle === 'filledBlue'
+            ? 'outlineBlack'
+            : persistedState.settings.activeCellStyle,
+        };
         return {
           ...persistedState,
           rounds,
           folders: persistedState?.folders ?? [],
           activeFolderId: persistedState?.activeFolderId ?? 'all',
           pendingNameSheetIds: pending,
+          settings,
         };
       },
     }

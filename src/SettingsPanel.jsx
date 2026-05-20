@@ -23,7 +23,7 @@ const FONTS = [
 ];
 
 const DEFAULT_COLORS = {
-  activeCellStyle: 'filledBlue',
+  activeCellStyle: 'outlineBlack',
   activeCellBorderColor: '#1d4ed8',
   activeCellFillColor: '#dbeafe',
   affColor: '#1d4ed8',
@@ -191,9 +191,9 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
               {row('Row Height (px)',        numInput('rowHeight', 14, 80))}
               {row('Font Size (pt)',         numInput('fontSize', 6, 32))}
               {row('Active Cell Style',       select('activeCellStyle', [
-                ['filledBlue', 'Blue filled'],
-                ['outlineBlue', 'Blue outline'],
                 ['outlineBlack', 'Black outline'],
+                ['outlineBlue', 'Style color outline'],
+                ['filledBlue', 'Style color filled'],
                 ['custom', 'Custom colors'],
               ]))}
               {row('Active Cell Line',        colorInput('activeCellBorderColor'))}
