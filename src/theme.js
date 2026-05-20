@@ -52,10 +52,10 @@ const STYLE_SIDE_COLORS = {
   hazmatPop: { aff: '#167a2f', neg: '#ff4d00' },
   holoLedger: { aff: '#0891b2', neg: '#d946ef' },
   paperKnife: { aff: '#31572c', neg: '#d5003e' },
-  fortnite: { aff: '#00d3ff', neg: '#ff4fb8' },
-  minecraft: { aff: '#2f7d32', neg: '#b45309' },
-  overwatch: { aff: '#2f80ed', neg: '#ff9b18' },
-  csgo: { aff: '#5b8fb9', neg: '#d49a2a' },
+  fortnite: { aff: '#7ff7ff', neg: '#ffd429' },
+  minecraft: { aff: '#55aa44', neg: '#aa5a2f' },
+  overwatch: { aff: '#4ab7ee', neg: '#ffc83d' },
+  csgo: { aff: '#d8d2c5', neg: '#d49a2a' },
 };
 
 function styleSideColor(settings, side, fallback) {
