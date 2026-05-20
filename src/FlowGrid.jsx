@@ -1035,6 +1035,14 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     if (taRef.current) taRef.current.style.color = getActiveTextColor(col);
   }, [getActiveTextColor, affColor, negColor]);
 
+  useEffect(() => {
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.style.color = activeSpeechColor;
+    ta.style.background = activeCellChrome.background;
+    ta.style.boxShadow = activeCellChrome.boxShadow;
+  }, [activeSpeechColor, activeCellChrome.background, activeCellChrome.boxShadow]);
+
   return (
     <div
       style={{
