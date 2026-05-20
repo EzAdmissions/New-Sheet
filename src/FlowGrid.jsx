@@ -134,6 +134,10 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const sheetCache = useRef({});
   const lastSpeeches = useRef(speeches);
   const lastSheetId = useRef(null);
+  // Always tracks the sheetId from the latest render so stale callbacks can
+  // detect they belong to a previous sheet and bail before touching localData or the DOM.
+  const currentSheetIdRef = useRef(sheetId);
+  currentSheetIdRef.current = sheetId;
   if (lastSheetId.current !== sheetId) {
     if (lastSheetId.current && taRef.current) {
       const { col, row } = activeCellRef.current;
@@ -524,13 +528,16 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
   // ── Flush ──
   const saveActiveTextarea = useCallback(() => {
+    // Bail if this callback was created for a different sheet — prevents stale
+    // closures from writing old-sheet content into the new sheet's data or DOM.
+    if (sheetId !== currentSheetIdRef.current) return;
     const ta = taRef.current;
     if (!ta) return;
     const { col, row } = activeCellRef.current;
     commitPendingEdit();
     setLocalText(speeches[col], row, ta.value);
     updateCellDom(col, row, ta.value);
-  }, [speeches, updateCellDom, commitPendingEdit]);
+  }, [sheetId, speeches, updateCellDom, commitPendingEdit]);
 
   const extendArgument = useCallback(() => {
     saveActiveTextarea();
@@ -589,7 +596,31 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     }),
   }), [getCurrentGrid, round, sheetId]);
 
-  const flush = useCallback(() => flushSheet(sheetId, getCurrentGrid(), extensionLinksRef.current), [sheetId, getCurrentGrid, flushSheet]);
+  const flush = useCallback(() => {
+    if (sheetId !== currentSheetIdRef.current) return;
+    flushSheet(sheetId, getCurrentGrid(), extensionLinksRef.current);
+  }, [sheetId, getCurrentGrid, flushSheet]);
+
+  // When the active sheet changes, immediately persist the OUTGOING sheet's
+  // cache to the store before anything else runs.  We read directly from
+  // sheetCache so we never touch localData or the DOM, avoiding the stale-
+  // closure corruption that caused cross-tab content bleed.
+  const prevSheetIdRef = useRef(sheetId);
+  const prevSpeechesRef = useRef(speeches);
+  useEffect(() => {
+    const prevId = prevSheetIdRef.current;
+    const prevSpeeches = prevSpeechesRef.current;
+    prevSheetIdRef.current = sheetId;
+    prevSpeechesRef.current = speeches;
+    if (prevId && prevId !== sheetId) {
+      const cache = sheetCache.current[prevId];
+      if (cache) {
+        const grid = {};
+        for (const sp of prevSpeeches) grid[sp] = [...(cache[sp] ?? [])];
+        flushSheet(prevId, grid, []);
+      }
+    }
+  }, [sheetId]); // eslint-disable-line
 
   // Reset extension links when switching sheets
   useEffect(() => { setExtensionLinks(sheet.extensionLinks ?? []); }, [sheetId]);
