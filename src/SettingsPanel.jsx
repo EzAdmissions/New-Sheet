@@ -184,6 +184,10 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
                   </button>
                 ))}
               </div>
+              {row('Keyboard Mode', select('keyboardMode', [
+                ['windows', 'Windows'],
+                ['mac', 'Mac'],
+              ]))}
 
               <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: theme.textMuted, marginBottom: 10 }}>Grid</div>
               {row('Text Wrap',              toggle('textWrap'))}

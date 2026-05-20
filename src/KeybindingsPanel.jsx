@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useStore from './store';
-import { ACTIONS, ACTION_GROUPS, DEFAULT_KEYBINDINGS, keyEventToString } from './keybindings';
+import { ACTIONS, ACTION_GROUPS, DEFAULT_KEYBINDINGS, formatShortcut, keyEventToString } from './keybindings';
 import { useTheme } from './theme';
 
 export default function KeybindingsPanel() {
@@ -26,7 +26,7 @@ export default function KeybindingsPanel() {
     if (['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) return; // modifier alone
     if (e.key === 'Escape') { setRecording(null); return; }
 
-    const combo = keyEventToString(e);
+    const combo = keyEventToString(e, settings.keyboardMode);
 
     // Check for conflicts
     const conflicts = (usedBindings[combo] ?? []).filter(id => id !== recording);
@@ -70,6 +70,7 @@ export default function KeybindingsPanel() {
               const binding = keybindings[id] ?? DEFAULT_KEYBINDINGS[id] ?? '';
               const isRecording = recording === id;
               const isDefault = binding === DEFAULT_KEYBINDINGS[id];
+              const displayBinding = formatShortcut(binding, settings.keyboardMode);
 
               return (
                 <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -90,7 +91,7 @@ export default function KeybindingsPanel() {
                       fontWeight: isDefault ? 400 : 600,
                     }}
                   >
-                    {isRecording ? 'Press key...' : binding || 'Unbound'}
+                    {isRecording ? 'Press key...' : displayBinding || 'Unbound'}
                   </button>
                 </div>
               );

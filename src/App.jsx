@@ -6,6 +6,7 @@ import FlowGrid from './FlowGrid';
 import SettingsPanel from './SettingsPanel';
 import RoundMeta from './RoundMeta';
 import { getUiChrome, chromeButton } from './uiChrome';
+import { isPrimaryModifier } from './keybindings';
 
 const TYPE_LABEL = { aff: 'Aff', offcase: 'Off' };
 
@@ -24,6 +25,7 @@ export default function App() {
   const ui = getUiChrome(settings, theme);
   const affColor = getAffColor(settings, theme);
   const negColor = getNegColor(settings, theme);
+  const shortcutMode = settings.keyboardMode ?? 'windows';
 
   const [settingsOpen,    setSettingsOpen]     = useState(false);
   const [settingsTab,     setSettingsTab]      = useState('display');
@@ -235,14 +237,14 @@ export default function App() {
               if (e.key === 'Escape') { e.preventDefault(); cancelName(); return; }
 
               // Allow tab-management shortcuts while the naming bar is focused
-              const ctrl = e.ctrlKey || e.metaKey;
-              if (e.altKey && !ctrl && e.key.toLowerCase() === 'n') {
+              const primary = isPrimaryModifier(e, shortcutMode);
+              if (e.altKey && !primary && e.key.toLowerCase() === 'n') {
                 e.preventDefault(); addOff(); return;
               }
-              if (e.altKey && !ctrl && e.key.toLowerCase() === 'a') {
+              if (e.altKey && !primary && e.key.toLowerCase() === 'a') {
                 e.preventDefault(); addAff(); return;
               }
-              if (ctrl && !e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+              if (primary && !e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
                 e.preventDefault();
                 cancelName();
                 const sorted = sortSheetsForDisplay(round.sheets)
@@ -252,7 +254,7 @@ export default function App() {
                 if (e.key === 'ArrowLeft'  && idx > 0)                 setActiveSheet(sorted[idx - 1].id);
                 return;
               }
-              if (ctrl && e.key === 'Backspace') {
+              if (primary && (e.key === 'Backspace' || e.key === 'Delete')) {
                 e.preventDefault(); cancelName(); handleDeleteSheet(activeSheet.id); return;
               }
             }}
@@ -284,11 +286,11 @@ export default function App() {
 
       {/* Status bar */}
       <div style={{ height: ui.statusHeight, background: ui.toolbarBg, borderTop: `1px solid ${ui.borderSubtle}`, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 14, fontSize: 10, color: theme.textDim, flexShrink: 0 }}>
-        <span>Ctrl+K · keybindings</span>
+        <span>{shortcutMode === 'mac' ? 'Cmd+K' : 'Ctrl+K'} · keybindings</span>
         <span>Tab · next speech</span>
         <span>Enter · next row</span>
-        <span>Ctrl+← → · switch sheet</span>
-        <span>Ctrl+scroll · zoom</span>
+        <span>{shortcutMode === 'mac' ? 'Cmd+← →' : 'Ctrl+← →'} · switch sheet</span>
+        <span>{shortcutMode === 'mac' ? 'Cmd+scroll' : 'Ctrl+scroll'} · zoom</span>
         <div style={{ flex: 1 }} />
         {round.affCode && <span style={{ color: affColor }}>Aff: {round.affCode}</span>}
         {round.negCode && <span style={{ color: negColor }}>Neg: {round.negCode}</span>}

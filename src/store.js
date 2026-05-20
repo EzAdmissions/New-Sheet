@@ -106,6 +106,7 @@ const useStore = create(
         fontFamily: 'Arial, sans-serif',
         rowHeight: 22,
         textWrap: true,
+        keyboardMode: 'windows',
         activeCellStyle: 'outlineBlack',
         activeCellBorderColor: '#1d4ed8',
         activeCellFillColor: '#dbeafe',
@@ -245,7 +246,7 @@ const useStore = create(
     }),
     {
       name: 'jayflow-v3',
-      version: 8,
+      version: 9,
       migrate: (persistedState) => {
         const pending = [];
         const rounds = (persistedState?.rounds ?? []).map(round => ({
@@ -259,6 +260,7 @@ const useStore = create(
         }));
         const settings = {
           ...(persistedState?.settings ?? {}),
+          keyboardMode: persistedState?.settings?.keyboardMode === 'mac' ? 'mac' : 'windows',
           activeCellStyle: !persistedState?.settings?.activeCellStyle || persistedState.settings.activeCellStyle === 'filledBlue'
             ? 'outlineBlack'
             : persistedState.settings.activeCellStyle,

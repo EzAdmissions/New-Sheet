@@ -36,18 +36,33 @@ export const DEFAULT_KEYBINDINGS = Object.fromEntries(
 
 export const ACTION_GROUPS = [...new Set(Object.values(ACTIONS).map(a => a.group))];
 
-export function keyEventToString(e) {
+export function normalizeShortcutMode(mode) {
+  return mode === 'mac' ? 'mac' : 'windows';
+}
+
+export function isPrimaryModifier(e, mode = 'windows') {
+  return normalizeShortcutMode(mode) === 'mac' ? e.metaKey : e.ctrlKey;
+}
+
+export function keyEventToString(e, mode = 'windows') {
   const parts = [];
   const key = e.key.length === 1 ? e.key.toUpperCase() : e.key;
-  if (e.ctrlKey)  parts.push('Ctrl');
+  if (isPrimaryModifier(e, mode)) parts.push('Ctrl');
   if (e.altKey)   parts.push('Alt');
   if (e.shiftKey && !['Shift'].includes(e.key)) parts.push('Shift');
   if (!['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) parts.push(key);
   return parts.join('+');
 }
 
-export function matchesAction(e, keybindings, actionId) {
+export function formatShortcut(binding, mode = 'windows') {
+  if (!binding) return '';
+  const platform = normalizeShortcutMode(mode);
+  if (platform !== 'mac') return binding;
+  return binding.replace(/\bCtrl\b/g, 'Cmd');
+}
+
+export function matchesAction(e, keybindings, actionId, mode = 'windows') {
   const binding = keybindings[actionId] ?? DEFAULT_KEYBINDINGS[actionId];
   if (!binding) return false;
-  return keyEventToString(e) === binding;
+  return keyEventToString(e, mode) === binding;
 }

@@ -2,7 +2,7 @@
 import { useRef, useCallback, useEffect, useState, useLayoutEffect, useMemo } from 'react';
 import useStore, { sortSheetsForDisplay } from './store';
 import { useTheme, getSpeechColor, getAffColor, getNegColor } from './theme';
-import { matchesAction } from './keybindings';
+import { isPrimaryModifier, matchesAction } from './keybindings';
 import { exportSheetCSV, exportRoundCSV, exportRoundHTML } from './export';
 import { getUiChrome } from './uiChrome';
 
@@ -125,6 +125,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
   const { speeches, id: sheetId, grid } = sheet;
   const { textWrap } = settings;
+  const shortcutMode = settings.keyboardMode ?? 'windows';
   const taRef = useRef(null);
   const activeCellRef = useRef({ col: 0, row: 0 });
 
@@ -728,11 +729,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const handleKeyDown = useCallback((e) => {
     const { col, row } = activeCellRef.current;
     const ta  = taRef.current;
-    const is  = (id) => matchesAction(e, keybindings, id);
+    const is  = (id) => matchesAction(e, keybindings, id, shortcutMode);
     const isArrow = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key);
     const hasMultiGridSelection = isMultiCellSelection(selectionRef.current);
     const isTextRangeShortcut = isArrow && e.shiftKey && !e.altKey;
-    const isTabReorderShortcut = (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight');
+    const primary = isPrimaryModifier(e, shortcutMode);
+    const isTabReorderShortcut = primary && e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight');
     const shouldReorderTab = isTabReorderShortcut && (e.altKey || !(ta?.value ?? '').length);
     const gridSelectionShortcut = isArrow && e.shiftKey && (e.altKey || hasMultiGridSelection);
     const textSelectionShortcut = isTextRangeShortcut && !hasMultiGridSelection && !shouldReorderTab;
@@ -743,13 +745,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     // available for sheet reordering; Ctrl+Alt+Shift+Left/Right always reorders.
     if (textSelectionShortcut) return;
 
-    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z') {
+    if (primary && !e.shiftKey && e.key.toLowerCase() === 'z') {
       e.preventDefault();
       commitPendingEdit();
       applyHistorySnapshot(undoStack, redoStack);
       return;
     }
-    if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') || ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z')) {
+    if ((primary && e.key.toLowerCase() === 'y') || (primary && e.shiftKey && e.key.toLowerCase() === 'z')) {
       e.preventDefault();
       commitPendingEdit();
       applyHistorySnapshot(redoStack, undoStack);
@@ -763,7 +765,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     }
 
     // Delete current sheet instantly — switch to adjacent tab first
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Backspace') {
+    if (primary && (e.key === 'Backspace' || e.key === 'Delete')) {
       e.preventDefault();
       flush();
       const idx = sortedSheets.findIndex(s => s.id === sheet.id);
@@ -805,7 +807,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       e.preventDefault();
       let sel = selectionRef.current ?? { anchorCol: col, anchorRow: row, endCol: col, endRow: row };
       let { endCol, endRow } = sel;
-      const stepRows = e.ctrlKey || e.metaKey ? 5 : 1;
+      const stepRows = primary ? 5 : 1;
       if (e.key === 'ArrowDown')  endRow = Math.min(TOTAL_ROWS - 1, endRow + stepRows);
       if (e.key === 'ArrowUp')    endRow = Math.max(0, endRow - stepRows);
       if (e.key === 'ArrowLeft')  endCol = Math.max(0, endCol - 1);
@@ -835,7 +837,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     }
 
     // Ctrl+C: copy selection
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c' && isMultiCellSelection(selectionRef.current)) {
+    if (primary && e.key.toLowerCase() === 'c' && isMultiCellSelection(selectionRef.current)) {
       const bounds = selBounds(selectionRef.current);
       const rows = [];
       for (let r = bounds.minRow; r <= bounds.maxRow; r++) {
@@ -940,7 +942,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       onStartRename?.(sheet.id);
       return;
     }
-  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor]);
+  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor, shortcutMode]);
 
 
   // ── Paste: multi-cell ──
@@ -971,11 +973,11 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
   // ── Ctrl+scroll zoom ──
   const handleWheel = useCallback((e) => {
-    if (!e.ctrlKey) return;
+    if (!isPrimaryModifier(e, shortcutMode)) return;
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.05 : 0.05;
     setZoom(z => +Math.max(0.25, Math.min(3, z + delta)).toFixed(2));
-  }, []);
+  }, [shortcutMode]);
 
   // ── Re-apply textarea position and recompute spans after zoom/settings change ──
   useEffect(() => {
