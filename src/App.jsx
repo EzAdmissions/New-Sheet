@@ -272,6 +272,7 @@ export default function App() {
       {/* Flow */}
       <div style={{ flex: 1, overflow: 'hidden' }}>
         <FlowGrid
+          key={activeSheet.id}
           sheet={activeSheet}
           round={round}
           onOpenSettings={openSettings}
