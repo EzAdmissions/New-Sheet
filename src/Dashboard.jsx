@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useStore, { roundDisplayName, sortSheetsForDisplay } from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import { importJflow } from './export';
@@ -21,6 +22,7 @@ export default function Dashboard({ onOpenSettings }) {
   const ui = getUiChrome(settings, theme);
   const affColor = getAffColor(settings, theme);
   const negColor = getNegColor(settings, theme);
+  const [foldersOpen, setFoldersOpen] = useState(false);
 
   const fmt = (ts) => {
     if (!ts) return '';
@@ -71,6 +73,9 @@ export default function Dashboard({ onOpenSettings }) {
           <span style={{ fontWeight: ui.headerWeight, fontSize: 18, color: theme.text, letterSpacing: 0 }}>New Sheet</span>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setFoldersOpen(v => !v)} style={{ ...btnStyle(theme, ui), borderColor: foldersOpen ? affColor : ui.buttonBorder, color: foldersOpen ? affColor : ui.buttonColor }}>
+            Folders
+          </button>
           <button onClick={onOpenSettings} style={btnStyle(theme, ui)}>Settings</button>
           <button onClick={handleImport}   style={btnStyle(theme, ui)}>Import Backup</button>
           <button
@@ -83,20 +88,26 @@ export default function Dashboard({ onOpenSettings }) {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-        <FolderSidebar
-          folders={folders}
-          rounds={rounds}
-          activeFolderId={activeFolderId}
-          setActiveFolder={setActiveFolder}
-          addFolder={handleAddFolder}
-          renameFolder={renameFolder}
-          deleteFolder={deleteFolder}
-          theme={theme}
-          ui={ui}
-          affColor={affColor}
-          negColor={negColor}
-        />
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', position: 'relative' }}>
+        {foldersOpen && (
+          <>
+            <div onClick={() => setFoldersOpen(false)} style={{ position: 'absolute', inset: 0, zIndex: 4 }} />
+            <FolderSidebar
+              folders={folders}
+              rounds={rounds}
+              activeFolderId={activeFolderId}
+              setActiveFolder={setActiveFolder}
+              addFolder={handleAddFolder}
+              renameFolder={renameFolder}
+              deleteFolder={deleteFolder}
+              theme={theme}
+              ui={ui}
+              affColor={affColor}
+              negColor={negColor}
+              onClose={() => setFoldersOpen(false)}
+            />
+          </>
+        )}
       <div style={{ flex: 1, overflowY: 'auto', padding: '32px 32px' }}>
         {sorted.length === 0 ? (
           <Empty theme={theme} ui={ui} affColor={affColor} onNew={newRound} label={activeFolderName} />
@@ -131,14 +142,14 @@ export default function Dashboard({ onOpenSettings }) {
   );
 }
 
-function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFolder, renameFolder, deleteFolder, theme, ui, affColor, negColor }) {
+function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFolder, renameFolder, deleteFolder, theme, ui, affColor, negColor, onClose }) {
   const folderCount = (folderId) => rounds.filter(r => folderId === 'unfiled' ? !r.folderId : r.folderId === folderId).length;
   const folderButton = (id, label, count) => {
     const active = activeFolderId === id;
     return (
       <button
         key={id}
-        onClick={() => setActiveFolder(id)}
+        onClick={() => { setActiveFolder(id); onClose?.(); }}
         style={{
           width: '100%',
           display: 'flex',
@@ -164,10 +175,13 @@ function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFo
   };
 
   return (
-    <aside style={{ width: 220, flexShrink: 0, padding: 14, borderRight: `1px solid ${ui.border}`, background: ui.panelBg, overflowY: 'auto' }}>
+    <aside style={{ position: 'absolute', top: 12, left: 16, width: 260, maxHeight: 'calc(100% - 24px)', zIndex: 5, padding: 14, border: `1px solid ${ui.border}`, borderRadius: ui.cardRadius, background: ui.panelBg, backgroundImage: ui.appBackgroundImage, backgroundSize: ui.appBackgroundSize, overflowY: 'auto', boxShadow: ui.modalShadow }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ color: theme.textMuted, fontSize: 10, letterSpacing: 1, textTransform: 'uppercase' }}>Folders</div>
-        <button onClick={addFolder} style={{ ...btnStyle(theme, ui), padding: '2px 7px', color: affColor, borderColor: affColor }}>+</button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button onClick={addFolder} style={{ ...btnStyle(theme, ui), padding: '2px 7px', color: affColor, borderColor: affColor }}>+</button>
+          <button onClick={onClose} style={{ ...btnStyle(theme, ui), padding: '2px 7px' }}>Close</button>
+        </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {folderButton('all', 'All Rounds', rounds.length)}

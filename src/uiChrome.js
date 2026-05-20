@@ -6,6 +6,10 @@ export const UI_STYLE_OPTIONS = [
   ['hazmatPop', 'Hazmat Pop'],
   ['holoLedger', 'Holo Ledger'],
   ['paperKnife', 'Paper Knife'],
+  ['fortnite', 'Fortnite'],
+  ['minecraft', 'Minecraft'],
+  ['overwatch', 'Overwatch'],
+  ['csgo', 'CS:GO'],
 ];
 
 const REMOVED_UI_STYLES = new Set(['compact', 'softGray', 'terminal', 'cyberInk', 'blueprint', 'monoPro']);
@@ -397,6 +401,147 @@ export function getUiChrome(settings, theme) {
       tabActiveShadow: 'inset 0 -3px 0 #d5003e',
       headerWeight: 900,
       uppercaseLabels: false,
+    };
+  }
+
+  if (style === 'fortnite') {
+    return {
+      id: style,
+      fontFamily: '"Arial Black", "Trebuchet MS", Arial, sans-serif',
+      appBg: dark ? '#14115f' : '#dff5ff',
+      appBackgroundImage: dark
+        ? 'linear-gradient(135deg, rgba(145,70,255,0.36), transparent 35%), linear-gradient(315deg, rgba(0,211,255,0.28), transparent 46%), repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 12px)'
+        : 'linear-gradient(135deg, rgba(79,70,229,0.18), transparent 35%), linear-gradient(315deg, rgba(0,178,255,0.24), transparent 46%), repeating-linear-gradient(0deg, rgba(47,109,255,0.04) 0 2px, transparent 2px 12px)',
+      toolbarBg: dark ? '#2430a8' : '#226dff',
+      toolbarShadow: '0 5px 0 #07134c, 0 18px 34px rgba(24,54,160,0.3)',
+      panelBg: dark ? '#171765' : '#edf8ff',
+      cardBg: dark ? '#252cb0' : '#ffffff',
+      inputBg: dark ? '#10134f' : '#ffffff',
+      border: dark ? '#ffcf24' : '#16389f',
+      borderSubtle: dark ? '#4b55cc' : '#9fc6ff',
+      radius: 2,
+      cardRadius: 3,
+      toolbarHeight: 48,
+      tabHeight: 37,
+      statusHeight: 22,
+      buttonPadding: '6px 15px',
+      buttonBg: '#ffcf24',
+      buttonColor: '#111827',
+      buttonBorder: '#111827',
+      buttonShadow: '4px 4px 0 #0a1030',
+      cardShadow: dark ? '6px 6px 0 #05051f, 0 0 28px rgba(255,207,36,0.17)' : '6px 6px 0 #16389f, 0 14px 28px rgba(34,109,255,0.18)',
+      modalShadow: '10px 10px 0 #0a1030, 0 30px 74px rgba(24,54,160,0.34)',
+      tabActiveBg: dark ? '#3742d8' : '#ffffff',
+      tabInactiveBg: dark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.34)',
+      tabActiveShadow: 'inset 0 -4px 0 #ffcf24',
+      headerWeight: 900,
+      uppercaseLabels: true,
+    };
+  }
+
+  if (style === 'minecraft') {
+    return {
+      id: style,
+      fontFamily: 'Verdana, "Trebuchet MS", Arial, sans-serif',
+      appBg: dark ? '#1f2a18' : '#d7f0c2',
+      appBackgroundImage: dark
+        ? 'linear-gradient(45deg, rgba(0,0,0,0.18) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.04) 25%, transparent 25%)'
+        : 'linear-gradient(45deg, rgba(76,120,45,0.12) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.35) 25%, transparent 25%)',
+      appBackgroundSize: '32px 32px',
+      toolbarBg: dark ? '#3b2a1e' : '#6aa84f',
+      toolbarShadow: '0 4px 0 #2a1b12',
+      panelBg: dark ? '#2b241d' : '#e6d4b8',
+      cardBg: dark ? '#3b3329' : '#f4e6c7',
+      inputBg: dark ? '#191611' : '#fff8e8',
+      border: dark ? '#70583f' : '#5d3f27',
+      borderSubtle: dark ? '#4f4233' : '#b89569',
+      radius: 0,
+      cardRadius: 0,
+      toolbarHeight: 42,
+      tabHeight: 34,
+      statusHeight: 21,
+      buttonPadding: '5px 12px',
+      buttonBg: dark ? '#70583f' : '#bdbdbd',
+      buttonColor: dark ? '#f7f2df' : '#1f1f1f',
+      buttonBorder: '#1f1f1f',
+      buttonShadow: dark ? 'inset 2px 2px 0 rgba(255,255,255,0.18), inset -2px -2px 0 rgba(0,0,0,0.55)' : 'inset 2px 2px 0 #f1f1f1, inset -2px -2px 0 #565656',
+      cardShadow: '4px 4px 0 rgba(0,0,0,0.35)',
+      modalShadow: '6px 6px 0 rgba(0,0,0,0.55), 0 24px 62px rgba(0,0,0,0.32)',
+      tabActiveBg: dark ? '#51412f' : '#fff8e8',
+      tabInactiveBg: 'transparent',
+      tabActiveShadow: 'inset 0 -4px 0 #6aa84f',
+      headerWeight: 900,
+      uppercaseLabels: false,
+    };
+  }
+
+  if (style === 'overwatch') {
+    return {
+      id: style,
+      fontFamily: '"Helvetica Neue", "Segoe UI", Arial, sans-serif',
+      appBg: dark ? '#101923' : '#eef3f8',
+      appBackgroundImage: dark
+        ? 'linear-gradient(115deg, rgba(255,155,24,0.13) 0 12%, transparent 12% 58%, rgba(67,188,255,0.1) 58% 68%, transparent 68%)'
+        : 'linear-gradient(115deg, rgba(255,155,24,0.16) 0 12%, transparent 12% 58%, rgba(67,188,255,0.12) 58% 68%, transparent 68%)',
+      toolbarBg: dark ? '#1c2835' : '#f7fafc',
+      toolbarShadow: dark ? '0 3px 0 #ff9b18, 0 18px 40px rgba(0,0,0,0.35)' : '0 3px 0 #ff9b18, 0 18px 40px rgba(42,64,87,0.16)',
+      panelBg: dark ? '#18212b' : '#ffffff',
+      cardBg: dark ? '#202b38' : '#ffffff',
+      inputBg: dark ? '#101822' : '#f8fafc',
+      border: dark ? '#4b5f75' : '#c5d1dd',
+      borderSubtle: dark ? '#2b3948' : '#dbe4ec',
+      radius: 2,
+      cardRadius: 3,
+      toolbarHeight: 44,
+      tabHeight: 35,
+      statusHeight: 22,
+      buttonPadding: '5px 13px',
+      buttonBg: dark ? '#263545' : '#ffffff',
+      buttonColor: dark ? '#edf5ff' : '#263545',
+      buttonBorder: dark ? '#4d6177' : '#c5d1dd',
+      buttonShadow: 'inset 0 -2px 0 rgba(0,0,0,0.16)',
+      cardShadow: dark ? '0 16px 36px rgba(0,0,0,0.28)' : '0 12px 28px rgba(42,64,87,0.12)',
+      modalShadow: dark ? '0 0 0 1px #43566b, 0 28px 80px rgba(0,0,0,0.55)' : '0 0 0 1px #c5d1dd, 0 28px 70px rgba(42,64,87,0.22)',
+      tabActiveBg: dark ? '#273646' : '#ffffff',
+      tabInactiveBg: 'transparent',
+      tabActiveShadow: 'inset 0 -3px 0 #ff9b18',
+      headerWeight: 850,
+      uppercaseLabels: true,
+    };
+  }
+
+  if (style === 'csgo') {
+    return {
+      id: style,
+      fontFamily: '"Segoe UI", Tahoma, Arial, sans-serif',
+      appBg: dark ? '#12171d' : '#d7dde3',
+      appBackgroundImage: dark
+        ? 'linear-gradient(135deg, rgba(231,166,43,0.08), transparent 28%), linear-gradient(315deg, rgba(82,105,128,0.18), transparent 42%)'
+        : 'linear-gradient(135deg, rgba(202,132,31,0.12), transparent 28%), linear-gradient(315deg, rgba(82,105,128,0.14), transparent 42%)',
+      toolbarBg: dark ? '#202a34' : '#e6eaee',
+      toolbarShadow: dark ? '0 2px 0 #d49a2a, 0 16px 34px rgba(0,0,0,0.34)' : '0 2px 0 #b9781d, 0 14px 30px rgba(44,61,77,0.16)',
+      panelBg: dark ? '#18212a' : '#eef1f4',
+      cardBg: dark ? '#222d38' : '#ffffff',
+      inputBg: dark ? '#111820' : '#ffffff',
+      border: dark ? '#526980' : '#a9b4bf',
+      borderSubtle: dark ? '#2d3b48' : '#cfd6dd',
+      radius: 1,
+      cardRadius: 2,
+      toolbarHeight: 40,
+      tabHeight: 32,
+      statusHeight: 20,
+      buttonPadding: '4px 12px',
+      buttonBg: dark ? '#263340' : '#f8fafc',
+      buttonColor: dark ? '#dfe7ee' : '#263340',
+      buttonBorder: dark ? '#526980' : '#a9b4bf',
+      buttonShadow: dark ? 'inset 0 -2px 0 rgba(0,0,0,0.22)' : 'inset 0 -2px 0 rgba(44,61,77,0.08)',
+      cardShadow: dark ? '0 12px 32px rgba(0,0,0,0.32)' : '0 10px 24px rgba(44,61,77,0.12)',
+      modalShadow: dark ? '0 0 0 1px #526980, 0 28px 80px rgba(0,0,0,0.5)' : '0 0 0 1px #a9b4bf, 0 24px 62px rgba(44,61,77,0.2)',
+      tabActiveBg: dark ? '#2b3946' : '#ffffff',
+      tabInactiveBg: 'transparent',
+      tabActiveShadow: 'inset 0 -3px 0 #d49a2a',
+      headerWeight: 750,
+      uppercaseLabels: true,
     };
   }
 

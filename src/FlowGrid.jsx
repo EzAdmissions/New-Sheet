@@ -73,10 +73,13 @@ function speechSide(speech) {
   return null;
 }
 
-function getActiveCellChrome(settings, theme) {
+function getActiveCellChrome(settings, theme, affColor) {
+  const defaultBorder = !settings.activeCellBorderColor || settings.activeCellBorderColor === '#1d4ed8'
+    ? affColor
+    : settings.activeCellBorderColor;
   if (settings.activeCellStyle === 'custom') {
     return {
-      boxShadow: `inset 0 0 0 2px ${settings.activeCellBorderColor ?? theme.aff}`,
+      boxShadow: `inset 0 0 0 2px ${defaultBorder}`,
       background: settings.activeCellFillColor ?? theme.bgActive,
     };
   }
@@ -88,12 +91,12 @@ function getActiveCellChrome(settings, theme) {
   }
   if (settings.activeCellStyle === 'outlineBlue') {
     return {
-      boxShadow: `inset 0 0 0 2px ${theme.aff}`,
+      boxShadow: `inset 0 0 0 2px ${affColor}`,
       background: theme.bg,
     };
   }
   return {
-    boxShadow: `inset 0 0 0 2px ${theme.aff}`,
+    boxShadow: `inset 0 0 0 2px ${affColor}`,
     background: theme.bgActive,
   };
 }
@@ -1010,7 +1013,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const actualCw = getColWidth();
   const rowSpans = rowSpansRef.current;
   const rowTops = rowTopsRef.current;
-  const activeCellChrome = getActiveCellChrome(settings, theme);
+  const activeCellChrome = getActiveCellChrome(settings, theme, affColor);
+
+  useEffect(() => {
+    const { col } = activeCellRef.current;
+    if (taRef.current) taRef.current.style.color = getSpeechColor(speeches[col] ?? speeches[0], theme, settings);
+  }, [speeches, theme, settings, affColor, negColor]);
 
   return (
     <div
