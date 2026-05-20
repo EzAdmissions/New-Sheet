@@ -142,6 +142,13 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
         sheetCache.current[lastSheetId.current][oldSpeech][row] = taRef.current.value;
       }
     }
+    // Reset active position and hide the textarea immediately so the old sheet's
+    // text never appears as a ghost on the incoming sheet before useLayoutEffect fires.
+    activeCellRef.current = { col: 0, row: 0 };
+    if (taRef.current) {
+      taRef.current.value = '';
+      taRef.current.style.visibility = 'hidden';
+    }
     lastSheetId.current = sheetId;
     lastSpeeches.current = speeches;
     if (!sheetCache.current[sheetId]) {
@@ -716,9 +723,11 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     setSelection(null);
     applyTextareaPos(0, 0);
     activeSpanRows.current = 1;
+    editSnapshot.current = null;
     if (taRef.current) {
       taRef.current.value = getText(speeches[0], 0);
       taRef.current.style.color = getActiveTextColor(0);
+      taRef.current.style.visibility = '';
       resizeActiveTextarea();
       taRef.current.focus();
     }
