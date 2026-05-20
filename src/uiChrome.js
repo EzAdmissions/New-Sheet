@@ -8,6 +8,10 @@ export const UI_STYLE_OPTIONS = [
   ['courtroom', 'Courtroom'],
   ['blueprint', 'Blueprint'],
   ['monoPro', 'Mono Pro'],
+  ['crtRiot', 'CRT Riot'],
+  ['hazmatPop', 'Hazmat Pop'],
+  ['holoLedger', 'Holo Ledger'],
+  ['paperKnife', 'Paper Knife'],
 ];
 
 export function getUiChrome(settings, theme) {
@@ -254,6 +258,165 @@ export function getUiChrome(settings, theme) {
       tabInactiveBg: 'transparent',
       tabActiveShadow: 'inset 0 -2px 0 currentColor',
       headerWeight: 650,
+      uppercaseLabels: false,
+    };
+  }
+
+  if (style === 'crtRiot') {
+    return {
+      id: style,
+      fontFamily: '"Lucida Console", Monaco, Consolas, monospace',
+      appBg: dark ? '#07080b' : '#f8fff8',
+      appBackgroundImage: dark
+        ? 'linear-gradient(rgba(255,255,255,0.035) 50%, transparent 50%), linear-gradient(90deg, rgba(255,44,85,0.06), rgba(0,255,198,0.05), rgba(80,140,255,0.06))'
+        : 'linear-gradient(rgba(0,40,0,0.035) 50%, transparent 50%), linear-gradient(90deg, rgba(255,44,85,0.07), rgba(0,160,110,0.05), rgba(40,80,255,0.06))',
+      appBackgroundSize: '100% 4px, 100% 100%',
+      toolbarBg: dark ? '#101018' : '#effff4',
+      toolbarShadow: dark ? '0 0 0 1px #2effb8, 0 0 28px rgba(46,255,184,0.24)' : '0 0 0 1px #12a06d, 0 8px 22px rgba(18,160,109,0.14)',
+      panelBg: dark ? '#0c1011' : '#ffffff',
+      cardBg: dark ? '#101318' : '#ffffff',
+      inputBg: dark ? '#050707' : '#f8fff9',
+      gridBg: dark ? '#050707' : '#fbfffb',
+      gridBackgroundImage: dark
+        ? 'linear-gradient(rgba(46,255,184,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,44,85,0.08) 1px, transparent 1px)'
+        : 'linear-gradient(rgba(18,160,109,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,44,85,0.08) 1px, transparent 1px)',
+      gridBackgroundSize: '22px 22px',
+      gridHeaderBg: dark ? '#17161d' : '#e9fff1',
+      border: dark ? '#2effb8' : '#12a06d',
+      borderSubtle: dark ? '#173f37' : '#c8ead7',
+      radius: 0,
+      cardRadius: 0,
+      toolbarHeight: 44,
+      tabHeight: 34,
+      statusHeight: 22,
+      buttonPadding: '4px 12px',
+      buttonBg: dark ? '#171020' : '#ffffff',
+      buttonColor: dark ? '#d8fff3' : '#063d2b',
+      buttonBorder: dark ? '#ff2c55' : '#12a06d',
+      buttonShadow: dark ? '3px 3px 0 #ff2c55, -2px -2px 0 #2effb8' : '3px 3px 0 #ff6b8a, -2px -2px 0 #6ee7b7',
+      cardShadow: dark ? '6px 6px 0 #ff2c55, -3px -3px 0 #2effb8' : '5px 5px 0 #ff9aae, -3px -3px 0 #9af2cf',
+      modalShadow: dark ? '0 0 0 2px #2effb8, 12px 12px 0 #ff2c55, 0 28px 70px rgba(0,0,0,0.58)' : '0 0 0 2px #12a06d, 12px 12px 0 #ff9aae, 0 22px 54px rgba(18,160,109,0.18)',
+      tabActiveBg: dark ? '#200d18' : '#ffffff',
+      tabInactiveBg: dark ? 'rgba(46,255,184,0.04)' : 'rgba(18,160,109,0.04)',
+      tabActiveShadow: dark ? 'inset 0 -3px 0 #2effb8, 0 0 18px rgba(255,44,85,0.34)' : 'inset 0 -3px 0 #12a06d, 0 3px 0 #ff9aae',
+      headerWeight: 900,
+      uppercaseLabels: true,
+    };
+  }
+
+  if (style === 'hazmatPop') {
+    return {
+      id: style,
+      fontFamily: 'Impact, "Arial Black", Arial, sans-serif',
+      appBg: dark ? '#12120a' : '#fffbea',
+      appBackgroundImage: 'repeating-linear-gradient(135deg, rgba(0,0,0,0.16) 0 10px, transparent 10px 22px)',
+      appBackgroundSize: '64px 64px',
+      toolbarBg: dark ? '#e7ff1f' : '#f7ff2f',
+      toolbarShadow: '0 4px 0 #111111',
+      panelBg: dark ? '#1b1a12' : '#fffdf0',
+      cardBg: dark ? '#202018' : '#ffffff',
+      inputBg: dark ? '#080806' : '#ffffff',
+      gridBg: dark ? '#12120a' : '#fffef6',
+      gridBackgroundImage: 'linear-gradient(90deg, rgba(255,70,0,0.08) 1px, transparent 1px), linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px)',
+      gridBackgroundSize: '18px 18px',
+      gridHeaderBg: dark ? '#e7ff1f' : '#f7ff2f',
+      border: '#111111',
+      borderSubtle: dark ? '#3b3b22' : '#e7dfaa',
+      radius: 1,
+      cardRadius: 2,
+      toolbarHeight: 46,
+      tabHeight: 36,
+      statusHeight: 22,
+      buttonPadding: '5px 13px',
+      buttonBg: dark ? '#ff4d00' : '#ffffff',
+      buttonColor: dark ? '#111111' : '#111111',
+      buttonBorder: '#111111',
+      buttonShadow: '4px 4px 0 #111111',
+      cardShadow: '6px 6px 0 #111111',
+      modalShadow: '10px 10px 0 #111111, 0 26px 64px rgba(0,0,0,0.38)',
+      tabActiveBg: dark ? '#ff4d00' : '#ffffff',
+      tabInactiveBg: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
+      tabActiveShadow: 'inset 0 -4px 0 #111111',
+      headerWeight: 900,
+      uppercaseLabels: true,
+    };
+  }
+
+  if (style === 'holoLedger') {
+    return {
+      id: style,
+      fontFamily: '"Trebuchet MS", "Segoe UI", Arial, sans-serif',
+      appBg: dark ? '#070b12' : '#f5fbff',
+      appBackgroundImage: dark
+        ? 'linear-gradient(115deg, rgba(0,228,255,0.12), transparent 30%, rgba(255,210,65,0.1) 52%, transparent 72%, rgba(255,79,216,0.12))'
+        : 'linear-gradient(115deg, rgba(0,145,180,0.12), transparent 30%, rgba(255,196,35,0.13) 52%, transparent 72%, rgba(225,64,180,0.13))',
+      toolbarBg: dark ? 'rgba(10,18,30,0.86)' : 'rgba(255,255,255,0.86)',
+      toolbarShadow: dark ? '0 0 0 1px rgba(0,228,255,0.45), 0 18px 42px rgba(0,0,0,0.38)' : '0 0 0 1px rgba(0,145,180,0.25), 0 18px 42px rgba(0,145,180,0.12)',
+      panelBg: dark ? 'rgba(9,15,25,0.94)' : 'rgba(255,255,255,0.94)',
+      cardBg: dark ? 'rgba(12,20,32,0.88)' : 'rgba(255,255,255,0.86)',
+      inputBg: dark ? 'rgba(4,9,16,0.9)' : 'rgba(255,255,255,0.9)',
+      gridBg: dark ? '#08101a' : '#fbfdff',
+      gridBackgroundImage: 'radial-gradient(circle at 0 0, rgba(0,228,255,0.13) 0 1px, transparent 2px), linear-gradient(90deg, rgba(255,210,65,0.08) 1px, transparent 1px)',
+      gridBackgroundSize: '18px 18px, 48px 48px',
+      gridHeaderBg: dark ? 'rgba(12,24,38,0.92)' : 'rgba(238,250,255,0.92)',
+      border: dark ? '#38dff4' : '#5aaec1',
+      borderSubtle: dark ? 'rgba(56,223,244,0.2)' : 'rgba(90,174,193,0.22)',
+      radius: 6,
+      cardRadius: 7,
+      toolbarHeight: 43,
+      tabHeight: 35,
+      statusHeight: 22,
+      buttonPadding: '5px 12px',
+      buttonBg: dark ? 'rgba(8,16,26,0.82)' : 'rgba(255,255,255,0.82)',
+      buttonColor: dark ? '#dffcff' : '#164653',
+      buttonBorder: dark ? '#38dff4' : '#7cc7d8',
+      buttonShadow: dark ? '0 0 18px rgba(56,223,244,0.22), inset 0 1px 0 rgba(255,255,255,0.14)' : '0 8px 18px rgba(90,174,193,0.13), inset 0 1px 0 rgba(255,255,255,0.8)',
+      cardShadow: dark ? '0 18px 44px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.12)' : '0 18px 44px rgba(90,174,193,0.14)',
+      modalShadow: dark ? '0 0 0 1px rgba(56,223,244,0.35), 0 28px 80px rgba(0,0,0,0.55)' : '0 0 0 1px rgba(90,174,193,0.24), 0 28px 70px rgba(90,174,193,0.22)',
+      tabActiveBg: dark ? 'rgba(20,38,58,0.92)' : 'rgba(255,255,255,0.92)',
+      tabInactiveBg: 'transparent',
+      tabActiveShadow: dark ? '0 0 20px rgba(56,223,244,0.28), inset 0 -2px 0 #ffd241' : '0 8px 18px rgba(90,174,193,0.12), inset 0 -2px 0 #e09a1a',
+      headerWeight: 850,
+      uppercaseLabels: true,
+    };
+  }
+
+  if (style === 'paperKnife') {
+    return {
+      id: style,
+      fontFamily: 'Georgia, "Times New Roman", serif',
+      appBg: dark ? '#15120f' : '#fffaf0',
+      appBackgroundImage: dark
+        ? 'linear-gradient(0deg, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,70,0.08) 0 2px, transparent 2px)'
+        : 'linear-gradient(0deg, rgba(55,42,25,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(210,0,62,0.12) 0 2px, transparent 2px)',
+      appBackgroundSize: '100% 21px, 54px 100%',
+      toolbarBg: dark ? '#241d18' : '#fff3d6',
+      toolbarShadow: dark ? '0 2px 0 #d5003e' : '0 2px 0 #d5003e',
+      panelBg: dark ? '#211b16' : '#fff8e8',
+      cardBg: dark ? '#2a211a' : '#fffdf5',
+      inputBg: dark ? '#120f0d' : '#fffdf7',
+      gridBg: dark ? '#181411' : '#fffdf7',
+      gridBackgroundImage: 'linear-gradient(0deg, rgba(213,0,62,0.1) 1px, transparent 1px)',
+      gridBackgroundSize: '100% 22px',
+      gridHeaderBg: dark ? '#2a211a' : '#fff1c7',
+      border: dark ? '#8f6e42' : '#d8b56d',
+      borderSubtle: dark ? '#3a2d20' : '#ead8a9',
+      radius: 1,
+      cardRadius: 2,
+      toolbarHeight: 42,
+      tabHeight: 34,
+      statusHeight: 21,
+      buttonPadding: '4px 12px',
+      buttonBg: dark ? '#30241a' : '#fffdf5',
+      buttonColor: dark ? '#ffe8b4' : '#3f2a14',
+      buttonBorder: dark ? '#d5003e' : '#d5003e',
+      buttonShadow: dark ? '2px 2px 0 #000, inset 0 -2px 0 rgba(213,0,62,0.25)' : '2px 2px 0 #d5003e',
+      cardShadow: dark ? '4px 4px 0 rgba(213,0,62,0.55)' : '4px 4px 0 #f1c453',
+      modalShadow: dark ? '8px 8px 0 rgba(213,0,62,0.55), 0 28px 70px rgba(0,0,0,0.48)' : '8px 8px 0 #f1c453, 0 24px 60px rgba(76,45,10,0.2)',
+      tabActiveBg: dark ? '#361d1f' : '#ffffff',
+      tabInactiveBg: 'transparent',
+      tabActiveShadow: 'inset 0 -3px 0 #d5003e',
+      headerWeight: 900,
       uppercaseLabels: false,
     };
   }

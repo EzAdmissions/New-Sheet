@@ -124,10 +124,20 @@ export default function App() {
   if (!round || !activeSheet) { setView('dashboard'); return null; }
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: ui.appBg ?? theme.bg, color: theme.text, fontFamily: ui.fontFamily, overflow: 'hidden' }}>
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      background: ui.appBg ?? theme.bg,
+      backgroundImage: ui.appBackgroundImage,
+      backgroundSize: ui.appBackgroundSize,
+      color: theme.text,
+      fontFamily: ui.fontFamily,
+      overflow: 'hidden',
+    }}>
 
       {/* Top bar */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', height: ui.toolbarHeight, background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, gap: 8, flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', height: ui.toolbarHeight, background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, boxShadow: ui.toolbarShadow, gap: 8, flexShrink: 0, position: 'relative', zIndex: 2 }}>
         <button onClick={handleBack} style={tbBtn(theme, ui)}>Dashboard</button>
         <button onClick={() => setMetaOpen(true)} style={{ ...tbBtn(theme, ui), maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           Round Info
@@ -138,7 +148,7 @@ export default function App() {
       </div>
 
       {/* Sheet tabs - sorted: aff first, then off */}
-      <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, overflowX: 'auto', flexShrink: 0, height: ui.tabHeight }}>
+      <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, boxShadow: ui.toolbarShadow, overflowX: 'auto', flexShrink: 0, height: ui.tabHeight, position: 'relative', zIndex: 1 }}>
         {sortSheetsForDisplay(round.sheets)
           .filter(sh => sh.type !== 'cx')
           .map(sh => {

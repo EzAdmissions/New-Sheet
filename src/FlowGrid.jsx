@@ -4,6 +4,7 @@ import useStore, { sortSheetsForDisplay } from './store';
 import { useTheme, getSpeechColor, getAffColor, getNegColor } from './theme';
 import { matchesAction } from './keybindings';
 import { exportSheetCSV, exportRoundCSV, exportRoundHTML } from './export';
+import { getUiChrome } from './uiChrome';
 
 const TOTAL_ROWS = 200;
 const AUTO_EXTEND_MAX_ROWS = 8;
@@ -105,6 +106,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const setActiveSheet = useStore(s => s.setActiveSheet);
   const swapSheets     = useStore(s => s.swapSheets);
   const theme = useTheme(settings.theme);
+  const ui = getUiChrome(settings, theme);
   const affColor = getAffColor(settings, theme);
   const negColor = getNegColor(settings, theme);
 
@@ -1019,7 +1021,14 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', height: '100%', background: theme.bg }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        background: ui.gridBg ?? theme.bg,
+        backgroundImage: ui.gridBackgroundImage,
+        backgroundSize: ui.gridBackgroundSize,
+      }}
       onWheel={handleWheel}
     >
       {/* Sticky column headers */}
@@ -1028,7 +1037,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
         style={{
           display: 'flex', flexShrink: 0, overflow: 'hidden',
           borderBottom: `2px solid ${theme.border}`,
-          background: theme.bgSecondary,
+          background: ui.gridHeaderBg ?? theme.bgSecondary,
         }}
       >
         {speeches.map((sp, colIdx) => {
@@ -1057,7 +1066,15 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       {/* Scrollable grid */}
       <div
         ref={containerRef}
-        style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative', background: theme.bg }}
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          position: 'relative',
+          background: ui.gridBg ?? theme.bg,
+          backgroundImage: ui.gridBackgroundImage,
+          backgroundSize: ui.gridBackgroundSize,
+        }}
       >
         <div ref={gridRef} style={{
           display: 'flex',
@@ -1104,7 +1121,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                         fontFamily: settings.fontFamily,
                         color,
                         background: isSel ? theme.selection : 'transparent',
-                        borderBottom: `1px solid ${theme.borderSubtle}`,
+                        borderBottom: `1px solid ${ui.borderSubtle ?? theme.borderSubtle}`,
                         cursor: blockedColor ? 'not-allowed' : 'text',
                         whiteSpace: textWrap ? 'pre-wrap' : 'nowrap',
                         wordBreak: textWrap ? 'break-word' : 'normal',

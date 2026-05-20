@@ -32,9 +32,18 @@ export default function Dashboard({ onOpenSettings }) {
   const sorted = [...rounds].sort((a, b) => (b.lastEdited ?? 0) - (a.lastEdited ?? 0));
 
   return (
-    <div style={{ height: '100vh', background: theme.bg, color: theme.text, display: 'flex', flexDirection: 'column', fontFamily: ui.fontFamily }}>
+    <div style={{
+      height: '100vh',
+      background: ui.appBg ?? theme.bg,
+      backgroundImage: ui.appBackgroundImage,
+      backgroundSize: ui.appBackgroundSize,
+      color: theme.text,
+      display: 'flex',
+      flexDirection: 'column',
+      fontFamily: ui.fontFamily,
+    }}>
       {/* Header */}
-      <div style={{ padding: '0 32px', height: ui.toolbarHeight + 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${ui.border}`, background: ui.toolbarBg }}>
+      <div style={{ padding: '0 32px', height: ui.toolbarHeight + 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${ui.border}`, background: ui.toolbarBg, boxShadow: ui.toolbarShadow, position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <NsLogo />
           <span style={{ fontWeight: ui.headerWeight, fontSize: 18, color: theme.text, letterSpacing: 0 }}>New Sheet</span>

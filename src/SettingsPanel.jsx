@@ -125,7 +125,19 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
       onClick={onClose}
     >
       <div
-        style={{ background: ui.panelBg, border: `1px solid ${ui.border}`, borderRadius: ui.cardRadius, width: 480, maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: ui.modalShadow, fontFamily: ui.fontFamily }}
+        style={{
+          background: ui.panelBg,
+          backgroundImage: ui.appBackgroundImage,
+          backgroundSize: ui.appBackgroundSize,
+          border: `1px solid ${ui.border}`,
+          borderRadius: ui.cardRadius,
+          width: 480,
+          maxHeight: '80vh',
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: ui.modalShadow,
+          fontFamily: ui.fontFamily,
+        }}
         onClick={e => e.stopPropagation()}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: `1px solid ${ui.border}` }}>
