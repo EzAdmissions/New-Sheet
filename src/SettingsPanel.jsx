@@ -75,7 +75,7 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
 
   const select = (key, options) => (
     <select
-      value={settings[key]}
+      value={options.some(([value]) => value === settings[key]) ? settings[key] : options[0]?.[0]}
       onChange={e => update({ [key]: e.target.value })}
       style={{ padding: '4px 8px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, fontFamily: 'inherit' }}
     >

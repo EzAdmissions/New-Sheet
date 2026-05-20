@@ -1,21 +1,18 @@
 export const UI_STYLE_OPTIONS = [
   ['modern', 'Modern'],
   ['classicWin', 'Classic Windows'],
-  ['compact', 'Compact Utility'],
-  ['softGray', 'Soft Gray'],
-  ['terminal', 'Terminal Green'],
-  ['cyberInk', 'Cyber Ink'],
   ['courtroom', 'Courtroom'],
-  ['blueprint', 'Blueprint'],
-  ['monoPro', 'Mono Pro'],
   ['crtRiot', 'CRT Riot'],
   ['hazmatPop', 'Hazmat Pop'],
   ['holoLedger', 'Holo Ledger'],
   ['paperKnife', 'Paper Knife'],
 ];
 
+const REMOVED_UI_STYLES = new Set(['compact', 'softGray', 'terminal', 'cyberInk', 'blueprint', 'monoPro']);
+
 export function getUiChrome(settings, theme) {
-  const style = settings?.uiStyle ?? 'modern';
+  const requestedStyle = settings?.uiStyle ?? 'modern';
+  const style = REMOVED_UI_STYLES.has(requestedStyle) ? 'modern' : requestedStyle;
   const dark = settings?.theme === 'dark';
 
   if (style === 'classicWin') {
@@ -276,12 +273,6 @@ export function getUiChrome(settings, theme) {
       panelBg: dark ? '#0c1011' : '#ffffff',
       cardBg: dark ? '#101318' : '#ffffff',
       inputBg: dark ? '#050707' : '#f8fff9',
-      gridBg: dark ? '#050707' : '#fbfffb',
-      gridBackgroundImage: dark
-        ? 'linear-gradient(rgba(46,255,184,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,44,85,0.08) 1px, transparent 1px)'
-        : 'linear-gradient(rgba(18,160,109,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,44,85,0.08) 1px, transparent 1px)',
-      gridBackgroundSize: '22px 22px',
-      gridHeaderBg: dark ? '#17161d' : '#e9fff1',
       border: dark ? '#2effb8' : '#12a06d',
       borderSubtle: dark ? '#173f37' : '#c8ead7',
       radius: 0,
@@ -316,10 +307,6 @@ export function getUiChrome(settings, theme) {
       panelBg: dark ? '#1b1a12' : '#fffdf0',
       cardBg: dark ? '#202018' : '#ffffff',
       inputBg: dark ? '#080806' : '#ffffff',
-      gridBg: dark ? '#12120a' : '#fffef6',
-      gridBackgroundImage: 'linear-gradient(90deg, rgba(255,70,0,0.08) 1px, transparent 1px), linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px)',
-      gridBackgroundSize: '18px 18px',
-      gridHeaderBg: dark ? '#e7ff1f' : '#f7ff2f',
       border: '#111111',
       borderSubtle: dark ? '#3b3b22' : '#e7dfaa',
       radius: 1,
@@ -355,10 +342,6 @@ export function getUiChrome(settings, theme) {
       panelBg: dark ? 'rgba(9,15,25,0.94)' : 'rgba(255,255,255,0.94)',
       cardBg: dark ? 'rgba(12,20,32,0.88)' : 'rgba(255,255,255,0.86)',
       inputBg: dark ? 'rgba(4,9,16,0.9)' : 'rgba(255,255,255,0.9)',
-      gridBg: dark ? '#08101a' : '#fbfdff',
-      gridBackgroundImage: 'radial-gradient(circle at 0 0, rgba(0,228,255,0.13) 0 1px, transparent 2px), linear-gradient(90deg, rgba(255,210,65,0.08) 1px, transparent 1px)',
-      gridBackgroundSize: '18px 18px, 48px 48px',
-      gridHeaderBg: dark ? 'rgba(12,24,38,0.92)' : 'rgba(238,250,255,0.92)',
       border: dark ? '#38dff4' : '#5aaec1',
       borderSubtle: dark ? 'rgba(56,223,244,0.2)' : 'rgba(90,174,193,0.22)',
       radius: 6,
@@ -395,12 +378,8 @@ export function getUiChrome(settings, theme) {
       panelBg: dark ? '#211b16' : '#fff8e8',
       cardBg: dark ? '#2a211a' : '#fffdf5',
       inputBg: dark ? '#120f0d' : '#fffdf7',
-      gridBg: dark ? '#181411' : '#fffdf7',
-      gridBackgroundImage: 'linear-gradient(0deg, rgba(213,0,62,0.1) 1px, transparent 1px)',
-      gridBackgroundSize: '100% 22px',
-      gridHeaderBg: dark ? '#2a211a' : '#fff1c7',
-      border: dark ? '#8f6e42' : '#d8b56d',
-      borderSubtle: dark ? '#3a2d20' : '#ead8a9',
+      border: '#111111',
+      borderSubtle: '#111111',
       radius: 1,
       cardRadius: 2,
       toolbarHeight: 42,

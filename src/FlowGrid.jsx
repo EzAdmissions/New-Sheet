@@ -1029,7 +1029,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
         ref={headerRef}
         style={{
           display: 'flex', flexShrink: 0, overflow: 'hidden',
-          borderBottom: `2px solid ${theme.border}`,
+          borderBottom: `2px solid ${ui.border ?? theme.border}`,
           background: ui.gridHeaderBg ?? theme.bgSecondary,
         }}
       >
@@ -1047,7 +1047,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                 color: getSpeechColor(sp, theme, settings),
                 textAlign: 'center', letterSpacing: 0.8,
                 textTransform: 'uppercase',
-                borderRight: colIdx === speeches.length - 1 ? 'none' : `1px solid ${theme.border}`,
+                borderRight: colIdx === speeches.length - 1 ? 'none' : `1px solid ${ui.border ?? theme.border}`,
               }}
             >
               {sp}
@@ -1086,7 +1086,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                   minWidth: 0,
                   flex: '1 0 0',
                   flexShrink: 0,
-                  borderRight: colIdx === speeches.length - 1 ? 'none' : `1px solid ${theme.borderSubtle}`,
+                  borderRight: colIdx === speeches.length - 1 ? 'none' : `1px solid ${ui.borderSubtle ?? theme.borderSubtle}`,
                 }}
               >
                 {Array.from({ length: TOTAL_ROWS }, (_, rowIdx) => {
