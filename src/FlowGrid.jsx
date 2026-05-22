@@ -654,6 +654,26 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     window.addEventListener('jayflow-flush-now', handler);
     return () => window.removeEventListener('jayflow-flush-now', handler);
   }, [flush]);
+
+  useEffect(() => {
+    const handler = (event) => {
+      const { sheetId: editedSheetId, speech, row, value } = event.detail ?? {};
+      if (editedSheetId !== sheetId || !speech || row == null) return;
+      setLocalText(speech, row, value ?? '');
+      const col = speeches.indexOf(speech);
+      if (col >= 0) {
+        updateCellDom(col, row, value ?? '');
+        if (activeCellRef.current.col === col && activeCellRef.current.row === row && taRef.current) {
+          taRef.current.value = value ?? '';
+          resizeActiveTextarea();
+        }
+      }
+      syncRowSpan(row);
+    };
+    window.addEventListener('jayflow-remote-cell-edit', handler);
+    return () => window.removeEventListener('jayflow-remote-cell-edit', handler);
+  }, [sheetId, speeches, updateCellDom, resizeActiveTextarea, syncRowSpan]);
+
   useEffect(() => {
     const exportFreshRound = () => {
       const gridData = getCurrentGrid();

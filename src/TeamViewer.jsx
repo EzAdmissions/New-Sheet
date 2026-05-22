@@ -37,7 +37,7 @@ function waitForICE(pc) {
   });
 }
 
-function ReadOnlyGrid({ sheet, settings, theme, ui }) {
+function ReadOnlyGrid({ sheet, settings, theme, ui, editable = false, onCellEdit }) {
   if (!sheet) return <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.textMuted, fontSize: 13 }}>No sheet data</div>;
   const { speeches, grid } = sheet;
   const ROWS = 200;
@@ -68,12 +68,19 @@ function ReadOnlyGrid({ sheet, settings, theme, ui }) {
         {Array.from({ length: displayRows }, (_, rowIdx) => (
           <div key={rowIdx} style={{ display: 'flex', borderBottom: `1px solid ${ui.borderSubtle ?? theme.borderSubtle}` }}>
             {speeches.map((sp, ci) => (
-              <div key={sp} style={{
+              <div
+                key={sp}
+                contentEditable={editable}
+                suppressContentEditableWarning
+                onInput={editable ? (e) => onCellEdit?.(sheet.id, sp, rowIdx, e.currentTarget.textContent ?? '') : undefined}
+                style={{
                 flex: 1, minHeight: rh, padding: `2px ${pad}px`,
                 fontSize: fs, fontFamily: settings.fontFamily ?? 'Arial, sans-serif',
                 color: getSpeechColor(sp, theme, settings),
                 borderRight: ci < speeches.length - 1 ? `1px solid ${ui.borderSubtle ?? theme.borderSubtle}` : 'none',
                 whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                outline: editable ? `1px solid transparent` : 'none',
+                cursor: editable ? 'text' : 'default',
               }}>
                 {grid[sp]?.[rowIdx] ?? ''}
               </div>
@@ -85,7 +92,7 @@ function ReadOnlyGrid({ sheet, settings, theme, ui }) {
   );
 }
 
-function PartnerFlowWindow({ open, round, activeSheetId, viewSheetId, onViewSheet, onClosed, settings, theme, ui }) {
+function PartnerFlowWindow({ open, round, activeSheetId, viewSheetId, onViewSheet, onClosed, settings, theme, ui, partnerAllowsEdits, onCellEdit }) {
   const winRef = useRef(null);
   const containerRef = useRef(null);
   const [ready, setReady] = useState(false);
@@ -136,6 +143,9 @@ function PartnerFlowWindow({ open, round, activeSheetId, viewSheetId, onViewShee
         <div style={{ width: 8, height: 8, borderRadius: '50%', background: round ? '#22c55e' : theme.textDim, flexShrink: 0 }} />
         <span style={{ fontWeight: 700, fontSize: 13 }}>Partner's Flow</span>
         <span style={{ fontSize: 11, color: theme.textMuted }}>{round ? 'live' : 'waiting for data'}</span>
+        <span style={{ fontSize: 11, color: partnerAllowsEdits ? '#22c55e' : theme.textMuted }}>
+          {partnerAllowsEdits ? 'editing enabled' : 'view only'}
+        </span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, overflowX: 'auto', height: ui.tabHeight ?? 32, flexShrink: 0 }}>
         {partnerSheets.map(sh => {
@@ -158,7 +168,7 @@ function PartnerFlowWindow({ open, round, activeSheetId, viewSheetId, onViewShee
         })}
       </div>
       <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', background: ui.gridBg ?? theme.bg }}>
-        <ReadOnlyGrid sheet={viewSheet} settings={settings} theme={theme} ui={ui} />
+        <ReadOnlyGrid sheet={viewSheet} settings={settings} theme={theme} ui={ui} editable={partnerAllowsEdits} onCellEdit={onCellEdit} />
       </div>
     </div>,
     containerRef.current
@@ -168,6 +178,7 @@ function PartnerFlowWindow({ open, round, activeSheetId, viewSheetId, onViewShee
 export default function TeamViewer({ visible = true, onHide, onClose }) {
   const settings    = useStore(s => s.settings);
   const activeRound = useStore(s => s.rounds.find(r => r.id === s.activeRoundId));
+  const applyRemoteCellEdit = useStore(s => s.applyRemoteCellEdit);
   const theme = useTheme(settings.theme);
   const ui    = getUiChrome(settings, theme);
 
@@ -187,11 +198,15 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
   const [error, setError]                   = useState('');
   const [copied, setCopied]                 = useState(false);
   const [partnerWindowOpen, setPartnerWindowOpen] = useState(false);
+  const [allowPartnerEdits, setAllowPartnerEdits] = useState(false);
+  const [partnerAllowsEdits, setPartnerAllowsEdits] = useState(false);
 
   const pcRef        = useRef(null);
   const channelRef   = useRef(null);
   const broadcastRef = useRef(null);
   const hasConnectedRef = useRef(false);
+  const allowPartnerEditsRef = useRef(allowPartnerEdits);
+  allowPartnerEditsRef.current = allowPartnerEdits;
 
   const cleanup = useCallback(() => {
     if (broadcastRef.current) { clearInterval(broadcastRef.current); broadcastRef.current = null; }
@@ -226,11 +241,15 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
         if (data.type === 'round') {
           setPartnerRound(data.round);
           setPartnerActiveId(data.activeSheetId);
+          setPartnerAllowsEdits(Boolean(data.allowEdits));
           setViewSheetId(id => id ?? data.activeSheetId ?? data.round?.sheets?.[0]?.id ?? null);
+        } else if (data.type === 'cellEdit' && allowPartnerEditsRef.current) {
+          applyRemoteCellEdit(data.edit);
+          window.dispatchEvent(new CustomEvent('jayflow-remote-cell-edit', { detail: data.edit }));
         }
       } catch { /* ignore malformed partner updates */ }
     };
-  }, []);
+  }, [applyRemoteCellEdit]);
 
   // Both peers flush FlowGrid's live buffer and broadcast their own round.
   useEffect(() => {
@@ -241,7 +260,7 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
       const round = activeRoundRef.current;
       const ch = channelRef.current;
       if (ch?.readyState === 'open' && round) {
-        try { ch.send(JSON.stringify({ type: 'round', round, activeSheetId: round.activeSheetId })); } catch { /* connection state handles failures */ }
+        try { ch.send(JSON.stringify({ type: 'round', round, activeSheetId: round.activeSheetId, allowEdits: allowPartnerEditsRef.current })); } catch { /* connection state handles failures */ }
       }
     };
     send();
@@ -326,6 +345,7 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
     setMode(null); setStep('choose'); setMyCode(''); setInputCode('');
     setPartnerRound(null); setPartnerActiveId(null); setViewSheetId(null); setError('');
     setPartnerWindowOpen(false);
+    setPartnerAllowsEdits(false);
   }, [cleanup]);
 
   const closePanel = useCallback(() => {
@@ -336,6 +356,26 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
   const hidePanel = useCallback(() => {
     onHide?.();
   }, [onHide]);
+
+  const sendPartnerCellEdit = useCallback((sheetId, speech, row, value) => {
+    const edit = { sheetId, speech, row, value };
+    setPartnerRound(round => {
+      if (!round) return round;
+      return {
+        ...round,
+        sheets: round.sheets.map(sheet => {
+          if (sheet.id !== sheetId || !sheet.grid?.[speech]) return sheet;
+          const col = [...sheet.grid[speech]];
+          col[row] = value;
+          return { ...sheet, grid: { ...sheet.grid, [speech]: col } };
+        }),
+      };
+    });
+    const ch = channelRef.current;
+    if (ch?.readyState === 'open') {
+      try { ch.send(JSON.stringify({ type: 'cellEdit', edit })); } catch { /* connection state handles failures */ }
+    }
+  }, []);
 
   const partnerWindow = (
     <PartnerFlowWindow
@@ -348,6 +388,8 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
       settings={settings}
       theme={theme}
       ui={ui}
+      partnerAllowsEdits={partnerAllowsEdits}
+      onCellEdit={sendPartnerCellEdit}
     />
   );
 
@@ -370,6 +412,12 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
           <div style={{ flex: 1 }} />
           <button onClick={reset} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Disconnect</button>
           <button onClick={() => setPartnerWindowOpen(true)} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Open Partner Window</button>
+          <button
+            onClick={() => setAllowPartnerEdits(v => !v)}
+            style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: allowPartnerEdits ? 700 : 400 }}
+          >
+            {allowPartnerEdits ? 'Partner Can Edit' : 'View Only'}
+          </button>
           <button onClick={hidePanel} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
         </div>
 
@@ -377,6 +425,9 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
           <div style={{ textAlign: 'center', color: theme.textMuted, fontSize: 13, lineHeight: 1.7 }}>
             <div style={{ fontWeight: 600, color: theme.text }}>Both flows are live</div>
             <div style={{ fontSize: 11, marginTop: 4 }}>Keep flowing in this main window. Your partner's flow is available in the separate Partner Window.</div>
+            <div style={{ fontSize: 11, marginTop: 4 }}>
+              Partner editing your flow is {allowPartnerEdits ? 'enabled' : 'disabled'}. Editing their flow is {partnerAllowsEdits ? 'enabled' : 'disabled'}.
+            </div>
             {!partnerRound && <div style={{ fontSize: 11, marginTop: 8 }}>Waiting for your partner's first flow update...</div>}
             {partnerRound && !partnerWindowOpen && (
               <button onClick={() => setPartnerWindowOpen(true)} style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), marginTop: 12, fontWeight: 600 }}>

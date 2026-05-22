@@ -254,6 +254,22 @@ const useStore = create(
         }),
       })),
 
+      applyRemoteCellEdit: ({ sheetId, speech, row, value }) => set(s => ({
+        rounds: s.rounds.map(r => {
+          if (r.id !== s.activeRoundId) return r;
+          return {
+            ...r,
+            lastEdited: Date.now(),
+            sheets: r.sheets.map(sh => {
+              if (sh.id !== sheetId || !sh.grid?.[speech]) return sh;
+              const col = [...sh.grid[speech]];
+              col[row] = value;
+              return { ...sh, grid: { ...sh.grid, [speech]: col } };
+            }),
+          };
+        }),
+      })),
+
       swapSheets: (idA, idB) => set(s => ({
         rounds: s.rounds.map(r => {
           if (r.id !== s.activeRoundId) return r;
