@@ -8,8 +8,10 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  # ── Build Mac DMG ─────────────────────────────────────────────────
   build-mac:
     runs-on: macos-latest
     steps:
@@ -17,19 +19,20 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - run: npm ci
 
       - run: npm run dist:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - uses: actions/upload-artifact@v4
         with:
           name: mac-build
           path: release/*.dmg
 
-  # ── Build Windows NSIS installer ──────────────────────────────────
   build-windows:
     runs-on: windows-latest
     steps:
@@ -37,26 +40,27 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - run: npm ci
 
       - run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: release/*.exe
 
-  # ── Create / update GitHub Release with both installers ───────────
   release:
     needs: [build-mac, build-windows]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read version from package.json
+      - name: Read version
         id: pkg
         run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
 
