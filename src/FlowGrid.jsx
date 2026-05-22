@@ -640,7 +640,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
         flushSheet(prevId, grid, []);
       }
     }
-  }, [sheetId]); // eslint-disable-line
+  }, [sheetId]);
 
   // Reset extension links when switching sheets
   useEffect(() => { setExtensionLinks(sheet.extensionLinks ?? []); }, [sheetId]);

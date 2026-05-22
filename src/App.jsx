@@ -31,7 +31,8 @@ export default function App() {
   const [settingsOpen,    setSettingsOpen]     = useState(false);
   const [settingsTab,     setSettingsTab]      = useState('display');
   const [metaOpen,        setMetaOpen]         = useState(false);
-  const [teamOpen,        setTeamOpen]         = useState(false);
+  const [teamMounted,     setTeamMounted]      = useState(false);
+  const [teamVisible,     setTeamVisible]      = useState(false);
   const [offCount,        setOffCount]         = useState('');
   const [renamingSheetId, setRenamingSheetId] = useState(null);
   const [dragOverId,      setDragOverId]       = useState(null);
@@ -102,10 +103,20 @@ export default function App() {
 
   // Focus naming bar only on initial show and only when no modal is open
   useEffect(() => {
-    if (!showNamingBar || metaOpen || settingsOpen || teamOpen) return;
+    if (!showNamingBar || metaOpen || settingsOpen || teamVisible) return;
     const t = setTimeout(() => namingInputRef.current?.focus(), 0);
     return () => clearTimeout(t);
-  }, [showNamingBar, activeSheet?.id, metaOpen, settingsOpen, teamOpen]);
+  }, [showNamingBar, activeSheet?.id, metaOpen, settingsOpen, teamVisible]);
+
+  const openTeamViewer = useCallback(() => {
+    setTeamMounted(true);
+    setTeamVisible(true);
+  }, [setTeamMounted, setTeamVisible]);
+
+  const closeTeamViewer = useCallback(() => {
+    setTeamVisible(false);
+    setTeamMounted(false);
+  }, [setTeamMounted, setTeamVisible]);
 
   const handleBulkOff = useCallback((e) => {
     if (e.key !== 'Enter' || !offCount || !round) return;
@@ -165,7 +176,7 @@ export default function App() {
           style={tbBtn(theme, ui)}
         >Redo</button>
         <div style={{ flex: 1 }} />
-        <button onClick={() => setTeamOpen(true)} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
+        <button onClick={openTeamViewer} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
         <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
         <button onClick={() => openSettings('display')} style={tbBtn(theme, ui)}>Settings</button>
       </div>
@@ -320,7 +331,13 @@ export default function App() {
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} initialTab={settingsTab} />
       {metaOpen && <RoundMeta round={round} onClose={() => setMetaOpen(false)} />}
-      {teamOpen && <TeamViewer onClose={() => setTeamOpen(false)} />}
+      {teamMounted && (
+        <TeamViewer
+          visible={teamVisible}
+          onHide={() => setTeamVisible(false)}
+          onClose={closeTeamViewer}
+        />
+      )}
     </div>
   );
 }

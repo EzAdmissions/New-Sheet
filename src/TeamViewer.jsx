@@ -83,7 +83,7 @@ function ReadOnlyGrid({ sheet, settings, theme, ui }) {
   );
 }
 
-export default function TeamViewer({ onClose }) {
+export default function TeamViewer({ visible = true, onHide, onClose }) {
   const settings    = useStore(s => s.settings);
   const activeRound = useStore(s => s.rounds.find(r => r.id === s.activeRoundId));
   const theme = useTheme(settings.theme);
@@ -91,7 +91,9 @@ export default function TeamViewer({ onClose }) {
 
   // Always-current ref so the broadcast closure reads the latest store value
   const activeRoundRef = useRef(activeRound);
-  activeRoundRef.current = activeRound;
+  useEffect(() => {
+    activeRoundRef.current = activeRound;
+  }, [activeRound]);
 
   const [mode, setMode]                     = useState(null);        // 'host' | 'connect'
   const [step, setStep]                     = useState('choose');    // 'choose'|'inputCode'|'generating'|'waitAnswer'|'waitConnect'|'connected'
@@ -106,22 +108,35 @@ export default function TeamViewer({ onClose }) {
   const pcRef        = useRef(null);
   const channelRef   = useRef(null);
   const broadcastRef = useRef(null);
+  const hasConnectedRef = useRef(false);
 
   const cleanup = useCallback(() => {
     if (broadcastRef.current) { clearInterval(broadcastRef.current); broadcastRef.current = null; }
-    try { channelRef.current?.close(); } catch {}
-    try { pcRef.current?.close(); } catch {}
+    try { channelRef.current?.close(); } catch { /* already closed */ }
+    try { pcRef.current?.close(); } catch { /* already closed */ }
     pcRef.current = null;
     channelRef.current = null;
+    hasConnectedRef.current = false;
   }, []);
 
   useEffect(() => () => cleanup(), [cleanup]);
 
   const setupChannel = useCallback((ch) => {
     channelRef.current = ch;
-    ch.onopen  = () => setStep('connected');
-    ch.onclose = () => setStep(s => s === 'connected' ? 'disconnected' : s);
-    ch.onerror = () => setError('Connection lost.');
+    ch.onopen  = () => {
+      hasConnectedRef.current = true;
+      setError('');
+      setStep('connected');
+    };
+    ch.onclose = () => {
+      if (hasConnectedRef.current) {
+        setError('Connection lost.');
+        setStep('disconnected');
+      }
+    };
+    ch.onerror = () => {
+      if (hasConnectedRef.current) setError('Connection lost.');
+    };
     ch.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data);
@@ -130,7 +145,7 @@ export default function TeamViewer({ onClose }) {
           setPartnerActiveId(data.activeSheetId);
           setViewSheetId(id => id ?? data.activeSheetId ?? data.round?.sheets?.[0]?.id ?? null);
         }
-      } catch {}
+      } catch { /* ignore malformed partner updates */ }
     };
   }, []);
 
@@ -143,7 +158,7 @@ export default function TeamViewer({ onClose }) {
       const round = activeRoundRef.current;
       const ch = channelRef.current;
       if (ch?.readyState === 'open' && round) {
-        try { ch.send(JSON.stringify({ type: 'round', round, activeSheetId: round.activeSheetId })); } catch {}
+        try { ch.send(JSON.stringify({ type: 'round', round, activeSheetId: round.activeSheetId })); } catch { /* connection state handles failures */ }
       }
     };
     send();
@@ -158,6 +173,12 @@ export default function TeamViewer({ onClose }) {
     try {
       const pc = new RTCPeerConnection(ICE_SERVERS);
       pcRef.current = pc;
+      pc.onconnectionstatechange = () => {
+        if (hasConnectedRef.current && ['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
+          setError('Connection lost.');
+          setStep('disconnected');
+        }
+      };
       setupChannel(pc.createDataChannel('flow'));
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
@@ -177,6 +198,12 @@ export default function TeamViewer({ onClose }) {
       const offer = decode(inputCode);
       const pc = new RTCPeerConnection(ICE_SERVERS);
       pcRef.current = pc;
+      pc.onconnectionstatechange = () => {
+        if (hasConnectedRef.current && ['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
+          setError('Connection lost.');
+          setStep('disconnected');
+        }
+      };
       pc.ondatachannel = (e) => setupChannel(e.channel);
       await pc.setRemoteDescription(new RTCSessionDescription(offer));
       const answer = await pc.createAnswer();
@@ -184,7 +211,7 @@ export default function TeamViewer({ onClose }) {
       const desc = await waitForICE(pc);
       setMyCode(encode({ sdp: desc.sdp, type: desc.type }));
       setStep('waitConnect');
-    } catch (e) {
+    } catch {
       setError('Invalid session code. Make sure you pasted the full code.');
       setStep('inputCode');
     }
@@ -195,7 +222,7 @@ export default function TeamViewer({ onClose }) {
     try {
       const answer = decode(inputCode);
       await pcRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-    } catch (e) {
+    } catch {
       setError('Invalid answer code.');
     }
   }, [inputCode]);
@@ -213,12 +240,23 @@ export default function TeamViewer({ onClose }) {
     setPartnerRound(null); setPartnerActiveId(null); setViewSheetId(null); setError('');
   }, [cleanup]);
 
+  const closePanel = useCallback(() => {
+    cleanup();
+    onClose?.();
+  }, [cleanup, onClose]);
+
+  const hidePanel = useCallback(() => {
+    onHide?.();
+  }, [onHide]);
+
   const partnerSheets = (partnerRound?.sheets ?? []).filter(s => s.type !== 'cx');
   const viewSheet = partnerSheets.find(s => s.id === viewSheetId) ?? partnerSheets[0] ?? null;
 
   const wrap = { position: 'fixed', inset: 0, zIndex: 1000, background: ui.appBg ?? theme.bg, display: 'flex', flexDirection: 'column', fontFamily: ui.fontFamily, color: theme.text };
   const hdr  = { display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px', height: ui.toolbarHeight ?? 38, background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, flexShrink: 0 };
   const codeBox = { width: '100%', padding: 10, fontFamily: 'monospace', fontSize: 10, background: ui.inputBg ?? theme.bgSecondary, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, resize: 'none', boxSizing: 'border-box', height: 88, outline: 'none' };
+
+  if (!visible) return null;
 
   // ── Connected: viewer sees partner's flow ──
   if (step === 'connected' && mode === 'connect') {
@@ -230,7 +268,7 @@ export default function TeamViewer({ onClose }) {
           <span style={{ fontSize: 11, color: theme.textMuted }}>live</span>
           <div style={{ flex: 1 }} />
           <button onClick={reset} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Disconnect</button>
-          <button onClick={onClose} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
+          <button onClick={hidePanel} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
         </div>
 
         {/* Sheet tabs */}
@@ -272,7 +310,7 @@ export default function TeamViewer({ onClose }) {
           <span style={{ fontSize: 11, color: theme.textMuted }}>partner connected - broadcasting your flow</span>
           <div style={{ flex: 1 }} />
           <button onClick={reset} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Stop</button>
-          <button onClick={onClose} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
+          <button onClick={hidePanel} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
         </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ textAlign: 'center', color: theme.textMuted, fontSize: 13, lineHeight: 1.7 }}>
@@ -290,7 +328,7 @@ export default function TeamViewer({ onClose }) {
       <div style={hdr}>
         <span style={{ fontWeight: 700, fontSize: 13 }}>Team Viewer</span>
         <div style={{ flex: 1 }} />
-        <button onClick={onClose} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Close</button>
+        <button onClick={closePanel} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Close</button>
       </div>
 
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, overflowY: 'auto' }}>
@@ -299,6 +337,21 @@ export default function TeamViewer({ onClose }) {
           {error && (
             <div style={{ marginBottom: 14, padding: '8px 12px', background: theme.theme === 'dark' ? '#450a0a' : '#fef2f2', border: '1px solid #fca5a5', borderRadius: ui.radius, color: '#dc2626', fontSize: 12 }}>
               {error}
+            </div>
+          )}
+
+          {step === 'disconnected' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>Connection ended</div>
+              <div style={{ fontSize: 12, color: theme.textMuted }}>
+                Start a new Team Viewer session and exchange fresh codes.
+              </div>
+              <button onClick={reset} style={{ ...chromeButton(theme, ui, { padding: '12px 0', fontSize: 14 }), width: '100%', fontWeight: 600 }}>
+                New Session
+              </button>
+              <button onClick={closePanel} style={{ ...chromeButton(theme, ui, { padding: '12px 0', fontSize: 14 }), width: '100%' }}>
+                Close
+              </button>
             </div>
           )}
 
