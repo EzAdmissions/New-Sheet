@@ -170,7 +170,7 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
             <>
               <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: theme.textMuted, marginBottom: 10 }}>Debate Format</div>
               <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
-                {[['policy', 'Policy'], ['ld', 'Lincoln-Douglas']].map(([fmt, label]) => {
+                {[['policy', 'Policy'], ['ld', 'Lincoln-Douglas'], ['pf', 'Public Forum']].map(([fmt, label]) => {
                   const active = (settings.debateFormat ?? 'policy') === fmt;
                   return (
                     <button key={fmt} onClick={() => update({ debateFormat: fmt })} style={{

@@ -28,8 +28,8 @@ function makeId(prefix = 'id') {
 }
 
 function speechSide(speech) {
-  if (['1AC', '2AC', '1AR', '2AR'].includes(speech)) return 'aff';
-  if (['1NC', 'Block', '2NR'].includes(speech)) return 'neg';
+  if (['1AC', '2AC', '1AR', '2AR'].includes(speech) || speech.startsWith('Pro ')) return 'aff';
+  if (['1NC', 'Block', '2NR'].includes(speech) || speech.startsWith('Con ')) return 'neg';
   return null;
 }
 
@@ -184,6 +184,7 @@ function htmlCellText(cell) {
 }
 
 function inferSheetType(speeches) {
+  if (speeches.includes('Pro Constructive')) return 'aff';
   return speeches.includes('1AC') ? 'aff' : 'offcase';
 }
 

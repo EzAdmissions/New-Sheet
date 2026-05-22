@@ -75,8 +75,8 @@ export function getNegColor(settings, theme) {
 
 export function getSpeechColor(speech, theme, settings) {
   if (speech === 'Block') return getNegColor(settings, theme);
-  if (['1AC', '2AC', '1AR', '2AR', 'AC'].includes(speech)) return getAffColor(settings, theme);
-  if (['1NC', '2NR', 'NC', 'NR'].includes(speech)) return getNegColor(settings, theme);
+  if (['1AC', '2AC', '1AR', '2AR', 'AC'].includes(speech) || speech.startsWith('Pro ')) return getAffColor(settings, theme);
+  if (['1NC', '2NR', 'NC', 'NR'].includes(speech) || speech.startsWith('Con ')) return getNegColor(settings, theme);
   if (speech.includes('CX')) return theme.cx;
   return theme.text;
 }

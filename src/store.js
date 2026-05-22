@@ -46,8 +46,13 @@ export const LD_SHEET_SPEECHES = {
   offcase: ['NC', '1AR', 'NR', '2AR'],
 };
 
+export const PF_SHEET_SPEECHES = {
+  aff: ['Pro Constructive', 'Con Constructive', 'Pro Rebuttal', 'Con Rebuttal', 'Pro Summary', 'Con Summary', 'Pro Final Focus', 'Con Final Focus'],
+  offcase: ['Pro Constructive', 'Con Constructive', 'Pro Rebuttal', 'Con Rebuttal', 'Pro Summary', 'Con Summary', 'Pro Final Focus', 'Con Final Focus'],
+};
+
 function getSheetSpeeches(type, format) {
-  const map = format === 'ld' ? LD_SHEET_SPEECHES : SHEET_SPEECHES;
+  const map = format === 'pf' ? PF_SHEET_SPEECHES : format === 'ld' ? LD_SHEET_SPEECHES : SHEET_SPEECHES;
   return map[type] ?? map.aff;
 }
 
@@ -76,10 +81,12 @@ function makeFolder(name) {
 }
 
 function makeRound(format = 'policy') {
-  const sheets = [
-    makeSheet('aff', 'Case', false, format),
-    makeSheet('offcase', 'Off 1', false, format),
-  ];
+  const sheets = format === 'pf'
+    ? [makeSheet('aff', 'PF Flow', false, format)]
+    : [
+        makeSheet('aff', 'Case', false, format),
+        makeSheet('offcase', 'Off 1', false, format),
+      ];
   return {
     id: nanoid(),
     name: '',

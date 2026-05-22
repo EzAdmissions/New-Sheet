@@ -30,6 +30,7 @@ function createWindow() {
   }
 
   win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url === 'about:blank') return { action: 'allow' };
     shell.openExternal(url);
     return { action: 'deny' };
   });

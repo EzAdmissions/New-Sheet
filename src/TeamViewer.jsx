@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/refs, react-hooks/set-state-in-effect */
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import useStore from './store';
 import { useTheme, getSpeechColor } from './theme';
 import { getUiChrome, chromeButton } from './uiChrome';
@@ -83,6 +85,86 @@ function ReadOnlyGrid({ sheet, settings, theme, ui }) {
   );
 }
 
+function PartnerFlowWindow({ open, round, activeSheetId, viewSheetId, onViewSheet, onClosed, settings, theme, ui }) {
+  const winRef = useRef(null);
+  const containerRef = useRef(null);
+  const [ready, setReady] = useState(false);
+  const partnerSheets = (round?.sheets ?? []).filter(s => s.type !== 'cx');
+  const viewSheet = partnerSheets.find(s => s.id === viewSheetId) ?? partnerSheets[0] ?? null;
+
+  useEffect(() => {
+    if (!open) {
+      setReady(false);
+      return;
+    }
+    if (!winRef.current || winRef.current.closed) {
+      const child = window.open('', 'jayflow-partner-flow', 'width=1100,height=760');
+      if (!child) return;
+      winRef.current = child;
+      child.document.title = "Partner's Flow";
+      child.document.body.innerHTML = '<div id="partner-root"></div>';
+      child.document.body.style.margin = '0';
+      child.document.body.style.overflow = 'hidden';
+      containerRef.current = child.document.getElementById('partner-root');
+      const handleClosed = () => onClosed?.();
+      child.addEventListener('beforeunload', handleClosed);
+      setReady(true);
+    }
+    return () => {};
+  }, [open, onClosed]);
+
+  useEffect(() => {
+    if (!open) {
+      try { winRef.current?.close(); } catch { /* already closed */ }
+      winRef.current = null;
+      containerRef.current = null;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const child = winRef.current;
+    return () => {
+      try { child?.close(); } catch { /* already closed */ }
+    };
+  }, []);
+
+  if (!open || !ready || !containerRef.current) return null;
+
+  return createPortal(
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: ui.appBg ?? theme.bg, color: theme.text, fontFamily: ui.fontFamily }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px', height: ui.toolbarHeight ?? 38, background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, flexShrink: 0 }}>
+        <div style={{ width: 8, height: 8, borderRadius: '50%', background: round ? '#22c55e' : theme.textDim, flexShrink: 0 }} />
+        <span style={{ fontWeight: 700, fontSize: 13 }}>Partner's Flow</span>
+        <span style={{ fontSize: 11, color: theme.textMuted }}>{round ? 'live' : 'waiting for data'}</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, overflowX: 'auto', height: ui.tabHeight ?? 32, flexShrink: 0 }}>
+        {partnerSheets.map(sh => {
+          const isActive = sh.id === viewSheet?.id;
+          const isPartnerHere = sh.id === activeSheetId;
+          return (
+            <div key={sh.id} onClick={() => onViewSheet(sh.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 5, padding: '0 12px',
+              height: '100%', cursor: 'pointer', flexShrink: 0,
+              borderRight: `1px solid ${ui.borderSubtle}`,
+              borderBottom: `2px solid ${isActive ? theme.text : 'transparent'}`,
+              background: isActive ? ui.tabActiveBg : ui.tabInactiveBg,
+              whiteSpace: 'nowrap', userSelect: 'none',
+              fontSize: 12, color: isActive ? theme.text : theme.textMuted,
+            }}>
+              {sh.name}
+              {isPartnerHere && <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} title="Partner is here" />}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', background: ui.gridBg ?? theme.bg }}>
+        <ReadOnlyGrid sheet={viewSheet} settings={settings} theme={theme} ui={ui} />
+      </div>
+    </div>,
+    containerRef.current
+  );
+}
+
 export default function TeamViewer({ visible = true, onHide, onClose }) {
   const settings    = useStore(s => s.settings);
   const activeRound = useStore(s => s.rounds.find(r => r.id === s.activeRoundId));
@@ -104,6 +186,7 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
   const [viewSheetId, setViewSheetId]       = useState(null);
   const [error, setError]                   = useState('');
   const [copied, setCopied]                 = useState(false);
+  const [partnerWindowOpen, setPartnerWindowOpen] = useState(false);
 
   const pcRef        = useRef(null);
   const channelRef   = useRef(null);
@@ -149,9 +232,9 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
     };
   }, []);
 
-  // Host: flush FlowGrid's live buffer then broadcast at 300ms
+  // Both peers flush FlowGrid's live buffer and broadcast their own round.
   useEffect(() => {
-    if (step !== 'connected' || mode !== 'host') return;
+    if (step !== 'connected') return;
     const send = () => {
       // Ask FlowGrid to push its in-memory buffer to the store right now
       window.dispatchEvent(new CustomEvent('jayflow-flush-now'));
@@ -164,7 +247,11 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
     send();
     broadcastRef.current = setInterval(send, 300);
     return () => { if (broadcastRef.current) { clearInterval(broadcastRef.current); broadcastRef.current = null; } };
-  }, [step, mode]);
+  }, [step]);
+
+  useEffect(() => {
+    if (step === 'connected') setPartnerWindowOpen(true);
+  }, [step]);
 
   const handleHost = useCallback(async () => {
     setMode('host');
@@ -238,6 +325,7 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
     cleanup();
     setMode(null); setStep('choose'); setMyCode(''); setInputCode('');
     setPartnerRound(null); setPartnerActiveId(null); setViewSheetId(null); setError('');
+    setPartnerWindowOpen(false);
   }, [cleanup]);
 
   const closePanel = useCallback(() => {
@@ -249,76 +337,56 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
     onHide?.();
   }, [onHide]);
 
-  const partnerSheets = (partnerRound?.sheets ?? []).filter(s => s.type !== 'cx');
-  const viewSheet = partnerSheets.find(s => s.id === viewSheetId) ?? partnerSheets[0] ?? null;
+  const partnerWindow = (
+    <PartnerFlowWindow
+      open={partnerWindowOpen && step === 'connected'}
+      round={partnerRound}
+      activeSheetId={partnerActiveId}
+      viewSheetId={viewSheetId}
+      onViewSheet={setViewSheetId}
+      onClosed={() => setPartnerWindowOpen(false)}
+      settings={settings}
+      theme={theme}
+      ui={ui}
+    />
+  );
 
   const wrap = { position: 'fixed', inset: 0, zIndex: 1000, background: ui.appBg ?? theme.bg, display: 'flex', flexDirection: 'column', fontFamily: ui.fontFamily, color: theme.text };
   const hdr  = { display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px', height: ui.toolbarHeight ?? 38, background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, flexShrink: 0 };
   const codeBox = { width: '100%', padding: 10, fontFamily: 'monospace', fontSize: 10, background: ui.inputBg ?? theme.bgSecondary, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, resize: 'none', boxSizing: 'border-box', height: 88, outline: 'none' };
 
-  if (!visible) return null;
+  if (!visible) return partnerWindow;
 
-  // ── Connected: viewer sees partner's flow ──
-  if (step === 'connected' && mode === 'connect') {
+  // ── Connected: sharing both ways ──
+  if (step === 'connected') {
     return (
+      <>
+      {partnerWindow}
       <div style={wrap}>
         <div style={hdr}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Partner's Flow</span>
-          <span style={{ fontSize: 11, color: theme.textMuted }}>live</span>
+          <span style={{ fontWeight: 700, fontSize: 13 }}>Team Viewer</span>
+          <span style={{ fontSize: 11, color: theme.textMuted }}>two-way live sharing</span>
           <div style={{ flex: 1 }} />
           <button onClick={reset} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Disconnect</button>
+          <button onClick={() => setPartnerWindowOpen(true)} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Open Partner Window</button>
           <button onClick={hidePanel} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
         </div>
 
-        {/* Sheet tabs */}
-        <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, overflowX: 'auto', height: ui.tabHeight ?? 32, flexShrink: 0 }}>
-          {partnerSheets.map(sh => {
-            const isActive = sh.id === viewSheetId;
-            const isPartnerHere = sh.id === partnerActiveId;
-            return (
-              <div key={sh.id} onClick={() => setViewSheetId(sh.id)} style={{
-                display: 'flex', alignItems: 'center', gap: 5, padding: '0 12px',
-                height: '100%', cursor: 'pointer', flexShrink: 0,
-                borderRight: `1px solid ${ui.borderSubtle}`,
-                borderBottom: `2px solid ${isActive ? theme.text : 'transparent'}`,
-                background: isActive ? ui.tabActiveBg : ui.tabInactiveBg,
-                whiteSpace: 'nowrap', userSelect: 'none',
-                fontSize: 12, color: isActive ? theme.text : theme.textMuted,
-              }}>
-                {sh.name}
-                {isPartnerHere && <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} title="Partner is here" />}
-              </div>
-            );
-          })}
-        </div>
-
-        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', background: ui.gridBg ?? theme.bg }}>
-          <ReadOnlyGrid sheet={viewSheet} settings={settings} theme={theme} ui={ui} />
-        </div>
-      </div>
-    );
-  }
-
-  // ── Connected: host is broadcasting ──
-  if (step === 'connected' && mode === 'host') {
-    return (
-      <div style={wrap}>
-        <div style={hdr}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Team Viewer - Hosting</span>
-          <span style={{ fontSize: 11, color: theme.textMuted }}>partner connected - broadcasting your flow</span>
-          <div style={{ flex: 1 }} />
-          <button onClick={reset} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Stop</button>
-          <button onClick={hidePanel} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
-        </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ textAlign: 'center', color: theme.textMuted, fontSize: 13, lineHeight: 1.7 }}>
-            <div style={{ fontWeight: 600, color: theme.text }}>Your flow is live</div>
-            <div style={{ fontSize: 11, marginTop: 4 }}>Your partner can view your flow in real time. Go back to your flow - it keeps broadcasting.</div>
+            <div style={{ fontWeight: 600, color: theme.text }}>Both flows are live</div>
+            <div style={{ fontSize: 11, marginTop: 4 }}>Keep flowing in this main window. Your partner's flow is available in the separate Partner Window.</div>
+            {!partnerRound && <div style={{ fontSize: 11, marginTop: 8 }}>Waiting for your partner's first flow update...</div>}
+            {partnerRound && !partnerWindowOpen && (
+              <button onClick={() => setPartnerWindowOpen(true)} style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), marginTop: 12, fontWeight: 600 }}>
+                Open Partner Window
+              </button>
+            )}
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -360,13 +428,13 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 2 }}>Connect with your partner</div>
               <div style={{ fontSize: 12, color: theme.textMuted, marginBottom: 10 }}>
-                Works across any network - school Wi-Fi, hotspot, or home. You exchange a short code once, then it's live.
+                Works across any network - school Wi-Fi, hotspot, or home. One person starts a session, the other sends back a reply code, then both flows are live.
               </div>
               <button onClick={handleHost} style={{ ...chromeButton(theme, ui, { padding: '12px 0', fontSize: 14 }), width: '100%', fontWeight: 600 }}>
-                Share My Flow (Host)
+                Start Team Session
               </button>
               <button onClick={() => { setMode('connect'); setStep('inputCode'); }} style={{ ...chromeButton(theme, ui, { padding: '12px 0', fontSize: 14 }), width: '100%' }}>
-                View Partner's Flow (Connect)
+                Join Team Session
               </button>
             </div>
           )}
@@ -375,10 +443,10 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
           {step === 'inputCode' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ fontSize: 14, fontWeight: 600 }}>Paste your partner's session code</div>
-              <div style={{ fontSize: 12, color: theme.textMuted }}>Your partner clicks "Host" and shares a code with you.</div>
+              <div style={{ fontSize: 12, color: theme.textMuted }}>Your partner clicks "Start Team Session" and shares a code with you.</div>
               <textarea
                 style={{ ...codeBox, height: 100 }}
-                placeholder="Paste full session code here..."
+                placeholder="Paste session code here..."
                 value={inputCode}
                 onChange={e => setInputCode(e.target.value)}
                 spellCheck={false}
@@ -410,7 +478,7 @@ export default function TeamViewer({ visible = true, onHide, onClose }) {
           {step === 'waitAnswer' && mode === 'host' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontSize: 14, fontWeight: 600 }}>Step 1 - Send this code to your partner</div>
-              <div style={{ fontSize: 12, color: theme.textMuted }}>Share it via Discord, iMessage, etc. They paste it in "Connect" mode.</div>
+              <div style={{ fontSize: 12, color: theme.textMuted }}>Share it via Discord, iMessage, etc. They paste it in "Join Team Session".</div>
               <textarea style={codeBox} value={myCode} readOnly />
               <button onClick={copyCode} style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), fontWeight: 600 }}>
                 {copied ? 'Copied!' : 'Copy Code'}
