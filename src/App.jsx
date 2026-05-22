@@ -1,10 +1,11 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import useStore, { sortSheetsForDisplay } from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import Dashboard from './Dashboard';
 import FlowGrid from './FlowGrid';
 import SettingsPanel from './SettingsPanel';
 import RoundMeta from './RoundMeta';
+import TeamViewer from './TeamViewer';
 import { getUiChrome, chromeButton } from './uiChrome';
 import { isPrimaryModifier } from './keybindings';
 
@@ -30,6 +31,7 @@ export default function App() {
   const [settingsOpen,    setSettingsOpen]     = useState(false);
   const [settingsTab,     setSettingsTab]      = useState('display');
   const [metaOpen,        setMetaOpen]         = useState(false);
+  const [teamOpen,        setTeamOpen]         = useState(false);
   const [offCount,        setOffCount]         = useState('');
   const [renamingSheetId, setRenamingSheetId] = useState(null);
   const [dragOverId,      setDragOverId]       = useState(null);
@@ -98,6 +100,13 @@ export default function App() {
     return id;
   }, [addSheet, setActiveSheet]);
 
+  // Focus naming bar only on initial show and only when no modal is open
+  useEffect(() => {
+    if (!showNamingBar || metaOpen || settingsOpen || teamOpen) return;
+    const t = setTimeout(() => namingInputRef.current?.focus(), 0);
+    return () => clearTimeout(t);
+  }, [showNamingBar, activeSheet?.id, metaOpen, settingsOpen, teamOpen]);
+
   const handleBulkOff = useCallback((e) => {
     if (e.key !== 'Enter' || !offCount || !round) return;
     const count = Math.max(1, Math.min(20, parseInt(offCount) || 1));
@@ -145,7 +154,18 @@ export default function App() {
         <button onClick={() => setMetaOpen(true)} style={{ ...tbBtn(theme, ui), maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           Round Info
         </button>
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('jayflow-undo'))}
+          title="Undo (Ctrl+Z)"
+          style={{ ...tbBtn(theme, ui), minWidth: 28, padding: '0 8px', fontFamily: 'inherit' }}
+        >←</button>
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('jayflow-redo'))}
+          title="Redo (Ctrl+Y)"
+          style={{ ...tbBtn(theme, ui), minWidth: 28, padding: '0 8px', fontFamily: 'inherit' }}
+        >→</button>
         <div style={{ flex: 1 }} />
+        <button onClick={() => setTeamOpen(true)} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
         <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
         <button onClick={() => openSettings('display')} style={tbBtn(theme, ui)}>Settings</button>
       </div>
@@ -230,7 +250,7 @@ export default function App() {
           </span>
           <input
             key={activeSheet.id}
-            ref={el => { namingInputRef.current = el; if (el) setTimeout(() => el.focus(), 0); }}
+            ref={namingInputRef}
             defaultValue={activeSheet.name}
             onKeyDown={e => {
               if (e.key === 'Enter')  { e.preventDefault(); confirmName(e.currentTarget.value); return; }
@@ -298,8 +318,9 @@ export default function App() {
         {round.judges  && <span>Judge(s): {round.judges}</span>}
       </div>
 
-      <SettingsPanel  open={settingsOpen} onClose={() => setSettingsOpen(false)} initialTab={settingsTab} />
+      <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} initialTab={settingsTab} />
       {metaOpen && <RoundMeta round={round} onClose={() => setMetaOpen(false)} />}
+      {teamOpen && <TeamViewer onClose={() => setTeamOpen(false)} />}
     </div>
   );
 }

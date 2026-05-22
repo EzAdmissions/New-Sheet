@@ -1,16 +1,56 @@
-# React + Vite
+# New Sheet
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A desktop policy debate flow app for Windows and macOS.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Download
 
-## React Compiler
+### Windows
+[**Download New Sheet Setup 2.0.0.exe**](https://github.com/EzAdmissions/New-Sheet/releases/latest)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### macOS
+[**Download New Sheet 2.0.0.dmg**](https://github.com/EzAdmissions/New-Sheet/releases/latest)
 
-## Expanding the ESLint configuration
+> **Mac note:** After opening the DMG, drag New Sheet to Applications. On first launch, right-click the app icon → **Open** → **Open** (required once to bypass Gatekeeper on unsigned apps).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## What's new in V2
+
+- **Team Viewer** — View your partner's flow live during a round. Works across any network (different Wi-Fi, hotspot, etc.). One person hosts, the other connects with a short session code. Partner's flow updates in real time with ~300ms latency.
+- **Undo deleted flows** — Ctrl+Z now restores accidentally deleted sheets. Undo/redo buttons also added to the toolbar.
+- **Space key bug fixed** — Typing in Round Info (judges field) no longer redirects focus to the sheet rename bar.
+- **Mac installer** — Proper `.dmg` drag-to-install for Intel and Apple Silicon Macs.
+
+---
+
+## Features
+
+- Policy and LD debate formats
+- Aff/Off sheet tabs with drag reorder
+- Keyboard-driven navigation (Tab, Enter, arrow keys)
+- Argument extension arrows
+- Export to CSV and HTML
+- Multiple themes and UI styles
+- Zoom (Ctrl+scroll)
+- Undo/redo for cell edits and sheet deletions
+- Team Viewer for live partner flow sync
+
+---
+
+## Build from source
+
+```bash
+npm install
+
+# Development
+npm run dev           # Vite dev server
+npm run desktop:dev   # Electron with dev server
+
+# Production builds
+npm run dist:win      # Windows NSIS installer (run on Windows)
+npm run dist:mac      # macOS DMG — Intel + Apple Silicon (run on a Mac)
+```
+
+**Mac build requirement:** `npm run dist:mac` must be run on a macOS machine. Apple does not allow cross-compilation for macOS from other platforms.

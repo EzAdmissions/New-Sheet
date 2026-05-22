@@ -112,12 +112,13 @@ function getActiveCellChrome(settings, theme, activeColor) {
 }
 
 export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onBack, onRename, onAddSheet, onStartRename, onDeleteSheet }) {
-  const settings      = useStore(s => s.settings);
-  const keybindings   = useStore(s => s.keybindings);
-  const flushSheet    = useStore(s => s.flushSheet);
-  const deleteSheet   = useStore(s => s.deleteSheet);
-  const setActiveSheet = useStore(s => s.setActiveSheet);
-  const swapSheets     = useStore(s => s.swapSheets);
+  const settings        = useStore(s => s.settings);
+  const keybindings     = useStore(s => s.keybindings);
+  const flushSheet      = useStore(s => s.flushSheet);
+  const deleteSheet     = useStore(s => s.deleteSheet);
+  const undoDeleteSheet = useStore(s => s.undoDeleteSheet);
+  const setActiveSheet  = useStore(s => s.setActiveSheet);
+  const swapSheets      = useStore(s => s.swapSheets);
   const theme = useTheme(settings.theme);
   const ui = getUiChrome(settings, theme);
   const affColor = getAffColor(settings, theme);
@@ -509,6 +510,32 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     return () => window.removeEventListener('jayflow-focus-grid', handler);
   }, []);
 
+  // ── Toolbar undo/redo buttons ──
+  const doUndoRef = useRef(null);
+  const doRedoRef = useRef(null);
+  doUndoRef.current = () => {
+    if (undoStack.current.length > 0) {
+      commitPendingEdit();
+      applyHistorySnapshot(undoStack, redoStack);
+    } else {
+      undoDeleteSheet();
+    }
+  };
+  doRedoRef.current = () => {
+    commitPendingEdit();
+    applyHistorySnapshot(redoStack, undoStack);
+  };
+  useEffect(() => {
+    const onUndo = () => doUndoRef.current();
+    const onRedo = () => doRedoRef.current();
+    window.addEventListener('jayflow-undo', onUndo);
+    window.addEventListener('jayflow-redo', onRedo);
+    return () => {
+      window.removeEventListener('jayflow-undo', onUndo);
+      window.removeEventListener('jayflow-redo', onRedo);
+    };
+  }, []);
+
   // ── Header scroll sync ──
   useEffect(() => {
     const el = containerRef.current;
@@ -619,7 +646,14 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   useEffect(() => { setExtensionLinks(sheet.extensionLinks ?? []); }, [sheetId]);
 
   useEffect(() => () => flush(), [flush]);
-  useEffect(() => { const id = setInterval(flush, 4000); return () => clearInterval(id); }, [flush]);
+  useEffect(() => { const id = setInterval(flush, 1000); return () => clearInterval(id); }, [flush]);
+
+  // Let TeamViewer trigger an immediate flush before broadcasting
+  useEffect(() => {
+    const handler = () => flush();
+    window.addEventListener('jayflow-flush-now', handler);
+    return () => window.removeEventListener('jayflow-flush-now', handler);
+  }, [flush]);
   useEffect(() => {
     const exportFreshRound = () => {
       const gridData = getCurrentGrid();
@@ -779,8 +813,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
 
     if (primary && !e.shiftKey && e.key.toLowerCase() === 'z') {
       e.preventDefault();
-      commitPendingEdit();
-      applyHistorySnapshot(undoStack, redoStack);
+      if (undoStack.current.length > 0) {
+        commitPendingEdit();
+        applyHistorySnapshot(undoStack, redoStack);
+      } else {
+        undoDeleteSheet();
+      }
       return;
     }
     if ((primary && e.key.toLowerCase() === 'y') || (primary && e.shiftKey && e.key.toLowerCase() === 'z')) {
@@ -974,7 +1012,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       onStartRename?.(sheet.id);
       return;
     }
-  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor, shortcutMode]);
+  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor, shortcutMode, undoDeleteSheet]);
 
 
   // ── Paste: multi-cell ──

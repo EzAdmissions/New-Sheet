@@ -107,6 +107,7 @@ const useStore = create(
       activeFolderId: 'all',
       activeRoundId: null,
       pendingNameSheetIds: [],
+      sheetUndoStack: [],
       keybindings: DEFAULT_KEYBINDINGS,
       settings: {
         theme: 'light',
@@ -194,20 +195,42 @@ const useStore = create(
           };
         }),
       })),
-      deleteSheet: (sheetId) => set(s => ({
-        pendingNameSheetIds: s.pendingNameSheetIds.filter(id => id !== sheetId),
-        rounds: s.rounds.map(r => {
-          if (r.id !== s.activeRoundId) return r;
-          const oldIdx = r.sheets.findIndex(sh => sh.id === sheetId);
-          const sheets = r.sheets.filter(sh => sh.id !== sheetId);
-          let nextId = r.activeSheetId;
-          if (r.activeSheetId === sheetId) {
-            const neighbor = sheets[oldIdx] ?? sheets[oldIdx - 1] ?? null;
-            nextId = neighbor?.id ?? null;
-          }
-          return { ...r, sheets, activeSheetId: nextId };
-        }),
-      })),
+      deleteSheet: (sheetId) => set(s => {
+        const round = s.rounds.find(r => r.id === s.activeRoundId);
+        const deletedIdx = round?.sheets.findIndex(sh => sh.id === sheetId) ?? -1;
+        const deletedSheet = round?.sheets.find(sh => sh.id === sheetId) ?? null;
+        const newStack = deletedSheet
+          ? [...s.sheetUndoStack, { sheet: deletedSheet, sheetIndex: deletedIdx, roundId: s.activeRoundId }].slice(-20)
+          : s.sheetUndoStack;
+        return {
+          sheetUndoStack: newStack,
+          pendingNameSheetIds: s.pendingNameSheetIds.filter(id => id !== sheetId),
+          rounds: s.rounds.map(r => {
+            if (r.id !== s.activeRoundId) return r;
+            const oldIdx = r.sheets.findIndex(sh => sh.id === sheetId);
+            const sheets = r.sheets.filter(sh => sh.id !== sheetId);
+            let nextId = r.activeSheetId;
+            if (r.activeSheetId === sheetId) {
+              const neighbor = sheets[oldIdx] ?? sheets[oldIdx - 1] ?? null;
+              nextId = neighbor?.id ?? null;
+            }
+            return { ...r, sheets, activeSheetId: nextId };
+          }),
+        };
+      }),
+
+      undoDeleteSheet: () => set(s => {
+        if (!s.sheetUndoStack.length) return s;
+        const stack = [...s.sheetUndoStack];
+        const { sheet, sheetIndex, roundId } = stack.pop();
+        const rounds = s.rounds.map(r => {
+          if (r.id !== roundId) return r;
+          const sheets = [...r.sheets];
+          sheets.splice(Math.min(sheetIndex, sheets.length), 0, sheet);
+          return { ...r, sheets, activeSheetId: sheet.id };
+        });
+        return { rounds, sheetUndoStack: stack, activeRoundId: roundId, view: 'flow' };
+      }),
 
       flushSheet: (sheetId, gridData, extensionLinks) => set(s => ({
         rounds: s.rounds.map(r => {
@@ -287,6 +310,7 @@ const useStore = create(
           folders: persistedState?.folders ?? [],
           activeFolderId: persistedState?.activeFolderId ?? 'all',
           pendingNameSheetIds: pending,
+          sheetUndoStack: [],
           settings,
         };
       },
