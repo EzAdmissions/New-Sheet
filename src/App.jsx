@@ -157,13 +157,13 @@ export default function App() {
         <button
           onClick={() => window.dispatchEvent(new CustomEvent('jayflow-undo'))}
           title="Undo (Ctrl+Z)"
-          style={{ ...tbBtn(theme, ui), minWidth: 28, padding: '0 8px', fontFamily: 'inherit' }}
-        >←</button>
+          style={tbBtn(theme, ui)}
+        >Undo</button>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent('jayflow-redo'))}
           title="Redo (Ctrl+Y)"
-          style={{ ...tbBtn(theme, ui), minWidth: 28, padding: '0 8px', fontFamily: 'inherit' }}
-        >→</button>
+          style={tbBtn(theme, ui)}
+        >Redo</button>
         <div style={{ flex: 1 }} />
         <button onClick={() => setTeamOpen(true)} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
         <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
@@ -242,7 +242,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Naming / rename bar — appears when a new sheet needs a name or explicit rename triggered */}
+      {/* Naming / rename bar - appears when a new sheet needs a name or explicit rename triggered */}
       {showNamingBar && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, flexShrink: 0 }}>
           <span style={{ fontSize: 11, color: theme.textMuted, whiteSpace: 'nowrap' }}>
@@ -310,7 +310,7 @@ export default function App() {
         <span>{shortcutMode === 'mac' ? 'Cmd+K' : 'Ctrl+K'} · keybindings</span>
         <span>Tab · next speech</span>
         <span>Enter · next row</span>
-        <span>{shortcutMode === 'mac' ? 'Cmd+← →' : 'Ctrl+← →'} · switch sheet</span>
+        <span>{shortcutMode === 'mac' ? 'Cmd+Left/Right' : 'Ctrl+Left/Right'} · switch sheet</span>
         <span>{shortcutMode === 'mac' ? 'Cmd+scroll' : 'Ctrl+scroll'} · zoom</span>
         <div style={{ flex: 1 }} />
         {round.affCode && <span style={{ color: affColor }}>Aff: {round.affCode}</span>}

@@ -268,17 +268,16 @@ export default function TeamViewer({ onClose }) {
       <div style={wrap}>
         <div style={hdr}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Team Viewer — Hosting</span>
-          <span style={{ fontSize: 11, color: theme.textMuted }}>partner connected · broadcasting your flow</span>
+          <span style={{ fontWeight: 700, fontSize: 13 }}>Team Viewer - Hosting</span>
+          <span style={{ fontSize: 11, color: theme.textMuted }}>partner connected - broadcasting your flow</span>
           <div style={{ flex: 1 }} />
           <button onClick={reset} style={chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' })}>Stop</button>
           <button onClick={onClose} style={{ ...chromeButton(theme, ui, { fontSize: 12, padding: '4px 10px' }), fontWeight: 600 }}>Back to My Flow</button>
         </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ textAlign: 'center', color: theme.textMuted, fontSize: 13, lineHeight: 1.7 }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>📡</div>
             <div style={{ fontWeight: 600, color: theme.text }}>Your flow is live</div>
-            <div style={{ fontSize: 11, marginTop: 4 }}>Your partner can view your flow in real time.<br />Go back to your flow — it keeps broadcasting.</div>
+            <div style={{ fontSize: 11, marginTop: 4 }}>Your partner can view your flow in real time. Go back to your flow - it keeps broadcasting.</div>
           </div>
         </div>
       </div>
@@ -308,13 +307,13 @@ export default function TeamViewer({ onClose }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 2 }}>Connect with your partner</div>
               <div style={{ fontSize: 12, color: theme.textMuted, marginBottom: 10 }}>
-                Works across any network — school Wi-Fi, hotspot, or home. You exchange a short code once, then it's live.
+                Works across any network - school Wi-Fi, hotspot, or home. You exchange a short code once, then it's live.
               </div>
               <button onClick={handleHost} style={{ ...chromeButton(theme, ui, { padding: '12px 0', fontSize: 14 }), width: '100%', fontWeight: 600 }}>
-                📡  Share My Flow  (Host)
+                Share My Flow (Host)
               </button>
               <button onClick={() => { setMode('connect'); setStep('inputCode'); }} style={{ ...chromeButton(theme, ui, { padding: '12px 0', fontSize: 14 }), width: '100%' }}>
-                👀  View Partner's Flow  (Connect)
+                View Partner's Flow (Connect)
               </button>
             </div>
           )}
@@ -326,21 +325,21 @@ export default function TeamViewer({ onClose }) {
               <div style={{ fontSize: 12, color: theme.textMuted }}>Your partner clicks "Host" and shares a code with you.</div>
               <textarea
                 style={{ ...codeBox, height: 100 }}
-                placeholder="Paste full session code here…"
+                placeholder="Paste full session code here..."
                 value={inputCode}
                 onChange={e => setInputCode(e.target.value)}
                 spellCheck={false}
               />
               <div style={{ display: 'flex', gap: 8 }}>
                 <button onClick={() => { setStep('choose'); setMode(null); setInputCode(''); }} style={chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 })}>
-                  ← Back
+                  Back
                 </button>
                 <button
                   onClick={handleConnect}
                   disabled={!inputCode.trim()}
                   style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), flex: 1, fontWeight: 600, opacity: inputCode.trim() ? 1 : 0.4 }}
                 >
-                  Generate Answer Code →
+                  Generate Answer Code
                 </button>
               </div>
             </div>
@@ -349,8 +348,7 @@ export default function TeamViewer({ onClose }) {
           {/* Step: generating (ICE gathering) */}
           {step === 'generating' && (
             <div style={{ textAlign: 'center', color: theme.textMuted, padding: 32 }}>
-              <div style={{ fontSize: 28, marginBottom: 12 }}>⏳</div>
-              <div style={{ fontWeight: 600, color: theme.text }}>Generating connection code…</div>
+              <div style={{ fontWeight: 600, color: theme.text }}>Generating connection code...</div>
               <div style={{ fontSize: 11, marginTop: 6 }}>This takes a few seconds</div>
             </div>
           )}
@@ -358,19 +356,19 @@ export default function TeamViewer({ onClose }) {
           {/* Step: host shows session code, waits for answer */}
           {step === 'waitAnswer' && mode === 'host' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>Step 1 — Send this code to your partner</div>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>Step 1 - Send this code to your partner</div>
               <div style={{ fontSize: 12, color: theme.textMuted }}>Share it via Discord, iMessage, etc. They paste it in "Connect" mode.</div>
               <textarea style={codeBox} value={myCode} readOnly />
               <button onClick={copyCode} style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), fontWeight: 600 }}>
-                {copied ? '✓ Copied!' : 'Copy Code'}
+                {copied ? 'Copied!' : 'Copy Code'}
               </button>
 
               <div style={{ borderTop: `1px solid ${ui.borderSubtle}`, paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ fontSize: 14, fontWeight: 600 }}>Step 2 — Paste partner's answer code</div>
+                <div style={{ fontSize: 14, fontWeight: 600 }}>Step 2 - Paste partner's answer code</div>
                 <div style={{ fontSize: 12, color: theme.textMuted }}>After they paste your code, they'll generate an answer code to send back to you.</div>
                 <textarea
                   style={{ ...codeBox, height: 80 }}
-                  placeholder="Paste answer code from partner…"
+                  placeholder="Paste answer code from partner..."
                   value={inputCode}
                   onChange={e => setInputCode(e.target.value)}
                   spellCheck={false}
@@ -380,7 +378,7 @@ export default function TeamViewer({ onClose }) {
                   disabled={!inputCode.trim()}
                   style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), fontWeight: 600, opacity: inputCode.trim() ? 1 : 0.4 }}
                 >
-                  Connect →
+                  Connect
                 </button>
               </div>
             </div>
@@ -389,14 +387,14 @@ export default function TeamViewer({ onClose }) {
           {/* Step: viewer shows answer code, waits */}
           {step === 'waitConnect' && mode === 'connect' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>Step 2 — Send this answer code to your partner</div>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>Step 2 - Send this answer code to your partner</div>
               <div style={{ fontSize: 12, color: theme.textMuted }}>They paste it in their "Host" panel to complete the connection.</div>
               <textarea style={codeBox} value={myCode} readOnly />
               <button onClick={copyCode} style={{ ...chromeButton(theme, ui, { padding: '7px 14px', fontSize: 13 }), fontWeight: 600 }}>
-                {copied ? '✓ Copied!' : 'Copy Code'}
+                {copied ? 'Copied!' : 'Copy Code'}
               </button>
               <div style={{ fontSize: 12, color: theme.textMuted, textAlign: 'center', marginTop: 4 }}>
-                ⏳ Waiting for partner to finalize…
+                Waiting for partner to finalize...
               </div>
             </div>
           )}
