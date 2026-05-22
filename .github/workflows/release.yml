@@ -1,0 +1,83 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  # ── Build Mac DMG ─────────────────────────────────────────────────
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run dist:mac
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-build
+          path: release/*.dmg
+
+  # ── Build Windows NSIS installer ──────────────────────────────────
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run dist:win
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: release/*.exe
+
+  # ── Create / update GitHub Release with both installers ───────────
+  release:
+    needs: [build-mac, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version from package.json
+        id: pkg
+        run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.pkg.outputs.version }}
+          name: New Sheet v${{ steps.pkg.outputs.version }}
+          make_latest: true
+          files: artifacts/*
+          body: |
+            ## New Sheet v${{ steps.pkg.outputs.version }}
+
+            | Platform | File |
+            |----------|------|
+            | **Windows** | `New Sheet Setup ${{ steps.pkg.outputs.version }}.exe` |
+            | **Mac (Intel + Apple Silicon)** | `New Sheet ${{ steps.pkg.outputs.version }}.dmg` |
+
+            > **Mac first launch:** Right-click the app → **Open** → **Open** to bypass the Gatekeeper warning (required once for unsigned apps).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
