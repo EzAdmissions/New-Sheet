@@ -56,3 +56,20 @@ npm run dist:mac      # macOS DMG - Intel + Apple Silicon (run on a Mac)
 ```
 
 **Mac build requirement:** `npm run dist:mac` must be run on a macOS machine. Apple does not allow cross-compilation for macOS from other platforms.
+
+For a Gatekeeper-friendly public macOS build, run the mac build with an Apple Developer ID Application certificate available to electron-builder and notarization credentials set:
+
+```bash
+CSC_LINK=/path/to/developer-id-cert.p12
+CSC_KEY_PASSWORD=certificate-password
+APPLE_ID=apple-id@example.com
+APPLE_APP_SPECIFIC_PASSWORD=app-specific-password
+APPLE_TEAM_ID=TEAMID12345
+npm run dist:mac
+```
+
+Unsigned workaround for private testers: right-click the app in Applications, choose Open, then confirm Open. If macOS still blocks the app, run:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/New Sheet.app"
+```

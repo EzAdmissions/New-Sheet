@@ -71,9 +71,17 @@ function makeGrid(speeches) {
   return grid;
 }
 
+function padGrid(grid, speeches, rows = GRID_ROWS) {
+  for (const speech of speeches) {
+    grid[speech] = [...(grid[speech] ?? [])];
+    while (grid[speech].length < rows) grid[speech].push('');
+  }
+  return grid;
+}
+
 function makeSheet(type, name, needsName = true, format = 'policy') {
   const speeches = getSheetSpeeches(type, format);
-  return { id: nanoid(), name, type, speeches, grid: makeGrid(speeches), extensionLinks: [], needsName };
+  return { id: nanoid(), name, type, speeches, grid: makeGrid(speeches), extensionLinks: [], cellHighlights: {}, needsName };
 }
 
 function makeFolder(name) {
@@ -254,6 +262,17 @@ const useStore = create(
         }),
       })),
 
+      updateSheetCellHighlights: (sheetId, cellHighlights) => set(s => ({
+        rounds: s.rounds.map(r => {
+          if (r.id !== s.activeRoundId) return r;
+          return {
+            ...r,
+            lastEdited: Date.now(),
+            sheets: r.sheets.map(sh => sh.id !== sheetId ? sh : { ...sh, cellHighlights }),
+          };
+        }),
+      })),
+
       applyRemoteCellEdit: ({ sheetId, speech, row, value }) => set(s => ({
         rounds: s.rounds.map(r => {
           if (r.id !== s.activeRoundId) return r;
@@ -287,7 +306,7 @@ const useStore = create(
         const sheets = (round.sheets ?? []).map(sheet => {
           const id = nanoid();
           idMap.set(sheet.id, id);
-          return { ...sheet, id };
+          return { ...sheet, id, cellHighlights: sheet.cellHighlights ?? {} };
         });
         const imported = {
           ...round,
@@ -299,6 +318,49 @@ const useStore = create(
         };
         set(s => ({ rounds: [...s.rounds, imported], activeRoundId: imported.id, view: 'flow' }));
       },
+
+      mergeRoundIntoActive: (incomingRound) => set(s => ({
+        rounds: s.rounds.map(r => {
+          if (r.id !== s.activeRoundId) return r;
+          const sheets = r.sheets.map(sh => ({ ...sh, grid: { ...sh.grid }, cellHighlights: { ...(sh.cellHighlights ?? {}) } }));
+          for (const incoming of incomingRound.sheets ?? []) {
+            const incomingName = incoming.name?.trim().toLowerCase();
+            const match = sheets.find(sh =>
+              sh.type === incoming.type &&
+              sh.name?.trim().toLowerCase() === incomingName
+            );
+            if (!match) {
+              sheets.push({
+                ...incoming,
+                id: nanoid(),
+                name: `${incoming.name || 'Merged Sheet'} (Merged)`,
+                cellHighlights: incoming.cellHighlights ?? {},
+                needsName: false,
+              });
+              continue;
+            }
+
+            const speeches = match.speeches ?? incoming.speeches ?? [];
+            const nextGrid = {};
+            for (const speech of speeches) {
+              const existing = [...(match.grid?.[speech] ?? Array(GRID_ROWS).fill(''))];
+              const partner = incoming.grid?.[speech] ?? [];
+              nextGrid[speech] = existing.map((value, row) => {
+                const a = typeof value === 'string' ? value : (value?.text ?? '');
+                const bRaw = partner[row] ?? '';
+                const b = typeof bRaw === 'string' ? bRaw : (bRaw?.text ?? '');
+                if (!a.trim()) return b;
+                if (!b.trim() || a === b) return a;
+                return `${a}\n--- Partner ---\n${b}`;
+              });
+            }
+            match.grid = padGrid(nextGrid, speeches);
+            match.extensionLinks = [...(match.extensionLinks ?? []), ...(incoming.extensionLinks ?? [])];
+            match.cellHighlights = { ...(incoming.cellHighlights ?? {}), ...(match.cellHighlights ?? {}) };
+          }
+          return { ...r, sheets, lastEdited: Date.now() };
+        }),
+      })),
 
       updateSettings: (patch) => set(s => ({ settings: { ...s.settings, ...patch } })),
       updateKeybinding: (actionId, binding) => set(s => ({
@@ -317,7 +379,7 @@ const useStore = create(
           sheets: (round.sheets ?? []).map(sheet => {
             const needsName = inferNeedsName(sheet);
             if (needsName && sheet.type !== 'cx') pending.push(sheet.id);
-            return { ...sheet, needsName };
+            return { ...sheet, cellHighlights: sheet.cellHighlights ?? {}, needsName };
           }),
         }));
         const settings = {

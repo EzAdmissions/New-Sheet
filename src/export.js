@@ -82,9 +82,11 @@ export function exportRoundHTML(round, options = {}) {
     const bodyRows = [];
     for (let r = 0; r < rowCount; r++) {
       const height = spans[r] * rowHeight;
-      const cells = speeches.map(sp => (
-        `<div class="flow-cell" style="min-height:${height}px;color:${getSpeechColor(sp, theme, settings)}">${esc(grid[sp]?.[r] ?? '')}</div>`
-      )).join('');
+      const cells = speeches.map((sp, col) => {
+        const highlight = sh.cellHighlights?.[`${col},${r}`];
+        const bg = highlight ? `background:${highlight}55;` : '';
+        return `<div class="flow-cell" style="min-height:${height}px;color:${getSpeechColor(sp, theme, settings)};${bg}">${esc(grid[sp]?.[r] ?? '')}</div>`;
+      }).join('');
       bodyRows.push(`<div class="flow-row" style="grid-template-columns:repeat(${speeches.length},minmax(0,1fr));min-height:${height}px">${cells}</div>`);
     }
 
@@ -232,6 +234,7 @@ function importRoundFromHTML(html) {
       speeches,
       grid: padGrid(grid, speeches),
       extensionLinks: [],
+      cellHighlights: {},
       needsName: false,
     };
   });

@@ -20,8 +20,8 @@ export default function RoundMeta({ round, onClose }) {
   const field = (key, label, placeholder = '') => (
     <div style={{ marginBottom: 10 }}>
       <label style={{ display: 'block', color: theme.textMuted, fontSize: 11, marginBottom: 3 }}>{label}</label>
-      <input value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder}
-        style={{ width: '100%', padding: '6px 10px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
+      <input dir="ltr" value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder}
+        style={{ width: '100%', padding: '6px 10px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit', unicodeBidi: 'plaintext', textAlign: 'left' }} />
     </div>
   );
 

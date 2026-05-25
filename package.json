@@ -68,8 +68,11 @@
       ],
       "icon": "build/icon.png",
       "artifactName": "New Sheet ${version}.${ext}",
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "dmg": {
       "title": "New Sheet",

@@ -115,6 +115,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const settings        = useStore(s => s.settings);
   const keybindings     = useStore(s => s.keybindings);
   const flushSheet      = useStore(s => s.flushSheet);
+  const updateSheetCellHighlights = useStore(s => s.updateSheetCellHighlights);
   const deleteSheet     = useStore(s => s.deleteSheet);
   const undoDeleteSheet = useStore(s => s.undoDeleteSheet);
   const setActiveSheet  = useStore(s => s.setActiveSheet);
@@ -179,8 +180,11 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const selectionRef = useRef(null);
   const [selection, setSelection] = useState(null);
   const [extensionLinks, setExtensionLinks] = useState(() => sheet.extensionLinks ?? []);
+  const [cellHighlights, setCellHighlights] = useState(() => sheet.cellHighlights ?? {});
   const extensionLinksRef = useRef(extensionLinks);
   extensionLinksRef.current = extensionLinks;
+  const cellHighlightsRef = useRef(cellHighlights);
+  cellHighlightsRef.current = cellHighlights;
   const pendingExtendFocusRef = useRef(null);
   const [, forceRender] = useState(0);
 
@@ -606,7 +610,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     ...round,
     sheets: round.sheets.map(sh => {
       if (sh.id === sheetId) {
-        return { ...sh, grid: activeGrid, extensionLinks: extensionLinksRef.current };
+        return { ...sh, grid: activeGrid, extensionLinks: extensionLinksRef.current, cellHighlights: cellHighlightsRef.current };
       }
       const cachedGrid = sheetCache.current[sh.id];
       if (!cachedGrid) return sh;
@@ -642,8 +646,11 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     }
   }, [sheetId]);
 
-  // Reset extension links when switching sheets
-  useEffect(() => { setExtensionLinks(sheet.extensionLinks ?? []); }, [sheetId]);
+  // Reset sheet-scoped metadata when switching sheets
+  useEffect(() => {
+    setExtensionLinks(sheet.extensionLinks ?? []);
+    setCellHighlights(sheet.cellHighlights ?? {});
+  }, [sheetId]);
 
   useEffect(() => () => flush(), [flush]);
   useEffect(() => { const id = setInterval(flush, 1000); return () => clearInterval(id); }, [flush]);
@@ -772,6 +779,62 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     ensureVisible(nc, nr);
   }, [speeches, ensureVisible, applyTextareaPos, getActiveTextColor, saveActiveTextarea, resizeActiveTextarea]);
 
+  const insertCellBelow = useCallback(() => {
+    saveActiveTextarea();
+    const { col, row } = activeCellRef.current;
+    const sp = speeches[col];
+    const colData = localData.current[sp];
+    if (!colData || row >= TOTAL_ROWS - 1) return;
+    pushUndo(cloneGrid());
+    for (let r = TOTAL_ROWS - 1; r > row + 1; r--) colData[r] = colData[r - 1];
+    colData[row + 1] = '';
+    const nextHighlights = {};
+    for (const [key, value] of Object.entries(cellHighlightsRef.current)) {
+      const [keyCol, keyRow] = key.split(',').map(Number);
+      if (keyCol === col && keyRow > row) nextHighlights[`${keyCol},${Math.min(TOTAL_ROWS - 1, keyRow + 1)}`] = value;
+      else nextHighlights[key] = value;
+    }
+    setCellHighlights(nextHighlights);
+    updateSheetCellHighlights(sheetId, nextHighlights);
+    repaintCells();
+    recomputeRows(Array.from({ length: TOTAL_ROWS - row - 1 }, (_, i) => row + i + 1));
+    moveTo(col, row + 1);
+  }, [speeches, pushUndo, cloneGrid, repaintCells, recomputeRows, moveTo, saveActiveTextarea, updateSheetCellHighlights, sheetId]);
+
+  const deleteActiveCell = useCallback(() => {
+    const { col, row } = activeCellRef.current;
+    const sp = speeches[col];
+    const colData = localData.current[sp];
+    if (!colData) return;
+    pushUndo(cloneGrid());
+    for (let r = row; r < TOTAL_ROWS - 1; r++) colData[r] = colData[r + 1];
+    colData[TOTAL_ROWS - 1] = '';
+    const nextHighlights = {};
+    for (const [key, value] of Object.entries(cellHighlightsRef.current)) {
+      const [keyCol, keyRow] = key.split(',').map(Number);
+      if (keyCol === col && keyRow === row) continue;
+      if (keyCol === col && keyRow > row) nextHighlights[`${keyCol},${keyRow - 1}`] = value;
+      else nextHighlights[key] = value;
+    }
+    setCellHighlights(nextHighlights);
+    updateSheetCellHighlights(sheetId, nextHighlights);
+    repaintCells();
+    recomputeRows(Array.from({ length: TOTAL_ROWS - row }, (_, i) => row + i));
+    if (taRef.current) taRef.current.value = getText(sp, row);
+    resizeActiveTextarea();
+  }, [speeches, pushUndo, cloneGrid, repaintCells, recomputeRows, resizeActiveTextarea, updateSheetCellHighlights, sheetId]);
+
+  const toggleActiveCellHighlight = useCallback(() => {
+    const { col, row } = activeCellRef.current;
+    const key = `${col},${row}`;
+    const nextHighlights = { ...cellHighlightsRef.current };
+    if (nextHighlights[key]) delete nextHighlights[key];
+    else nextHighlights[key] = '#fde047';
+    setCellHighlights(nextHighlights);
+    updateSheetCellHighlights(sheetId, nextHighlights);
+    forceRender(v => v + 1);
+  }, [sheetId, updateSheetCellHighlights]);
+
   useLayoutEffect(() => {
     const focus = pendingExtendFocusRef.current;
     if (!focus) return;
@@ -851,6 +914,22 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     if (is('arg.extend')) {
       e.preventDefault();
       extendArgument();
+      return;
+    }
+
+    if (is('cell.highlight')) {
+      e.preventDefault();
+      toggleActiveCellHighlight();
+      return;
+    }
+    if (is('cell.insert')) {
+      e.preventDefault();
+      insertCellBelow();
+      return;
+    }
+    if (is('cell.delete')) {
+      e.preventDefault();
+      deleteActiveCell();
       return;
     }
 
@@ -1032,7 +1111,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       onStartRename?.(sheet.id);
       return;
     }
-  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor, shortcutMode, undoDeleteSheet]);
+  }, [keybindings, moveTo, flush, getCurrentGrid, flushSheet, sheetId, onOpenSettings, onBack, onOpenMeta, onAddSheet, onRename, onStartRename, onDeleteSheet, sheet, round, speeches, ensureVisible, applyTextareaPos, theme, setActiveSheet, insertRowsAfter, insertCellBelow, deleteActiveCell, toggleActiveCellHighlight, saveActiveTextarea, repaintCells, recomputeRows, resizeActiveTextarea, continueResponseSequence, findSequenceAwareDownRow, applyHistorySnapshot, pushUndo, cloneGrid, commitPendingEdit, extendArgument, blockedSet, sortedSheets, swapSheets, deleteLink, getActiveTextColor, shortcutMode, undoDeleteSheet]);
 
 
   // ── Paste: multi-cell ──
@@ -1218,6 +1297,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                     colIdx >= sBounds.minCol && colIdx <= sBounds.maxCol &&
                     rowIdx >= sBounds.minRow && rowIdx <= sBounds.maxRow;
                   const blockedColor = blockedColorMap[`${colIdx},${rowIdx}`];
+                  const highlightColor = cellHighlights[`${colIdx},${rowIdx}`];
                   return (
                     <div
                       key={rowIdx}
@@ -1236,7 +1316,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
                         fontSize: fs,
                         fontFamily: settings.fontFamily,
                         color,
-                        background: isSel ? theme.selection : 'transparent',
+                        background: isSel ? theme.selection : highlightColor ? `${highlightColor}55` : 'transparent',
                         borderBottom: `1px solid ${ui.borderSubtle ?? theme.borderSubtle}`,
                         cursor: blockedColor ? 'not-allowed' : 'text',
                         whiteSpace: textWrap ? 'pre-wrap' : 'nowrap',
@@ -1311,7 +1391,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
               border: 'none',
               boxShadow: activeCellChrome.boxShadow,
               boxSizing: 'border-box',
-              background: activeCellChrome.background,
+              background: cellHighlights[`${ac.col},${ac.row}`] ? `${cellHighlights[`${ac.col},${ac.row}`]}55` : activeCellChrome.background,
               color: getActiveTextColor(ac.col),
               fontSize: fs,
               fontFamily: settings.fontFamily,
@@ -1331,6 +1411,23 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
         </div>
       </div>
 
+      <div style={{
+        position: 'fixed',
+        right: 14,
+        bottom: zoom !== 1 ? 62 : 28,
+        zIndex: 20,
+        display: 'flex',
+        gap: 6,
+        background: ui.toolbarBg,
+        border: `1px solid ${ui.border}`,
+        borderRadius: ui.radius,
+        padding: 5,
+        boxShadow: ui.toolbarShadow,
+      }}>
+        <button title="Insert cell below" onClick={insertCellBelow} style={miniBtn(theme, ui)}>+ Cell</button>
+        <button title="Delete active cell" onClick={deleteActiveCell} style={miniBtn(theme, ui)}>- Cell</button>
+        <button title="Highlight active cell" onClick={toggleActiveCellHighlight} style={{ ...miniBtn(theme, ui), color: '#854d0e', borderColor: '#eab308' }}>Highlight</button>
+      </div>
 
       {/* Zoom badge */}
       {zoom !== 1 && (
@@ -1344,4 +1441,18 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       )}
     </div>
   );
+}
+
+function miniBtn(theme, ui) {
+  return {
+    height: 24,
+    padding: '0 8px',
+    background: ui.buttonBg ?? theme.bg,
+    border: `1px solid ${ui.buttonBorder ?? theme.border}`,
+    borderRadius: ui.radius,
+    color: ui.buttonColor ?? theme.text,
+    fontSize: 11,
+    fontFamily: 'inherit',
+    cursor: 'pointer',
+  };
 }

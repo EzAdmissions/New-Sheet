@@ -6,6 +6,7 @@ import FlowGrid from './FlowGrid';
 import SettingsPanel from './SettingsPanel';
 import RoundMeta from './RoundMeta';
 import TeamViewer from './TeamViewer';
+import { importJflow } from './export';
 import { getUiChrome, chromeButton } from './uiChrome';
 import { isPrimaryModifier } from './keybindings';
 
@@ -20,6 +21,7 @@ export default function App() {
   const renameSheet    = useStore(s => s.renameSheet);
   const deleteSheet    = useStore(s => s.deleteSheet);
   const swapSheets     = useStore(s => s.swapSheets);
+  const mergeRoundIntoActive = useStore(s => s.mergeRoundIntoActive);
   const pendingNameSheetIds = useStore(s => s.pendingNameSheetIds);
   const round          = useStore(s => s.rounds.find(r => r.id === s.activeRoundId) ?? null);
   const theme = useTheme(settings.theme);
@@ -134,6 +136,15 @@ export default function App() {
     setOffCount('');
   }, [offCount, round, addSheet, setActiveSheet, setOffCount]);
 
+  const handleMergeFlow = useCallback(async () => {
+    try {
+      const imported = await importJflow();
+      mergeRoundIntoActive(imported);
+    } catch (err) {
+      if (err.message !== 'No file') alert(`Merge failed: ${err.message}`);
+    }
+  }, [mergeRoundIntoActive]);
+
   if (view === 'dashboard') {
     return (
       <>
@@ -176,6 +187,7 @@ export default function App() {
           style={tbBtn(theme, ui)}
         >Redo</button>
         <div style={{ flex: 1 }} />
+        <button onClick={handleMergeFlow} style={tbBtn(theme, ui)}>Merge Flow</button>
         <button onClick={openTeamViewer} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
         <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
         <button onClick={() => openSettings('display')} style={tbBtn(theme, ui)}>Settings</button>
@@ -188,7 +200,7 @@ export default function App() {
           .map(sh => {
           const isActive = sh.id === round.activeSheetId;
           const color = sh.type === 'aff' ? affColor : sh.type === 'offcase' ? negColor : theme.textMuted;
-          const isDraggable = sh.type === 'offcase';
+          const isDraggable = sh.type === 'aff' || sh.type === 'offcase';
           const isDragOver = dragOverId === sh.id;
           return (
             <div
@@ -197,12 +209,16 @@ export default function App() {
               onClick={() => setActiveSheet(sh.id)}
               onDoubleClick={() => { setActiveSheet(sh.id); setRenamingSheetId(sh.id); }}
               onDragStart={() => { dragSrcId.current = sh.id; }}
-              onDragOver={e => { if (sh.type === 'offcase') { e.preventDefault(); setDragOverId(sh.id); } }}
+              onDragOver={e => {
+                const dragSheet = round.sheets.find(s => s.id === dragSrcId.current);
+                if (dragSheet?.type === sh.type && isDraggable) { e.preventDefault(); setDragOverId(sh.id); }
+              }}
               onDragLeave={() => setDragOverId(null)}
               onDrop={e => {
                 e.preventDefault();
                 setDragOverId(null);
-                if (dragSrcId.current && dragSrcId.current !== sh.id && sh.type === 'offcase')
+                const dragSheet = round.sheets.find(s => s.id === dragSrcId.current);
+                if (dragSrcId.current && dragSrcId.current !== sh.id && dragSheet?.type === sh.type && isDraggable)
                   swapSheets(dragSrcId.current, sh.id);
                 dragSrcId.current = null;
               }}
@@ -261,6 +277,7 @@ export default function App() {
           </span>
           <input
             key={activeSheet.id}
+            dir="ltr"
             ref={namingInputRef}
             defaultValue={activeSheet.name}
             onKeyDown={e => {
@@ -293,7 +310,7 @@ export default function App() {
               flex: 1, maxWidth: 240, height: 22, padding: '0 8px',
               background: theme.bg, border: `1px solid ${activeSheet.type === 'aff' ? affColor : activeSheet.type === 'offcase' ? negColor : affColor}`,
               borderRadius: ui.radius, color: theme.text, fontSize: 12,
-              fontFamily: 'inherit', outline: 'none',
+              fontFamily: 'inherit', outline: 'none', unicodeBidi: 'plaintext', textAlign: 'left',
             }}
           />
           <span style={{ fontSize: 10, color: theme.textDim }}>Enter to confirm · Esc to cancel · Alt+N/A for new sheet</span>

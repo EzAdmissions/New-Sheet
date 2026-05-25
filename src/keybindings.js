@@ -16,6 +16,10 @@ export const ACTIONS = {
   'sheet.newAff':  { label: 'New Aff Sheet',         group: 'Sheets',     default: 'Alt+A' },
   'sheet.rename':  { label: 'Rename Sheet',          group: 'Sheets',     default: 'F2' },
 
+  'cell.insert':   { label: 'Insert Cell Below',      group: 'Cells',      default: 'Alt+Shift+Enter' },
+  'cell.delete':   { label: 'Delete Active Cell',     group: 'Cells',      default: 'Alt+Shift+Backspace' },
+  'cell.highlight': { label: 'Highlight Active Cell', group: 'Cells',      default: 'Alt+H' },
+
   'round.info':    { label: 'Edit Round Info',       group: 'Round',      default: 'Alt+I' },
 
   'export.sheet':  { label: 'Export Sheet CSV',      group: 'Export',     default: 'Alt+E' },
