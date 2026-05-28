@@ -6,6 +6,7 @@ import FlowGrid from './FlowGrid';
 import SettingsPanel from './SettingsPanel';
 import RoundMeta from './RoundMeta';
 import TeamViewer from './TeamViewer';
+import TimerWidget from './TimerWidget';
 import { importJflow } from './export';
 import { getUiChrome, chromeButton } from './uiChrome';
 import { isPrimaryModifier } from './keybindings';
@@ -15,6 +16,7 @@ const TYPE_LABEL = { aff: 'Aff', offcase: 'Off' };
 export default function App() {
   const view           = useStore(s => s.view);
   const settings       = useStore(s => s.settings);
+  const updateSettings = useStore(s => s.updateSettings);
   const setView        = useStore(s => s.setView);
   const setActiveSheet = useStore(s => s.setActiveSheet);
   const addSheet       = useStore(s => s.addSheet);
@@ -189,6 +191,12 @@ export default function App() {
         <div style={{ flex: 1 }} />
         <button onClick={handleMergeFlow} style={tbBtn(theme, ui)}>Merge Flow</button>
         <button onClick={openTeamViewer} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
+        <button
+          onClick={() => updateSettings({ timerEnabled: !settings.timerEnabled })}
+          style={{ ...tbBtn(theme, ui), fontWeight: settings.timerEnabled ? 700 : 400 }}
+        >
+          Timer
+        </button>
         <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
         <button onClick={() => openSettings('display')} style={tbBtn(theme, ui)}>Settings</button>
       </div>
@@ -355,6 +363,7 @@ export default function App() {
           onClose={closeTeamViewer}
         />
       )}
+      <TimerWidget />
     </div>
   );
 }

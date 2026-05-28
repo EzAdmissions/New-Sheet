@@ -30,6 +30,25 @@ const DEFAULT_COLORS = {
   negColor: '#b91c1c',
 };
 
+const TIMER_COLOR_OPTIONS = [
+  ['style', 'Match UI style'],
+  ['seaGlass', 'Sea glass'],
+  ['lavender', 'Lavender matte'],
+  ['meadow', 'Meadow'],
+  ['slate', 'Calm slate'],
+];
+
+const TIMER_SOUND_OPTIONS = [
+  ['none', 'None'],
+  ['debateBell', 'Debate bell'],
+  ['softChime', 'Soft chime'],
+  ['deskBell', 'Desk bell'],
+  ['seriousBuzz', 'Serious buzz'],
+  ['sonar', 'Sonar ping'],
+  ['clownHorn', 'Clown horn'],
+  ['victory', 'Victory run'],
+];
+
 export default function SettingsPanel({ open, onClose, initialTab = 'display' }) {
   const settings = useStore(s => s.settings);
   const update   = useStore(s => s.updateSettings);
@@ -83,6 +102,30 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
         <option key={value} value={value}>{label}</option>
       ))}
     </select>
+  );
+
+  const timerUpdate = (patch) => update({ timer: { ...(settings.timer ?? {}), ...patch } });
+
+  const timerSelect = (key, options) => (
+    <select
+      value={options.some(([value]) => value === settings.timer?.[key]) ? settings.timer[key] : options[0]?.[0]}
+      onChange={e => timerUpdate({ [key]: e.target.value })}
+      style={{ padding: '4px 8px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, fontFamily: 'inherit' }}
+    >
+      {options.map(([value, label]) => (
+        <option key={value} value={value}>{label}</option>
+      ))}
+    </select>
+  );
+
+  const timerTimeInput = (key, fallback) => (
+    <input
+      type="text"
+      maxLength={6}
+      value={settings.timer?.[key] ?? fallback}
+      onChange={e => timerUpdate({ [key]: e.target.value.replace(/[^0-9:]/g, '').slice(0, 6) })}
+      style={{ width: 72, padding: '4px 8px', background: ui.inputBg, border: `1px solid ${ui.border}`, borderRadius: ui.radius, color: theme.text, fontSize: 13, textAlign: 'center', fontFamily: 'inherit' }}
+    />
   );
 
   const colorInput = (key) => (
@@ -152,7 +195,7 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
         </div>
 
         <div style={{ display: 'flex', borderBottom: `1px solid ${ui.border}` }}>
-          {['display', 'keybindings'].map(t => (
+          {['display', 'timer', 'keybindings'].map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               padding: '8px 20px', background: 'none', border: 'none', cursor: 'pointer',
               fontSize: 13, fontFamily: 'inherit',
@@ -253,6 +296,66 @@ export default function SettingsPanel({ open, onClose, initialTab = 'display' })
                   ))}
                 </select>
               ))}
+            </>
+          )}
+          {tab === 'timer' && (
+            <>
+              <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: theme.textMuted, marginBottom: 10 }}>Timer</div>
+              {row('Show Timer', (
+                <button
+                  onClick={() => update({ timerEnabled: !settings.timerEnabled })}
+                  style={{
+                    padding: '4px 16px', borderRadius: ui.radius, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13,
+                    background: settings.timerEnabled ? theme.aff : theme.bgTertiary,
+                    border: `1px solid ${settings.timerEnabled ? theme.aff : theme.border}`,
+                    color: settings.timerEnabled ? '#fff' : theme.textMuted,
+                  }}
+                >
+                  {settings.timerEnabled ? 'On' : 'Off'}
+                </button>
+              ))}
+              {row('Color Theme', timerSelect('colorTheme', TIMER_COLOR_OPTIONS))}
+              {row('Alert Sound', timerSelect('sound', TIMER_SOUND_OPTIONS))}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('jayflow-preview-timer-sound', { detail: settings.timer?.sound ?? 'debateBell' }))}
+                  style={{
+                    padding: '5px 10px',
+                    background: theme.bgTertiary,
+                    border: `1px solid ${theme.border}`,
+                    borderRadius: ui.radius,
+                    color: theme.textMuted,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  Preview sound
+                </button>
+              </div>
+
+              <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: theme.textMuted, marginBottom: 10 }}>Times</div>
+              {row('Constructive', timerTimeInput('constructiveTime', '9:00'))}
+              {row('Rebuttal', timerTimeInput('rebuttalTime', '6:00'))}
+              {row('Cross-ex', timerTimeInput('cxTime', '3:00'))}
+              {row('Prep', timerTimeInput('prepTime', '10:00'))}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 14 }}>
+                <button
+                  onClick={() => timerUpdate({ position: null })}
+                  style={{
+                    padding: '5px 10px',
+                    background: theme.bgTertiary,
+                    border: `1px solid ${theme.border}`,
+                    borderRadius: ui.radius,
+                    color: theme.textMuted,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  Reset timer position
+                </button>
+              </div>
             </>
           )}
           {tab === 'keybindings' && <KeybindingsPanel />}

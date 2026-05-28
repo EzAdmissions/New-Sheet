@@ -140,6 +140,16 @@ const useStore = create(
         affColor: '#1d4ed8',
         negColor: '#b91c1c',
         debateFormat: 'policy',
+        timerEnabled: false,
+        timer: {
+          colorTheme: 'style',
+          sound: 'debateBell',
+          constructiveTime: '9:00',
+          rebuttalTime: '6:00',
+          cxTime: '3:00',
+          prepTime: '10:00',
+          position: null,
+        },
       },
 
       setView: (view) => set({ view }),
@@ -370,7 +380,7 @@ const useStore = create(
     }),
     {
       name: 'jayflow-v3',
-      version: 9,
+      version: 10,
       migrate: (persistedState) => {
         const pending = [];
         const rounds = (persistedState?.rounds ?? []).map(round => ({
@@ -388,6 +398,17 @@ const useStore = create(
           activeCellStyle: !persistedState?.settings?.activeCellStyle || persistedState.settings.activeCellStyle === 'filledBlue'
             ? 'outlineBlack'
             : persistedState.settings.activeCellStyle,
+          timerEnabled: Boolean(persistedState?.settings?.timerEnabled),
+          timer: {
+            colorTheme: 'style',
+            sound: 'debateBell',
+            constructiveTime: '9:00',
+            rebuttalTime: '6:00',
+            cxTime: '3:00',
+            prepTime: '10:00',
+            position: null,
+            ...(persistedState?.settings?.timer ?? {}),
+          },
         };
         return {
           ...persistedState,
