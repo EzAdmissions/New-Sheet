@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/refs, react-hooks/immutability, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
 import { useRef, useCallback, useEffect, useState, useLayoutEffect, useMemo } from 'react';
-import useStore, { sortSheetsForDisplay } from './store';
+import useStore from './store';
 import { useTheme, getSpeechColor, getAffColor, getNegColor } from './theme';
 import { isPrimaryModifier, matchesAction } from './keybindings';
 import { exportSheetCSV, exportRoundCSV, exportRoundHTML } from './export';
@@ -189,8 +189,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   const [, forceRender] = useState(0);
 
   const sortedSheets = useMemo(() => (
-    sortSheetsForDisplay(round.sheets)
-      .filter(s => s.type !== 'cx')
+    round.sheets.filter(s => s.type !== 'cx')
   ), [round.sheets]);
 
   const blockedSet = useMemo(() => {
@@ -510,8 +509,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   // ── Refocus grid textarea after naming bar closes ──
   useEffect(() => {
     const handler = () => taRef.current?.focus();
-    window.addEventListener('jayflow-focus-grid', handler);
-    return () => window.removeEventListener('jayflow-focus-grid', handler);
+    window.addEventListener('breakflow-focus-grid', handler);
+    return () => window.removeEventListener('breakflow-focus-grid', handler);
   }, []);
 
   // ── Toolbar undo/redo buttons ──
@@ -532,13 +531,38 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   useEffect(() => {
     const onUndo = () => doUndoRef.current();
     const onRedo = () => doRedoRef.current();
-    window.addEventListener('jayflow-undo', onUndo);
-    window.addEventListener('jayflow-redo', onRedo);
+    window.addEventListener('breakflow-undo', onUndo);
+    window.addEventListener('breakflow-redo', onRedo);
     return () => {
-      window.removeEventListener('jayflow-undo', onUndo);
-      window.removeEventListener('jayflow-redo', onRedo);
+      window.removeEventListener('breakflow-undo', onUndo);
+      window.removeEventListener('breakflow-redo', onRedo);
     };
   }, []);
+
+  useEffect(() => {
+    const handler = () => { pushUndo(cloneGrid()); };
+    window.addEventListener('breakflow-push-undo', handler);
+    return () => window.removeEventListener('breakflow-push-undo', handler);
+  }, [pushUndo, cloneGrid]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      const speech = speeches[activeCellRef.current.col];
+      if (speech && e.detail?.setSpeech) e.detail.setSpeech(speech);
+    };
+    window.addEventListener('breakflow-query-active-speech', handler);
+    return () => window.removeEventListener('breakflow-query-active-speech', handler);
+  }, [speeches]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      const { col, row } = activeCellRef.current;
+      const speech = speeches[col];
+      if (e.detail?.setCell) e.detail.setCell({ speech, row });
+    };
+    window.addEventListener('breakflow-query-active-cell', handler);
+    return () => window.removeEventListener('breakflow-query-active-cell', handler);
+  }, [speeches]);
 
   // ── Header scroll sync ──
   useEffect(() => {
@@ -658,8 +682,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
   // Let TeamViewer trigger an immediate flush before broadcasting
   useEffect(() => {
     const handler = () => flush();
-    window.addEventListener('jayflow-flush-now', handler);
-    return () => window.removeEventListener('jayflow-flush-now', handler);
+    window.addEventListener('breakflow-flush-now', handler);
+    return () => window.removeEventListener('breakflow-flush-now', handler);
   }, [flush]);
 
   useEffect(() => {
@@ -677,8 +701,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       }
       syncRowSpan(row);
     };
-    window.addEventListener('jayflow-remote-cell-edit', handler);
-    return () => window.removeEventListener('jayflow-remote-cell-edit', handler);
+    window.addEventListener('breakflow-remote-cell-edit', handler);
+    return () => window.removeEventListener('breakflow-remote-cell-edit', handler);
   }, [sheetId, speeches, updateCellDom, resizeActiveTextarea, syncRowSpan]);
 
   useEffect(() => {
@@ -687,8 +711,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       flushSheet(sheetId, gridData, extensionLinksRef.current);
       exportRoundCSV(getFreshRoundForExport(gridData));
     };
-    window.addEventListener('new-sheet-export-round', exportFreshRound);
-    return () => window.removeEventListener('new-sheet-export-round', exportFreshRound);
+    window.addEventListener('breakflow-export-round', exportFreshRound);
+    return () => window.removeEventListener('breakflow-export-round', exportFreshRound);
   }, [getCurrentGrid, flushSheet, sheetId, round, settings]);
 
   useEffect(() => {
@@ -697,8 +721,8 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       flushSheet(sheetId, gridData, extensionLinksRef.current);
       exportRoundHTML(getFreshRoundForExport(gridData), { settings });
     };
-    window.addEventListener('new-sheet-export-round-html', exportFreshHTML);
-    return () => window.removeEventListener('new-sheet-export-round-html', exportFreshHTML);
+    window.addEventListener('breakflow-export-round-html', exportFreshHTML);
+    return () => window.removeEventListener('breakflow-export-round-html', exportFreshHTML);
   }, [getCurrentGrid, flushSheet, sheetId, round, settings]);
 
   // ── Ensure cell is visible ──
@@ -768,6 +792,10 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     applyTextareaPos(nc, nr);
     if (taRef.current) {
       taRef.current.style.color = getActiveTextColor(nc);
+      const hc = cellHighlightsRef.current[`${nc},${nr}`];
+      taRef.current.style.background = hc
+        ? `${hc}55`
+        : getActiveCellChrome(settings, theme, getActiveTextColor(nc)).background;
       const txt = getText(speeches[nc], nr);
       taRef.current.value = txt;
       editSnapshot.current = null;
@@ -777,7 +805,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     }
 
     ensureVisible(nc, nr);
-  }, [speeches, ensureVisible, applyTextareaPos, getActiveTextColor, saveActiveTextarea, resizeActiveTextarea]);
+  }, [speeches, ensureVisible, applyTextareaPos, getActiveTextColor, saveActiveTextarea, resizeActiveTextarea, settings, theme]);
 
   const insertCellBelow = useCallback(() => {
     saveActiveTextarea();
@@ -883,8 +911,9 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     const hasMultiGridSelection = isMultiCellSelection(selectionRef.current);
     const isTextRangeShortcut = isArrow && e.shiftKey && !e.altKey;
     const primary = isPrimaryModifier(e, shortcutMode);
-    const isTabReorderShortcut = primary && e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight');
-    const shouldReorderTab = isTabReorderShortcut && (e.altKey || !(ta?.value ?? '').length);
+    const isReorderLeft = is('sheet.reorderLeft');
+    const isReorderRight = is('sheet.reorderRight');
+    const shouldReorderTab = (isReorderLeft || isReorderRight) && (e.altKey || !(ta?.value ?? '').length);
     const gridSelectionShortcut = isArrow && e.shiftKey && (e.altKey || hasMultiGridSelection);
     const textSelectionShortcut = isTextRangeShortcut && !hasMultiGridSelection && !shouldReorderTab;
 
@@ -893,6 +922,7 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
     // Shift+Click, or Alt+Shift+Arrow. Empty cells keep Ctrl+Shift+Left/Right
     // available for sheet reordering; Ctrl+Alt+Shift+Left/Right always reorders.
     if (textSelectionShortcut) return;
+
 
     if (primary && !e.shiftKey && e.key.toLowerCase() === 'z') {
       e.preventDefault();
@@ -944,13 +974,12 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       return;
     }
 
-    // Sheet reorder: Ctrl+Shift+Left/Right — move current off/aff sheet within its type group
+    // Sheet reorder — configurable keybind, works across all sheet types
     if (shouldReorderTab) {
       e.preventDefault();
-      const dir = e.key === 'ArrowRight' ? 1 : -1;
-      const group = sortedSheets.filter(s => s.type === sheet.type);
-      const idx = group.findIndex(s => s.id === sheet.id);
-      const neighbor = group[idx + dir];
+      const dir = isReorderRight ? 1 : -1;
+      const idx = sortedSheets.findIndex(s => s.id === sheet.id);
+      const neighbor = sortedSheets[idx + dir];
       if (neighbor) swapSheets(sheet.id, neighbor.id);
       return;
     }
@@ -1019,8 +1048,15 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
       return;
     }
 
-    // Delete extension arrow from source cell (when cell text is empty)
-    if ((e.key === 'Delete' || e.key === 'Backspace') && !e.shiftKey && !e.ctrlKey && !e.altKey && !selectionRef.current) {
+    // Delete key on empty cell: remove the cell (shift content up)
+    if (e.key === 'Delete' && !e.shiftKey && !e.ctrlKey && !e.altKey && !selectionRef.current && (!ta || !ta.value)) {
+      e.preventDefault();
+      deleteActiveCell();
+      return;
+    }
+
+    // Backspace on empty cell with extension arrow: remove the arrow
+    if (e.key === 'Backspace' && !e.shiftKey && !e.ctrlKey && !e.altKey && !selectionRef.current) {
       const links = extensionLinksRef.current.filter(l => l.fromCol === col && l.fromRow === row);
       if (links.length > 0 && (!ta || !ta.value)) {
         e.preventDefault();
@@ -1373,8 +1409,9 @@ export default function FlowGrid({ sheet, round, onOpenSettings, onOpenMeta, onB
             onInput={(e) => {
               if (!editSnapshot.current) editSnapshot.current = cloneGrid();
               const { col, row } = activeCellRef.current;
-              setLocalText(speeches[col], row, e.currentTarget.value);
-              updateCellDom(col, row, e.currentTarget.value);
+              const val = e.currentTarget.value;
+              setLocalText(speeches[col], row, val);
+              updateCellDom(col, row, val);
               syncActiveRowSpan(row, col, e.currentTarget);
               resizeActiveTextarea();
               if (selectionRef.current) { selectionRef.current = null; setSelection(null); }

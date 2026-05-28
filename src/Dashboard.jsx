@@ -76,9 +76,6 @@ export default function Dashboard({ onOpenSettings }) {
           <span style={{ fontWeight: ui.headerWeight, fontSize: 18, color: theme.text, letterSpacing: 0 }}>New Sheet</span>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setFoldersOpen(v => !v)} style={{ ...btnStyle(theme, ui), borderColor: foldersOpen ? affColor : ui.buttonBorder, color: foldersOpen ? affColor : ui.buttonColor }}>
-            Folders
-          </button>
           <button onClick={onOpenSettings} style={btnStyle(theme, ui)}>Settings</button>
           <button onClick={handleImport}   style={btnStyle(theme, ui)}>Import Backup</button>
           <button
@@ -112,13 +109,21 @@ export default function Dashboard({ onOpenSettings }) {
           </>
         )}
       <div style={{ flex: 1, overflowY: 'auto', padding: '32px 32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div style={{ fontSize: 12, color: theme.textMuted, letterSpacing: 1, textTransform: 'uppercase' }}>
+            {activeFolderName}{sorted.length > 0 ? ` (${sorted.length})` : ''}
+          </div>
+          <button
+            onClick={() => setFoldersOpen(v => !v)}
+            style={{ ...btnStyle(theme, ui), borderColor: foldersOpen ? affColor : ui.buttonBorder, color: foldersOpen ? affColor : ui.buttonColor }}
+          >
+            Folders
+          </button>
+        </div>
         {sorted.length === 0 ? (
           <Empty theme={theme} ui={ui} affColor={affColor} onNew={newRound} label={activeFolderName} />
         ) : (
           <>
-            <div style={{ fontSize: 12, color: theme.textMuted, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>
-              {activeFolderName} ({sorted.length})
-            </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
               {sorted.map(r => (
                 <RoundCard
@@ -217,31 +222,6 @@ function FolderSidebar({ folders, rounds, activeFolderId, setActiveFolder, addFo
   );
 }
 
-function NsLogo() {
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        width: 28,
-        height: 28,
-        borderRadius: 7,
-        background: '#1f2933',
-        color: '#f8fafc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 11,
-        fontWeight: 900,
-        letterSpacing: 0,
-        boxShadow: '0 1px 2px rgba(0,0,0,0.18)',
-        flexShrink: 0,
-      }}
-    >
-      NS
-    </div>
-  );
-}
-
 function RoundCard({ round, theme, ui, affColor, negColor, folders, onMove, onOpen, onDelete, fmt }) {
   const name = roundDisplayName(round);
   return (
@@ -328,6 +308,31 @@ function Empty({ theme, ui, affColor, onNew, label }) {
       <button onClick={onNew} style={{ padding: '10px 28px', background: affColor, border: 'none', borderRadius: ui.radius, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 8, fontFamily: 'inherit' }}>
         New Round
       </button>
+    </div>
+  );
+}
+
+function NsLogo() {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        width: 28,
+        height: 28,
+        borderRadius: 7,
+        background: '#1f2933',
+        color: '#f8fafc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 11,
+        fontWeight: 900,
+        letterSpacing: 0,
+        boxShadow: '0 1px 2px rgba(0,0,0,0.18)',
+        flexShrink: 0,
+      }}
+    >
+      NS
     </div>
   );
 }

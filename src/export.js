@@ -43,7 +43,7 @@ function estimateExportRows(text, speechCount, settings) {
   ), 0));
 }
 
-export function exportRoundHTML(round, options = {}) {
+export function buildRoundHTML(round, options = {}) {
   const name = roundDisplayName(round);
   const judges = round.judges?.trim();
   const settings = options.settings ?? {};
@@ -122,12 +122,12 @@ export function exportRoundHTML(round, options = {}) {
   }).join('');
   const embeddedData = scriptJson({
     version: 1,
-    type: 'new-sheet-html-round',
+    type: 'breakflow-html-round',
     exportedAt: new Date().toISOString(),
     round,
   });
 
-  const html = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><title>${name}</title>
 <style>
@@ -142,8 +142,12 @@ h1{font-size:18px;margin:0 0 6px}.meta{font-size:12px;margin:0 0 20px;color:${th
 .arrows{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}
 @media print{body{margin:10px}.flow-sheet{break-inside:avoid}}
 </style></head>
-<body><script id="new-sheet-round-data" type="application/json">${embeddedData}</script><h1>${name}</h1>${judges ? `<div class="meta"><strong>Judge(s):</strong> ${judges.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>` : ''}${sheetHtml}</body></html>`;
-  dl(html, `${name}.html`, 'text/html;charset=utf-8;');
+<body><script id="breakflow-round-data" type="application/json">${embeddedData}</script><h1>${name}</h1>${judges ? `<div class="meta"><strong>Judge(s):</strong> ${judges.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>` : ''}${sheetHtml}</body></html>`;
+}
+
+export function exportRoundHTML(round, options = {}) {
+  const name = roundDisplayName(round);
+  dl(buildRoundHTML(round, options), `${name}.html`, 'text/html;charset=utf-8;');
 }
 
 export function exportSheetCSV(sheet) {
@@ -175,7 +179,7 @@ export function exportRoundCSV(round) {
 }
 
 export function exportJflow(round) {
-  const data = { version: 1, type: 'jayflow-round', exportedAt: new Date().toISOString(), round };
+  const data = { version: 1, type: 'breakflow-round', exportedAt: new Date().toISOString(), round };
   dl(JSON.stringify(data, null, 2), `${roundDisplayName(round)}.jflow`, 'application/json');
 }
 
@@ -200,17 +204,18 @@ function padGrid(grid, speeches, rows = 200) {
 
 function importRoundFromHTML(html) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  const embedded = doc.querySelector('#new-sheet-round-data')?.textContent;
+  const embedded = (doc.querySelector('#breakflow-round-data') ?? doc.querySelector('#new-sheet-round-data'))?.textContent;
   if (embedded) {
     const data = JSON.parse(embedded);
-    if ((data.type === 'new-sheet-html-round' || data.type === 'jayflow-round') && data.round) return data.round;
+    const validTypes = ['breakflow-html-round', 'breakflow-round', 'new-sheet-html-round', 'jayflow-round'];
+    if (validTypes.includes(data.type) && data.round) return data.round;
   }
 
   const title = doc.querySelector('h1')?.textContent?.trim() || doc.querySelector('title')?.textContent?.trim() || 'Imported HTML Round';
   const metaText = doc.querySelector('.meta')?.textContent ?? '';
   const judges = metaText.replace(/^Judge\(s\):\s*/i, '').trim();
   const sections = [...doc.querySelectorAll('section')];
-  if (!sections.length) throw new Error('No New Sheet flow sections found in this HTML file');
+  if (!sections.length) throw new Error('No Break Flow sections found in this HTML file');
 
   const sheets = sections.map((section, sheetIndex) => {
     const name = section.querySelector('h2')?.textContent?.trim() || `Sheet ${sheetIndex + 1}`;
@@ -272,7 +277,7 @@ export function importJflow() {
             return;
           }
           const data = JSON.parse(text);
-          if (data.type !== 'jayflow-round' || !data.round) throw new Error('Not a valid .jflow file');
+          if (!['breakflow-round', 'jayflow-round'].includes(data.type) || !data.round) throw new Error('Not a valid .jflow file');
           resolve(data.round);
         } catch (err) { reject(err); }
       };

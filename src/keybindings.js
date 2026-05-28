@@ -12,12 +12,14 @@ export const ACTIONS = {
   'sheet.nextTab': { label: 'Next Sheet Tab',        group: 'Navigation', default: 'Ctrl+ArrowRight' },
   'sheet.prevTab': { label: 'Prev Sheet Tab',        group: 'Navigation', default: 'Ctrl+ArrowLeft' },
 
-  'sheet.newOff':  { label: 'New Off-Case Sheet',    group: 'Sheets',     default: 'Alt+N' },
-  'sheet.newAff':  { label: 'New Aff Sheet',         group: 'Sheets',     default: 'Alt+A' },
-  'sheet.rename':  { label: 'Rename Sheet',          group: 'Sheets',     default: 'F2' },
+  'sheet.newOff':      { label: 'New Off-Case Sheet',    group: 'Sheets',     default: 'Alt+N' },
+  'sheet.newAff':      { label: 'New Aff Sheet',         group: 'Sheets',     default: 'Alt+A' },
+  'sheet.rename':      { label: 'Rename Sheet',          group: 'Sheets',     default: 'F2' },
+  'sheet.reorderLeft': { label: 'Move Sheet Left',       group: 'Sheets',     default: 'Ctrl+Shift+ArrowLeft' },
+  'sheet.reorderRight':{ label: 'Move Sheet Right',      group: 'Sheets',     default: 'Ctrl+Shift+ArrowRight' },
 
   'cell.insert':   { label: 'Insert Cell Below',      group: 'Cells',      default: 'Alt+Shift+Enter' },
-  'cell.delete':   { label: 'Delete Active Cell',     group: 'Cells',      default: 'Alt+Shift+Backspace' },
+  'cell.delete':   { label: 'Delete Active Cell',     group: 'Cells',      default: '' },
   'cell.highlight': { label: 'Highlight Active Cell', group: 'Cells',      default: 'Alt+H' },
 
   'round.info':    { label: 'Edit Round Info',       group: 'Round',      default: 'Alt+I' },

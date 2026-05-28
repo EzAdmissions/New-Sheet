@@ -179,7 +179,8 @@ const useStore = create(
       newRound: () => {
         const format = get().settings.debateFormat ?? 'policy';
         const round = { ...makeRound(format), folderId: get().activeFolderId === 'all' || get().activeFolderId === 'unfiled' ? null : get().activeFolderId };
-        set(s => ({ rounds: [...s.rounds, round], activeRoundId: round.id, view: 'flow' }));
+        const namingIds = round.sheets.filter(sh => sh.type !== 'cx' && inferNeedsName(sh)).map(sh => sh.id);
+        set(s => ({ rounds: [...s.rounds, round], activeRoundId: round.id, view: 'flow', pendingNameSheetIds: [...s.pendingNameSheetIds, ...namingIds] }));
       },
       openRound: (id) => set({ activeRoundId: id, view: 'flow' }),
       deleteRound: (id) => set(s => {
@@ -380,7 +381,7 @@ const useStore = create(
     }),
     {
       name: 'jayflow-v3',
-      version: 10,
+      version: 11,
       migrate: (persistedState) => {
         const pending = [];
         const rounds = (persistedState?.rounds ?? []).map(round => ({

@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import useStore, { sortSheetsForDisplay } from './store';
+import useStore from './store';
 import { useTheme, getAffColor, getNegColor } from './theme';
 import Dashboard from './Dashboard';
 import FlowGrid from './FlowGrid';
 import SettingsPanel from './SettingsPanel';
 import RoundMeta from './RoundMeta';
 import TeamViewer from './TeamViewer';
+import PartnerView from './PartnerView';
 import TimerWidget from './TimerWidget';
 import { importJflow } from './export';
 import { getUiChrome, chromeButton } from './uiChrome';
@@ -16,7 +17,6 @@ const TYPE_LABEL = { aff: 'Aff', offcase: 'Off' };
 export default function App() {
   const view           = useStore(s => s.view);
   const settings       = useStore(s => s.settings);
-  const updateSettings = useStore(s => s.updateSettings);
   const setView        = useStore(s => s.setView);
   const setActiveSheet = useStore(s => s.setActiveSheet);
   const addSheet       = useStore(s => s.addSheet);
@@ -26,6 +26,7 @@ export default function App() {
   const mergeRoundIntoActive = useStore(s => s.mergeRoundIntoActive);
   const pendingNameSheetIds = useStore(s => s.pendingNameSheetIds);
   const round          = useStore(s => s.rounds.find(r => r.id === s.activeRoundId) ?? null);
+  const updateSettings = useStore(s => s.updateSettings);
   const theme = useTheme(settings.theme);
   const ui = getUiChrome(settings, theme);
   const affColor = getAffColor(settings, theme);
@@ -40,7 +41,16 @@ export default function App() {
   const [offCount,        setOffCount]         = useState('');
   const [renamingSheetId, setRenamingSheetId] = useState(null);
   const [dragOverId,      setDragOverId]       = useState(null);
-  const dragSrcId    = useRef(null);
+
+  // Partner (Team Viewer) state
+  const [partnerConnected,   setPartnerConnected]   = useState(false);
+  const [partnerRound,       setPartnerRound]       = useState(null);
+  const [partnerActiveId,    setPartnerActiveId]    = useState(null);
+  const [partnerAllowsEdits, setPartnerAllowsEdits] = useState(false);
+  const [partnerTabActive,   setPartnerTabActive]   = useState(false);
+
+  const teamRef        = useRef(null);
+  const dragSrcId      = useRef(null);
   const namingInputRef = useRef(null);
 
   const activeSheet = round?.sheets.find(s => s.id === round.activeSheetId) ?? null;
@@ -76,7 +86,7 @@ export default function App() {
     const trimmed = name.trim();
     if (trimmed) renameSheet(activeSheet.id, trimmed);
     setRenamingSheetId(null);
-    window.dispatchEvent(new CustomEvent('jayflow-focus-grid'));
+    window.dispatchEvent(new CustomEvent('breakflow-focus-grid'));
   }, [activeSheet, renameSheet]);
 
   const cancelName = useCallback(() => {
@@ -112,15 +122,51 @@ export default function App() {
     return () => clearTimeout(t);
   }, [showNamingBar, activeSheet?.id, metaOpen, settingsOpen, teamVisible]);
 
+  const handlePartnerConnected = useCallback(() => {
+    setPartnerConnected(true);
+    setPartnerTabActive(true);
+    setTeamVisible(false);  // auto-close setup panel
+  }, []);
+
+  const handlePartnerDisconnected = useCallback(() => {
+    setPartnerConnected(false);
+    setPartnerTabActive(false);
+    setPartnerRound(null);
+    setPartnerActiveId(null);
+    setPartnerAllowsEdits(false);
+  }, []);
+
+  const handlePartnerUpdate = useCallback((round, activeId, allowsEdits) => {
+    setPartnerRound(round);
+    setPartnerActiveId(activeId);
+    setPartnerAllowsEdits(allowsEdits);
+  }, []);
+
+  const sendPartnerCellEdit = useCallback((sheetId, speech, row, value) => {
+    teamRef.current?.sendCellEdit(sheetId, speech, row, value);
+    setPartnerRound(r => {
+      if (!r) return r;
+      return {
+        ...r,
+        sheets: r.sheets.map(sh => {
+          if (sh.id !== sheetId || !sh.grid?.[speech]) return sh;
+          const col = [...sh.grid[speech]];
+          col[row] = value;
+          return { ...sh, grid: { ...sh.grid, [speech]: col } };
+        }),
+      };
+    });
+  }, []);
+
   const openTeamViewer = useCallback(() => {
     setTeamMounted(true);
     setTeamVisible(true);
-  }, [setTeamMounted, setTeamVisible]);
+  }, []);
 
   const closeTeamViewer = useCallback(() => {
     setTeamVisible(false);
-    setTeamMounted(false);
-  }, [setTeamMounted, setTeamVisible]);
+    if (!partnerConnected) setTeamMounted(false);
+  }, [partnerConnected]);
 
   const handleBulkOff = useCallback((e) => {
     if (e.key !== 'Enter' || !offCount || !round) return;
@@ -179,31 +225,36 @@ export default function App() {
           Round Info
         </button>
         <button
-          onClick={() => window.dispatchEvent(new CustomEvent('jayflow-undo'))}
+          onClick={() => window.dispatchEvent(new CustomEvent('breakflow-undo'))}
           title="Undo (Ctrl+Z)"
           style={tbBtn(theme, ui)}
         >Undo</button>
         <button
-          onClick={() => window.dispatchEvent(new CustomEvent('jayflow-redo'))}
+          onClick={() => window.dispatchEvent(new CustomEvent('breakflow-redo'))}
           title="Redo (Ctrl+Y)"
           style={tbBtn(theme, ui)}
         >Redo</button>
         <div style={{ flex: 1 }} />
         <button onClick={handleMergeFlow} style={tbBtn(theme, ui)}>Merge Flow</button>
-        <button onClick={openTeamViewer} style={{ ...tbBtn(theme, ui), fontWeight: 600 }}>Team</button>
+        <button
+          onClick={openTeamViewer}
+          style={{ ...tbBtn(theme, ui), fontWeight: 600, color: partnerConnected ? '#22c55e' : undefined, borderColor: partnerConnected ? '#22c55e' : undefined }}
+        >
+          {partnerConnected ? '● Team' : 'Team'}
+        </button>
         <button
           onClick={() => updateSettings({ timerEnabled: !settings.timerEnabled })}
           style={{ ...tbBtn(theme, ui), fontWeight: settings.timerEnabled ? 700 : 400 }}
         >
           Timer
         </button>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('new-sheet-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('breakflow-export-round-html'))} style={tbBtn(theme, ui)}>Export</button>
         <button onClick={() => openSettings('display')} style={tbBtn(theme, ui)}>Settings</button>
       </div>
 
-      {/* Sheet tabs - sorted: aff first, then off */}
+      {/* Sheet tabs - raw order (aff/off can be freely reordered) */}
       <div style={{ display: 'flex', alignItems: 'center', background: ui.toolbarBg, borderBottom: `1px solid ${ui.border}`, boxShadow: ui.toolbarShadow, overflowX: 'auto', flexShrink: 0, height: ui.tabHeight, position: 'relative', zIndex: 1 }}>
-        {sortSheetsForDisplay(round.sheets)
+        {round.sheets
           .filter(sh => sh.type !== 'cx')
           .map(sh => {
           const isActive = sh.id === round.activeSheetId;
@@ -214,19 +265,31 @@ export default function App() {
             <div
               key={sh.id}
               draggable={isDraggable}
-              onClick={() => setActiveSheet(sh.id)}
+              onClick={() => { setActiveSheet(sh.id); setPartnerTabActive(false); }}
               onDoubleClick={() => { setActiveSheet(sh.id); setRenamingSheetId(sh.id); }}
-              onDragStart={() => { dragSrcId.current = sh.id; }}
+              onDragStart={e => {
+                dragSrcId.current = sh.id;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', sh.id);
+                // Suppress default ghost image on Mac/Safari
+                const ghost = document.createElement('div');
+                ghost.style.position = 'absolute';
+                ghost.style.top = '-9999px';
+                document.body.appendChild(ghost);
+                e.dataTransfer.setDragImage(ghost, 0, 0);
+                setTimeout(() => document.body.removeChild(ghost), 0);
+              }}
               onDragOver={e => {
-                const dragSheet = round.sheets.find(s => s.id === dragSrcId.current);
-                if (dragSheet?.type === sh.type && isDraggable) { e.preventDefault(); setDragOverId(sh.id); }
+                if (isDraggable && dragSrcId.current && dragSrcId.current !== sh.id) {
+                  e.preventDefault();
+                  setDragOverId(sh.id);
+                }
               }}
               onDragLeave={() => setDragOverId(null)}
               onDrop={e => {
                 e.preventDefault();
                 setDragOverId(null);
-                const dragSheet = round.sheets.find(s => s.id === dragSrcId.current);
-                if (dragSrcId.current && dragSrcId.current !== sh.id && dragSheet?.type === sh.type && isDraggable)
+                if (dragSrcId.current && dragSrcId.current !== sh.id && isDraggable)
                   swapSheets(dragSrcId.current, sh.id);
                 dragSrcId.current = null;
               }}
@@ -251,6 +314,34 @@ export default function App() {
             </div>
           );
         })}
+
+        {/* Partner tab — appears when a Team session is connected */}
+        {partnerConnected && (
+          <div
+            draggable
+            onDragEnd={() => teamRef.current?.openPartnerWindow()}
+            onClick={() => setPartnerTabActive(true)}
+            title="Click to view partner's flow · Drag to pop out"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '0 10px', height: '100%',
+              cursor: 'grab', flexShrink: 0,
+              borderRight: `1px solid ${ui.borderSubtle}`,
+              borderLeft: '3px solid transparent',
+              borderBottom: `2px solid ${partnerTabActive ? '#22c55e' : 'transparent'}`,
+              background: partnerTabActive ? ui.tabActiveBg : ui.tabInactiveBg,
+              boxShadow: partnerTabActive ? ui.tabActiveShadow : 'none',
+              whiteSpace: 'nowrap', userSelect: 'none', boxSizing: 'border-box',
+            }}
+          >
+            <span style={{ fontSize: 9, fontWeight: 700, color: '#22c55e', padding: '1px 4px', background: '#22c55e22', borderRadius: ui.radius }}>
+              PARTNER
+            </span>
+            <span style={{ fontSize: 12, color: partnerTabActive ? theme.text : theme.textMuted }}>
+              {partnerRound ? "Partner's Flow" : 'Connecting…'}
+            </span>
+          </div>
+        )}
 
         {/* Quick-add buttons */}
         <div style={{ display: 'flex', gap: 4, padding: '0 8px', alignItems: 'center', flexShrink: 0 }}>
@@ -303,8 +394,7 @@ export default function App() {
               if (primary && !e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
                 e.preventDefault();
                 cancelName();
-                const sorted = sortSheetsForDisplay(round.sheets)
-                  .filter(sh => sh.type !== 'cx');
+                const sorted = round.sheets.filter(sh => sh.type !== 'cx');
                 const idx = sorted.findIndex(s => s.id === activeSheet.id);
                 if (e.key === 'ArrowRight' && idx < sorted.length - 1) setActiveSheet(sorted[idx + 1].id);
                 if (e.key === 'ArrowLeft'  && idx > 0)                 setActiveSheet(sorted[idx - 1].id);
@@ -325,20 +415,34 @@ export default function App() {
         </div>
       )}
 
-      {/* Flow */}
+      {/* Flow — or partner's flow when Partner tab is active */}
       <div style={{ flex: 1, overflow: 'hidden' }}>
-        <FlowGrid
-          key={activeSheet.id}
-          sheet={activeSheet}
-          round={round}
-          onOpenSettings={openSettings}
-          onOpenMeta={() => setMetaOpen(true)}
-          onBack={handleBack}
-          onRename={renameSheet}
-          onAddSheet={handleAddSheet}
-          onStartRename={handleStartRename}
-          onDeleteSheet={handleDeleteSheet}
-        />
+        {partnerTabActive && partnerConnected ? (
+          <PartnerView
+            round={partnerRound}
+            partnerActiveId={partnerActiveId}
+            settings={settings}
+            theme={theme}
+            ui={ui}
+            affColor={affColor}
+            negColor={negColor}
+            partnerAllowsEdits={partnerAllowsEdits}
+            onCellEdit={sendPartnerCellEdit}
+          />
+        ) : (
+          <FlowGrid
+            key={activeSheet.id}
+            sheet={activeSheet}
+            round={round}
+            onOpenSettings={openSettings}
+            onOpenMeta={() => setMetaOpen(true)}
+            onBack={handleBack}
+            onRename={renameSheet}
+            onAddSheet={handleAddSheet}
+            onStartRename={handleStartRename}
+            onDeleteSheet={handleDeleteSheet}
+          />
+        )}
       </div>
 
       {/* Status bar */}
@@ -358,9 +462,13 @@ export default function App() {
       {metaOpen && <RoundMeta round={round} onClose={() => setMetaOpen(false)} />}
       {teamMounted && (
         <TeamViewer
+          ref={teamRef}
           visible={teamVisible}
           onHide={() => setTeamVisible(false)}
           onClose={closeTeamViewer}
+          onPartnerConnected={handlePartnerConnected}
+          onPartnerDisconnected={handlePartnerDisconnected}
+          onPartnerUpdate={handlePartnerUpdate}
         />
       )}
       <TimerWidget />
